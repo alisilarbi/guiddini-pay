@@ -84,8 +84,6 @@ class Applications extends Page implements HasForms, HasTable
                     ])
                     ->action(function (array $data) {
 
-                        dd($data);
-
                         Application::create([
                             'name' => $data['name'],
                             'app_key' => $data['app_key'],
