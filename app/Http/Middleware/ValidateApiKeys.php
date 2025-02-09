@@ -15,12 +15,8 @@ class ValidateApiKeys
      */
     public function handle(Request $request, Closure $next)
     {
-        $allowedOrigins = ['http://localhost', 'http://localhost:3000', 'https://edrahmi.efawtara.com'];
-
-
+        $allowedOrigins = ['http://localhostssss', 'http://localhost:3000', 'https://edrahmi.efawtara.com'];
         $origin = $request->header('Origin') ?? $request->header('Referer');
-
-        return $origin;
 
         if ($origin && !in_array(rtrim($origin, '/'), $allowedOrigins)) {
             return response()->json(['error' => 'Unauthorized origin'], 403);
