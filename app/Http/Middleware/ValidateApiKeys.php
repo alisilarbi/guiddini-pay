@@ -15,7 +15,7 @@ class ValidateApiKeys
      */
     public function handle(Request $request, Closure $next)
     {
-        $allowedOrigins = ['http://localhost', 'http://localhost:3001'];
+        $allowedOrigins = ['http://localhost', 'http://localhost:3000'];
         $origin = $request->header('Origin') ?? $request->header('Referer');
 
         if ($origin && !in_array(rtrim($origin, '/'), $allowedOrigins)) {
