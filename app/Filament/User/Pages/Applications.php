@@ -70,7 +70,6 @@ class Applications extends Page implements HasForms, HasTable
                         TextInput::make('terminal_password')
                             ->required(),
 
-
                         TextInput::make('app_key')
                             ->readOnly()
                             ->default(Str::random(40))
@@ -84,6 +83,8 @@ class Applications extends Page implements HasForms, HasTable
                             ->maxLength(255),
                     ])
                     ->action(function (array $data) {
+
+                        dd($data);
 
                         Application::create([
                             'name' => $data['name'],
