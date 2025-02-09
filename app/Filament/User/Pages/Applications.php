@@ -89,7 +89,9 @@ class Applications extends Page implements HasForms, HasTable
                             'name' => $data['name'],
                             'app_key' => $data['app_key'],
                             'secret_key' => $data['secret_key'],
-                            'user_id' => Auth::user()->id
+                            'user_id' => Auth::user()->id,
+                            'terminal_id' => $data['temrinal_id'],
+                            'terminal_password' => $data['terminal_password'],
                         ]);
                     })
             ])
