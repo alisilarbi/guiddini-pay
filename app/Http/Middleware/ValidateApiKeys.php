@@ -15,15 +15,12 @@ class ValidateApiKeys
      */
     public function handle(Request $request, Closure $next)
     {
-        // $allowedDomain = 'www.guididni.dz';
-        // $allowedDomain = 'http://localhost';
-        $allowedDomain = '127.0.0.1';
+        $allowedOrigins = ['http://localhost', 'https://edrahmi.efawtara.com'];
 
-        $requestDomain = parse_url($request->fullUrl(), PHP_URL_HOST);
+        $origin = $request->header('Origin') ?? $request->header('Referer');
 
-        return $requestDomain;
-        if ($requestDomain !== $allowedDomain) {
-            return response()->json(['error' => 'Unauthorized domain'], 403);
+        if ($origin && !in_array(rtrim($origin, '/'), $allowedOrigins)) {
+            return response()->json(['error' => 'Unauthorized origin'], 403);
         }
 
         $appKey = $request->header('app_key');
