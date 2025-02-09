@@ -42,6 +42,9 @@ class Applications extends Page implements HasForms, HasTable
                 TextColumn::make('updated_at')
                     ->dateTime(),
 
+                TextColumn::make('terminal_id'),
+                TextColumn::make('terminal_password')
+
             ])
             ->filters([
                 // ...
