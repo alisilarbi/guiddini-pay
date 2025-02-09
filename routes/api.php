@@ -11,3 +11,5 @@ Route::get('/user', function (Request $request) {
 Route::post('/initiate', function (OnlinePaymentService $service, Request $request) {
     return $service->execute($request);
 })->middleware('validate_api_keys');
+
+Route::get('/confirm', [OnlinePaymentService::class, 'confirm'])->name('confirm');
