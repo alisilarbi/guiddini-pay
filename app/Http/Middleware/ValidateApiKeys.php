@@ -23,15 +23,11 @@ class ValidateApiKeys
             return response()->json(['error' => 'Unauthorized origin'], 403);
         }
 
-        dd($request->headers->all());
+        $appKey = $request->header('x-app-key');
+        $secretKey = $request->header('x-secret-key');
 
-        $appKey = $request->header('app_key');
-        $secretKey = $request->header('secret_key');
-
-        dd($appKey);
 
         $application = Application::where('app_key', $appKey)->first();
-        dd($application);
 
         if (!$appKey || !$secretKey || !$this->isValidKeys($appKey, $secretKey)) {
             return response()->json(['error' => 'Invalid API keys'], 401);
