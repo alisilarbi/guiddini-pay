@@ -15,15 +15,12 @@ class ValidateApiKeys
      */
     public function handle(Request $request, Closure $next)
     {
-        $allowedOrigins = ['http://localhost:3000', 'https://edrahmi.efawtara.com'];
-
+        $allowedOrigins = ['http://localhost', 'http://localhost:3000'];
         $origin = $request->header('Origin') ?? $request->header('Referer');
 
-        if (!$origin || !in_array(rtrim($origin, '/'), $allowedOrigins)) {
+        if ($origin && !in_array(rtrim($origin, '/'), $allowedOrigins)) {
             return response()->json(['error' => 'Unauthorized origin'], 403);
         }
-
-        dd($origin);
 
         $appKey = $request->header('app_key');
         $secretKey = $request->header('secret_key');
