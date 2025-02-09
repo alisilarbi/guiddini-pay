@@ -26,7 +26,7 @@ class ValidateApiKeys
         $appKey = $request->header('app_key');
         $secretKey = $request->header('secret_key');
 
-        $application = Application::where('app_key', $appKey);
+        $application = Application::where('app_key', $appKey)->first();
         dd($application);
 
         if (!$appKey || !$secretKey || !$this->isValidKeys($appKey, $secretKey)) {
