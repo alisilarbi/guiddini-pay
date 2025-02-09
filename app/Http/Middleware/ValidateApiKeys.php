@@ -23,7 +23,7 @@ class ValidateApiKeys
             return response()->json(['error' => 'Unauthorized origin'], 403);
         }
 
-        dd($request->all());
+        dd($request->header());
 
         $appKey = $request->header('app_key');
         $secretKey = $request->header('secret_key');
