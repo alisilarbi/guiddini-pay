@@ -9,10 +9,5 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/initiate', function (OnlinePaymentService $service, Request $request) {
-
-
     return $service->execute($request);
-
-
-
 })->middleware('validate_api_keys');
