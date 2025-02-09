@@ -63,6 +63,14 @@ class Applications extends Page implements HasForms, HasTable
                     ->form([
                         TextInput::make('name')
                             ->required(),
+
+                        TextInput::make('terminal_id')
+                            ->required(),
+
+                        TextInput::make('terminal_password')
+                            ->required(),
+
+
                         TextInput::make('app_key')
                             ->readOnly()
                             ->default(Str::random(40))
