@@ -16,14 +16,13 @@ class ValidateApiKeys
     public function handle(Request $request, Closure $next): Response
     {
         // $allowedDomain = 'www.guididni.dz';
-        // $allowedDomain = '127.0.0.1';
-        $allowedDomain = 'http://localhost';
+        // $allowedDomain = 'http://localhost';
+        $allowedDomain = '127.0.0.1';
 
         $requestDomain = parse_url($request->fullUrl(), PHP_URL_HOST);
-
-        // if ($requestDomain !== $allowedDomain) {
-        //     return response()->json(['error' => 'Unauthorized domain'], 403);
-        // }
+        if ($requestDomain !== $allowedDomain) {
+            return response()->json(['error' => 'Unauthorized domain'], 403);
+        }
 
         $appKey = $request->header('app_key');
         $secretKey = $request->header('secret_key');
