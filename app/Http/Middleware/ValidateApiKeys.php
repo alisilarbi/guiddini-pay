@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Models\Application;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -25,6 +26,9 @@ class ValidateApiKeys
         $appKey = $request->header('app_key');
         $secretKey = $request->header('secret_key');
 
+        $application = Application::where('app_key', $appKey);
+        dd($application);
+
         if (!$appKey || !$secretKey || !$this->isValidKeys($appKey, $secretKey)) {
             return response()->json(['error' => 'Invalid API keys'], 401);
         }
@@ -35,8 +39,7 @@ class ValidateApiKeys
     private function isValidKeys($appKey, $secretKey): bool
     {
 
-        $application = Application::where('app_key', $appKey);
-        dd($application);
+
 
         return \App\Models\Application::where('app_key', $appKey)
             ->where('secret_key', $secretKey)
