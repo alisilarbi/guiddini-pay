@@ -21,7 +21,7 @@ class ValidateApiKeys
 
         $requestDomain = parse_url($request->fullUrl(), PHP_URL_HOST);
 
-        return $requestDomain;
+        return $request->fullUrl();
 
         if ($requestDomain !== $allowedDomain) {
             return response()->json(['error' => 'Unauthorized domain'], 403);
