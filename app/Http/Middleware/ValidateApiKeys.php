@@ -13,13 +13,15 @@ class ValidateApiKeys
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
         // $allowedDomain = 'www.guididni.dz';
         // $allowedDomain = 'http://localhost';
         $allowedDomain = '127.0.0.1';
 
         $requestDomain = parse_url($request->fullUrl(), PHP_URL_HOST);
+
+        return $requestDomain;
         if ($requestDomain !== $allowedDomain) {
             return response()->json(['error' => 'Unauthorized domain'], 403);
         }
