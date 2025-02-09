@@ -13,7 +13,7 @@ class ValidateApiKeys
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
         // $allowedDomain = 'www.guididni.dz';
         // $allowedDomain = '127.0.0.1';
