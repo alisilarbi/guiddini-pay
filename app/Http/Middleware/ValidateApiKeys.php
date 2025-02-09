@@ -20,6 +20,8 @@ class ValidateApiKeys
 
         $origin = $request->header('Origin') ?? $request->header('Referer');
 
+        return $origin;
+
         if ($origin && !in_array(rtrim($origin, '/'), $allowedOrigins)) {
             return response()->json(['error' => 'Unauthorized origin'], 403);
         }
