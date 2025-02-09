@@ -13,7 +13,7 @@ class ValidateApiKeys
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         // $allowedDomain = 'www.guididni.dz';
         // $allowedDomain = '127.0.0.1';
@@ -21,11 +21,9 @@ class ValidateApiKeys
 
         $requestDomain = parse_url($request->fullUrl(), PHP_URL_HOST);
 
-        return $request->fullUrl();
-
-        if ($requestDomain !== $allowedDomain) {
-            return response()->json(['error' => 'Unauthorized domain'], 403);
-        }
+        // if ($requestDomain !== $allowedDomain) {
+        //     return response()->json(['error' => 'Unauthorized domain'], 403);
+        // }
 
         $appKey = $request->header('app_key');
         $secretKey = $request->header('secret_key');
