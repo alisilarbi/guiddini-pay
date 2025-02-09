@@ -34,6 +34,10 @@ class ValidateApiKeys
 
     private function isValidKeys($appKey, $secretKey): bool
     {
+
+        $application = Application::where('app_key', $appKey);
+        dd($application);
+
         return \App\Models\Application::where('app_key', $appKey)
             ->where('secret_key', $secretKey)
             ->exists();
