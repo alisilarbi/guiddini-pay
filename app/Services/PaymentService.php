@@ -18,8 +18,6 @@ class PaymentService
         return DB::transaction(function () use ($data, $appKey) {
             $application = Application::where('app_key', $appKey)->firstOrFail();
 
-            dd($application);
-
             $transaction = $this->createTransaction($data, $application);
             $response = $this->callPaymentGateway($transaction, $application);
 
