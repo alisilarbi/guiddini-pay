@@ -11,7 +11,6 @@ class OnlinePaymentService
 
     public function execute(Request $request)
     {
-        return 'hehehe';
         $request->validate([
             'pack_name' => 'required',
             'price' => 'required',
@@ -46,9 +45,7 @@ class OnlinePaymentService
             // "force_terminal_id" => "HEHEHEHE",
         ]);
 
-        $response = Http::timeout(60)
-            // ->withOptions(['verify' => true])
-            ->asForm()
+        $response = Http::asForm()
             ->post($paymentGatewayUrl, [
                 "userName" => $username,
                 "password" => $password,
