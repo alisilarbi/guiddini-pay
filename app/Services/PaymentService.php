@@ -85,6 +85,8 @@ class PaymentService
             ->with('application')
             ->firstOrFail();
 
+        dd($transaction);
+
         $params = [
             'userName' => $transaction->application->username,
             'password' => $transaction->application->password,
