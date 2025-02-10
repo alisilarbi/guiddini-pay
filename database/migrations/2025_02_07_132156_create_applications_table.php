@@ -18,8 +18,9 @@ return new class extends Migration
             $table->text('app_key');
             $table->text('secret_key');
 
-            $table->string('terminal_id');
-            $table->string('terminal_password');
+            $table->string('username');
+            $table->string('password');
+            $table->string('terminal');
 
             $table->uuid('user_id');
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();

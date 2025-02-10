@@ -13,8 +13,9 @@ class Application extends Model
 
     protected $fillable = [
         'name',
-        'terminal_id',
-        'terminal_password',
+        'username',
+        'password',
+        'terminal',
         'app_key',
         'secret_key',
         'user_id',

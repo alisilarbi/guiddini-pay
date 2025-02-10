@@ -42,8 +42,9 @@ class Applications extends Page implements HasForms, HasTable
                 TextColumn::make('updated_at')
                     ->dateTime(),
 
-                TextColumn::make('terminal_id'),
-                TextColumn::make('terminal_password')
+                TextColumn::make('username'),
+                TextColumn::make('password'),
+                TextColumn::make('terminal'),
 
             ])
             ->filters([
@@ -61,10 +62,13 @@ class Applications extends Page implements HasForms, HasTable
                         TextInput::make('secret_key')
                             ->disabled(),
 
-                        TextInput::make('terminal_id')
+                        TextInput::make('username')
                             ->disabled(),
 
-                        TextInput::make('terminal_password')
+                        TextInput::make('password')
+                            ->disabled(),
+
+                        TextInput::make('terminal')
                             ->disabled()
                     ])
 
@@ -75,10 +79,13 @@ class Applications extends Page implements HasForms, HasTable
                         TextInput::make('name')
                             ->required(),
 
-                        TextInput::make('terminal_id')
+                        TextInput::make('username')
                             ->required(),
 
-                        TextInput::make('terminal_password')
+                        TextInput::make('password')
+                            ->required(),
+
+                        TextInput::make('terminal')
                             ->required(),
 
                         TextInput::make('app_key')
@@ -97,11 +104,12 @@ class Applications extends Page implements HasForms, HasTable
 
                         Application::create([
                             'name' => $data['name'],
+                            'username' => $data['username'],
+                            'password' => $data['password'],
+                            'terminal' => $data['terminal'],
                             'app_key' => $data['app_key'],
                             'secret_key' => $data['secret_key'],
                             'user_id' => Auth::user()->id,
-                            'terminal_id' => $data['terminal_id'],
-                            'terminal_password' => $data['terminal_password'],
                         ]);
                     })
             ])
