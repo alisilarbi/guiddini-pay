@@ -30,6 +30,7 @@ class PaymentService
 
     protected function createTransaction(array $data, Application $application): Transaction
     {
+        dd('hehehe');
         return Transaction::create([
             'pack_name' => $data['pack_name'],
             'price' => $data['price'],
@@ -49,7 +50,6 @@ class PaymentService
 
     protected function callPaymentGateway(Transaction $transaction, Application $application): array
     {
-        dd('hehe');
         $params = [
             'userName' => $application->username,
             'password' => $application->password,
