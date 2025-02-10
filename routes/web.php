@@ -2,10 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Services\OnlinePaymentService;
+use App\Http\Controllers\PaymentController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/payment/confirm', [OnlinePaymentService::class, 'confirm'])->name('payment.confirm');
-Route::get('/payment/failed', [OnlinePaymentService::class, 'failed'])->name('payment.failed');
+Route::prefix('payment')->group(function () {
+    Route::get('/confirm/{client_order_id}', [PaymentController::class, 'confirm'])->name('payment.confirm');
+    Route::get('/failed/{client_order_id}', [PaymentController::class, 'failed'])->name('payment.failed');
+});
