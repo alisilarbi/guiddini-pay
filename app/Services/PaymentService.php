@@ -94,9 +94,11 @@ class PaymentService
 
         try {
             $response = Http::timeout(30)->get($this->gatewayUrl . 'confirmOrder.do', $params);
-            $result = $response->json();
+            // $result = $response->json();
+            // $this->updateTransactionStatus($transaction, $result);
 
-            $this->updateTransactionStatus($transaction, $result);
+            $result = $response->json();
+            $this->updateInitialTransaction($transaction, $result);
 
             return [
                 'status' => 'success',
@@ -109,23 +111,37 @@ class PaymentService
         }
     }
 
-    protected function updateTransactionStatus(Transaction $transaction, array $result): void
+    protected function updateInitialTransaction(Transaction $transaction, array $response): void
     {
-        $updateData = ['confirmation_response' => $result];
-
-        switch ($result['errorCode'] ?? null) {
-            case 0:
-                $updateData['status'] = $this->determineFinalStatus($result);
-                break;
-            case 2:
-                $updateData['status'] = 'already_confirmed';
-                break;
-            default:
-                $updateData['status'] = 'failed';
-        }
+        $updateData = [
+            'gateway_order_id' => $response['orderId'] ?? null,
+            'gateway_code' => $response['errorCode'] ?? null,
+            'gateway_error_code' => $response['errorCode'] ?? null,
+            'gateway_response_message' => $response['errorMessage'] ?? null,
+            'gateway_bool' => isset($response['errorCode']) && $response['errorCode'] == 0 ? 'true' : 'false',
+            'status' => ($response['errorCode'] ?? null) == 0 ? 'pending_confirmation' : 'gateway_error'
+        ];
 
         $transaction->update($updateData);
     }
+
+    // protected function updateTransactionStatus(Transaction $transaction, array $result): void
+    // {
+    //     $updateData = ['confirmation_response' => $result];
+
+    //     switch ($result['errorCode'] ?? null) {
+    //         case 0:
+    //             $updateData['status'] = $this->determineFinalStatus($result);
+    //             break;
+    //         case 2:
+    //             $updateData['status'] = 'already_confirmed';
+    //             break;
+    //         default:
+    //             $updateData['status'] = 'failed';
+    //     }
+
+    //     $transaction->update($updateData);
+    // }
 
     protected function determineFinalStatus(array $result): string
     {
