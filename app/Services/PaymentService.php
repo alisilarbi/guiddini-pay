@@ -15,6 +15,7 @@ class PaymentService
 
     public function initiatePayment(array $data, string $appKey): array
     {
+        dd('initiate');
         return DB::transaction(function () use ($data, $appKey) {
             $application = Application::where('app_key', $appKey)->firstOrFail();
 
@@ -30,7 +31,6 @@ class PaymentService
 
     protected function createTransaction(array $data, Application $application): Transaction
     {
-        dd('hehehe');
         return Transaction::create([
             'pack_name' => $data['pack_name'],
             'price' => $data['price'],
