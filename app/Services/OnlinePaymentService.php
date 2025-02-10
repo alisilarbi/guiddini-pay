@@ -105,6 +105,6 @@ class OnlinePaymentService
 
     public function failed(Request $request)
     {
-        dd($request);
+        dd($request->all());
     }
 }
