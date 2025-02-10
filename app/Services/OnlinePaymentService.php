@@ -36,7 +36,6 @@ class OnlinePaymentService
 
         $orderId = $transaction->client_order_id;
 
-        // Ensure returnUrl has query parameters
         $returnUrl = route('confirm') . '?orderNumber=' . $orderId . '&bool=0';
 
         $jsonParams = json_encode([
@@ -46,7 +45,6 @@ class OnlinePaymentService
             "force_terminal_id" => "E010901161"
         ]);
 
-        // Send request with HTTP client options
         $response = Http::timeout(60)
             ->withOptions(['verify' => true])
             ->asForm()
@@ -55,14 +53,15 @@ class OnlinePaymentService
                 "password" => $password,
                 "returnUrl" => $returnUrl,
                 "orderNumber" => $orderId,
-                "amount" => $request->price * 100, // Confirm $request->price is correct
+                "amount" => $request->price ,
                 "currency" => "012",
                 "jsonParams" => $jsonParams
             ]);
 
         $result = $response->json();
 
-        // Handle redirect based on payment gateway response
+        return $result;
+
         if (isset($result['errorCode']) && strval($result['errorCode']) === "0") {
             return redirect($result['formUrl']);
         } else {
