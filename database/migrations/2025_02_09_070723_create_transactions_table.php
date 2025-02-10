@@ -16,18 +16,18 @@ return new class extends Migration
 
             $table->string('pack_name');
             $table->double('price', 10, 2);
-            $table->string('name');
-            $table->string('email');
-            $table->string('phone');
-            $table->string('status');
+            $table->string('name')->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('status')->nullable();
 
 
-            $table->string('client_order_id');
-            $table->string('gateway_order_id');
-            $table->string('gateway_bool');
-            $table->string('gateway_response_message');
-            $table->string('gateway_error_code');
-            $table->string('gateway_code');
+            $table->string('client_order_id')->nullable();
+            $table->string('gateway_order_id')->nullable();
+            $table->string('gateway_bool')->nullable();
+            $table->string('gateway_response_message')->nullable();
+            $table->string('gateway_error_code')->nullable();
+            $table->string('gateway_code')->nullable();
 
             $table->timestamps();
         });

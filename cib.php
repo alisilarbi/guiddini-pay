@@ -1,13 +1,13 @@
 <?php
 
 //echo json_encode($_GET);
-$LicenceUrl = "https://test.satim.guiddini.dz/SATIM-WFGWX-YVC9B-4J6C9/EF01RA";
+$LicenceUrl = "https://test.satim.guiddini.dz/SATIM-WFGWX-YVC9B-4J6C9/market";
 
 
 
 $url = "https://test.satim.dz/payment/rest/register.do";
 
-$username = 'SAT2405190928';
+$username = 'SAT2405030913';
 $password = 'satim120';
 
 $order_id = $_GET['order_id'];
@@ -18,7 +18,7 @@ else
   $returnUrl = $_GET['returnUrl'] . "?orderNumber=" . $order_id . "&bool=0";
 
 
-$jsonParams = '{"orderNumber":' . $order_id . ',"udf1":"' . $order_id . '","udf5":"00","force_terminal_id":"E010901161"}';
+$jsonParams = '{"orderNumber":' . $order_id . ',"udf1":"' . $order_id . '","udf5":"00","force_terminal_id":"E010901146"}';
 #trial=$trial&bool=$bool&total=$total&returnUrl=$returnUrl&order_id=$order_id"
 
 $data = array(
@@ -53,5 +53,5 @@ if (strval($obj->errorCode) == "0") {
   # echo $obj->formUrl;
   header("location:" . $obj->formUrl);
 } else {
-  header("location:https://efawtara.com/?MessageReturn=$obj->errorMessage");
+  header("location:https://efawtara.com?MessageReturn=$obj->errorMessage");
 }
