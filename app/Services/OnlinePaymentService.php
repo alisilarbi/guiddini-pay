@@ -47,7 +47,7 @@ class OnlinePaymentService
 
 
         $response = Http::timeout(60)
-            // ->withOptions(['verify' => true])
+            ->withOptions(['verify' => true])
             ->asForm()
             ->post($paymentGatewayUrl, [
                 "userName" => $username,
