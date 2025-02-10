@@ -17,13 +17,13 @@ class PaymentService
     {
         return DB::transaction(function () use ($data, $appKey) {
             $application = Application::where('app_key', $appKey)->firstOrFail();
-
             $transaction = $this->createTransaction($data, $application);
             $response = $this->callPaymentGateway($transaction, $application);
 
             return [
-                'transaction' => $transaction,
+                'transaction' => $transaction->fresh(),
                 'gateway_response' => $response,
+                'payment_url' => $response['formUrl'] ?? null
             ];
         });
     }
@@ -43,8 +43,9 @@ class PaymentService
 
     protected function generateClientOrderId(): int
     {
-        $lastOrder = Transaction::lockForUpdate()->orderBy('client_order_id', 'desc')->first();
-        return $lastOrder ? $lastOrder->client_order_id + 1 : $this->orderIdStart;
+        return Transaction::withTrashed()
+            ->lockForUpdate()
+            ->max('client_order_id') + 1 ?? $this->orderIdStart;
     }
 
     protected function callPaymentGateway(Transaction $transaction, Application $application): array
@@ -57,7 +58,7 @@ class PaymentService
             'amount' => $transaction->price * 100,
             'currency' => '012',
             'returnUrl' => route('payment.confirm', $transaction->client_order_id),
-            'failUrl' => route('payment.failed', $transaction->client_order_id),
+            'failUrl' => route('payment.confirm', $transaction->client_order_id), // Both endpoints hit confirm
             'language' => 'EN',
             'jsonParams' => json_encode([
                 "force_terminal_id" => $application->terminal,
@@ -67,61 +68,67 @@ class PaymentService
         ];
 
         $response = Http::timeout(30)->get($this->gatewayUrl . 'register.do', $params);
+        $responseData = $response->json();
 
+        $this->updateInitialTransaction($transaction, $responseData);
 
-        if ($response->successful()) {
-            $transaction->update([
-                'gateway_order_id' => $response->json('orderId'),
-                'status' => $response->json('errorCode') == 0 ? 'pending_confirmation' : 'gateway_error'
-            ]);
-        }
+        return $responseData;
+    }
 
-        return $response->json();
+    protected function updateInitialTransaction(Transaction $transaction, array $response): void
+    {
+        $updateData = [
+            'gateway_order_id' => $response['orderId'] ?? null,
+            'gateway_code' => $response['errorCode'] ?? null,
+            'gateway_error_code' => $response['errorCode'] ?? null,
+            'gateway_response_message' => $response['errorMessage'] ?? null,
+            'gateway_bool' => isset($response['errorCode']) && $response['errorCode'] == 0 ? 'true' : 'false',
+            'status' => ($response['errorCode'] ?? null) == 0 ? 'pending_confirmation' : 'gateway_error'
+        ];
+
+        $transaction->update($updateData);
     }
 
     public function confirmPayment(string $clientOrderId, string $appKey): array
     {
-        $transaction = Transaction::where('client_order_id', $clientOrderId)
-            ->with('application')
-            ->firstOrFail();
+        return DB::transaction(function () use ($clientOrderId, $appKey) {
+            $transaction = Transaction::where('client_order_id', $clientOrderId)
+                ->with('application')
+                ->firstOrFail();
 
-        $params = [
-            'userName' => $transaction->application->username,
-            'password' => $transaction->application->password,
-            'orderId' => $transaction->gateway_order_id,
-            'language' => 'EN',
-        ];
+            $params = [
+                'userName' => $transaction->application->username,
+                'password' => $transaction->application->password,
+                'orderId' => $transaction->gateway_order_id,
+                'language' => 'EN',
+            ];
 
-        try {
             $response = Http::timeout(30)->get($this->gatewayUrl . 'confirmOrder.do', $params);
             $result = $response->json();
 
-            $this->updateTransactionStatus($transaction, $result);
+            $this->updateConfirmationDetails($transaction, $result);
 
             return [
-                'status' => 'success',
-                'transaction' => $transaction,
+                'status' => 'completed',
+                'transaction' => $transaction->fresh(),
                 'gateway_response' => $result
             ];
-        } catch (\Exception $e) {
-            Log::error("Confirmation failed: {$e->getMessage()}");
-            return ['status' => 'error', 'message' => $e->getMessage()];
-        }
+        });
     }
 
-    protected function updateTransactionStatus(Transaction $transaction, array $result): void
+    protected function updateConfirmationDetails(Transaction $transaction, array $result): void
     {
-        $updateData = ['confirmation_response' => $result];
+        $updateData = [
+            'gateway_code' => $result['actionCode'] ?? null,
+            'gateway_error_code' => $result['errorCode'] ?? null,
+            'gateway_response_message' => $result['errorMessage'] ?? $result['actionCodeDescription'] ?? null,
+            'gateway_bool' => ($result['errorCode'] ?? 1) == 0 ? 'true' : 'false',
+            'confirmation_response' => $result,
+            'status' => $this->determineFinalStatus($result)
+        ];
 
-        switch ($result['errorCode'] ?? null) {
-            case 0:
-                $updateData['status'] = $this->determineFinalStatus($result);
-                break;
-            case 2:
-                $updateData['status'] = 'already_confirmed';
-                break;
-            default:
-                $updateData['status'] = 'failed';
+        if (isset($result['amount'])) {
+            $updateData['price'] = $result['amount'] / 100;
         }
 
         $transaction->update($updateData);
@@ -129,9 +136,11 @@ class PaymentService
 
     protected function determineFinalStatus(array $result): string
     {
-        if (($result['actionCode'] ?? 1) === 0 && ($result['OrderStatus'] ?? 0) === 2) {
-            return 'completed';
-        }
-        return 'requires_verification';
+        return match ($result['errorCode'] ?? null) {
+            0 => 'completed',
+            2 => 'already_confirmed',
+            6 => 'order_not_found',
+            default => 'failed'
+        };
     }
 }
