@@ -62,6 +62,8 @@ class OnlinePaymentService
 
             $result = $response->json();
 
+            dd($result);
+
             Log::debug('SATIM Payment Response', $result);
 
             if ($response->successful() && isset($result['errorCode']) && $result['errorCode'] == 0) {
