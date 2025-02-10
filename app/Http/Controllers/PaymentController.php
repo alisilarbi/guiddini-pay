@@ -59,6 +59,8 @@ class PaymentController extends Controller
             );
 
             if ($result['status'] === 'success') {
+
+                dd($result);
                 return view('payment.success', [
                     'transaction' => $result['transaction'],
                     'response' => $result['gateway_response']
