@@ -32,10 +32,16 @@ class PaymentController extends Controller
                 $request->header('X-App-Key')
             );
 
-            dd($result); // Debug output
 
-            // Only reached if dd is removed
-            return response()->json($result);
+            if ($result['gateway_response']['errorCode'] == 0) {
+                dd($result);
+
+                return redirect()->away($result['gateway_response']['formUrl']);
+            }
+
+            return back()->withErrors([
+                'payment' => $result['gateway_response']['errorMessage'] ?? 'Payment initiation failed'
+            ]);
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors());
         } catch (\Exception $e) {
@@ -46,32 +52,37 @@ class PaymentController extends Controller
 
     public function confirm(Request $request, $clientOrderId)
     {
+
+        dd($request->all());
         try {
             $result = $this->paymentService->confirmPayment(
                 $clientOrderId,
                 $request->header('X-App-Key')
             );
 
-            dd($result); // Debug output
+            if ($result['status'] === 'success') {
 
-            return response()->json($result);
+                dd($result);
+                return view('payment.success', [
+                    'transaction' => $result['transaction'],
+                    'response' => $result['gateway_response']
+                ]);
+            }
+
+            return redirect()->route('payment.failed', $clientOrderId)
+                ->withErrors(['confirm' => $result['message'] ?? 'Confirmation failed']);
         } catch (\Exception $e) {
-            dd([
-                'error' => $e->getMessage(),
-                'trace' => $e->getTrace()
-            ]);
+            report($e);
+            return redirect()->route('payment.failed', $clientOrderId)
+                ->withErrors(['confirm' => 'Payment confirmation error']);
         }
     }
 
     public function failed($clientOrderId)
     {
-        $transaction = Transaction::with('application')
-            ->where('client_order_id', $clientOrderId)
-            ->first();
+        $transaction = Transaction::where('client_order_id', $clientOrderId)->first();
 
-        dd([
-            'transaction' => $transaction,
-            'gateway_data' => $transaction?->confirmation_response
-        ]);
+        dd($transaction);
+        return view('payment.failed', compact('transaction'));
     }
 }
