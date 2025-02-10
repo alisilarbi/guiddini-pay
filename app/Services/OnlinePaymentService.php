@@ -45,13 +45,12 @@ class OnlinePaymentService
             'amount' => $request->price * 100,
             'currency' => '012',
             'returnUrl' => route('payment.confirm', ['order_id' => $transaction->id]),
-            'failUrl' => route('payment.failed', ['order_id' => $transaction->id]),
+            'failUrl' => route('payment.failed', ['order_id' => $transaction->client_order_id]),
             'language' => 'EN', //
             'jsonParams' => json_encode([
                 "force_terminal_id" => $credentials['terminal_id'],
                 "udf1" => $transaction->client_order_id,
                 "udf5" => "00",
-                "udf2" => $transaction->client_order_id,
             ])
         ];
 
