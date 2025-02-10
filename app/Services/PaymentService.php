@@ -43,8 +43,7 @@ class PaymentService
 
     protected function generateClientOrderId(): int
     {
-        return Transaction::withTrashed()
-            ->lockForUpdate()
+        return Transaction::lockForUpdate()
             ->max('client_order_id') + 1 ?? $this->orderIdStart;
     }
 
