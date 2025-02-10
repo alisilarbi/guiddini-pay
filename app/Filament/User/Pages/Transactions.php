@@ -43,6 +43,21 @@ class Transactions extends Page implements HasForms, HasTable
                 TextColumn::make('phone')
                     ->label('Téléphone'),
 
+                TextColumn::make('client_order_id'),
+
+                TextColumn::make('gateway_order_id'),
+
+                TextColumn::make('gateway_bool'),
+
+                TextColumn::make('gateway_response_message'),
+
+                TextColumn::make('gateway_error_code'),
+
+                TextColumn::make('gateway_code'),
+
+                TextColumn::make('gateway_code'),
+
+
             ])
             ->filters([
             ])
