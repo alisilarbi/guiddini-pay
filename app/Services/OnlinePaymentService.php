@@ -29,6 +29,7 @@ class OnlinePaymentService
         ]);
 
         $paymentGatewayUrl = "https://test.satim.dz/payment/rest/register.do";
+
         $username = 'SAT2405190928';
         $password = 'satim120';
 
@@ -55,7 +56,6 @@ class OnlinePaymentService
         ]);
 
         $result = $response->json();
-
 
         return $result;
 
