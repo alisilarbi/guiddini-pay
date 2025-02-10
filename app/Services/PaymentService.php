@@ -49,6 +49,7 @@ class PaymentService
 
     protected function callPaymentGateway(Transaction $transaction, Application $application): array
     {
+        dd('hehe');
         $params = [
             'userName' => $application->username,
             'password' => $application->password,
@@ -68,7 +69,6 @@ class PaymentService
 
         $response = Http::timeout(30)->get($this->gatewayUrl . 'register.do', $params);
 
-        dd($response);
 
         if ($response->successful()) {
             $transaction->update([
