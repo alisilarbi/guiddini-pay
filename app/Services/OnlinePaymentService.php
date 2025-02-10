@@ -61,7 +61,6 @@ class OnlinePaymentService
                 ->get($gatewayUrl, $fullParams);
 
             $result = $response->json();
-            dd($result);
 
             Log::debug('SATIM Payment Response', $result);
 
