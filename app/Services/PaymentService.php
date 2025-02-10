@@ -113,6 +113,8 @@ class PaymentService
 
     protected function updateInitialTransaction(Transaction $transaction, array $response): void
     {
+
+        dd($response);
         $updateData = [
             'gateway_order_id' => $response['orderId'] ?? null,
             'gateway_code' => $response['errorCode'] ?? null,
