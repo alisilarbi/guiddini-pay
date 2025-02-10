@@ -14,6 +14,7 @@ class Transaction extends Model
         'price',
         'name',
         'email',
-        'phone'
+        'phone',
+        'client_order_id'
     ];
 }

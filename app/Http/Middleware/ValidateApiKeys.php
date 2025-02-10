@@ -26,8 +26,6 @@ class ValidateApiKeys
         $appKey = $request->header('x-app-key');
         $secretKey = $request->header('x-secret-key');
 
-        $application = Application::where('app_key', $appKey)->first();
-
         if (!$appKey || !$secretKey || !$this->isValidKeys($appKey, $secretKey)) {
             return response()->json(['error' => 'Invalid API keys'], 401);
         }
