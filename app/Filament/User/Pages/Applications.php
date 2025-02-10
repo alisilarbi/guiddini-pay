@@ -117,4 +117,5 @@ class Applications extends Page implements HasForms, HasTable
                 // ...
             ]);
     }
+
 }
