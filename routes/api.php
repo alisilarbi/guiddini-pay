@@ -10,5 +10,5 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::prefix('payment')->group(function () {
-    Route::post('/initiate', [PaymentController::class, 'initiate'])->name('payment.initiate');
-})->middleware('validate_api_keys');
+    Route::post('/initiate', [PaymentController::class, 'initiate'])->name('payment.initiate')->middleware('validate_api_keys');
+});
