@@ -102,4 +102,9 @@ class OnlinePaymentService
 
         return view('payment.confirmation');
     }
+
+    public function failed(Request $request)
+    {
+        dd($request);
+    }
 }
