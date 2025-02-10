@@ -42,8 +42,7 @@ class OnlinePaymentService
             "orderNumber" => $orderId,
             "udf1" => $orderId,
             "udf5" => "00",
-            "force_terminal_id" => "E010901161ss"
-            // "force_terminal_id" => "HEHEHEHE",
+            "force_terminal_id" => "E010901161"
         ]);
 
 
