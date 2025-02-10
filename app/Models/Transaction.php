@@ -15,6 +15,22 @@ class Transaction extends Model
         'name',
         'email',
         'phone',
-        'client_order_id'
+        'status',
+
+        'client_order_id',
+        'gateway_order_id',
+        'gateway_bool',
+        'gateway_response_message',
+        'gateway_error_code',
+        'gateway_code',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($transaction) {
+            $transaction->status = 'Processing';
+        });
+    }
 }

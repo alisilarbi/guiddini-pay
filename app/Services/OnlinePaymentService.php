@@ -22,7 +22,7 @@ class OnlinePaymentService
         ]);
 
 
-        $maxOrderId = Transaction::max('client_order_id') ? Transaction::max('client_order_id') + 1 : 562000;
+        $maxOrderId = Transaction::max('client_order_id') ? Transaction::max('client_order_id') + 1 : 582000;
         $transaction = Transaction::create([
             'pack_name' => $request->pack_name,
             'price' => $request->price,
@@ -37,7 +37,7 @@ class OnlinePaymentService
         $credentials = [
             'userName' => $application->username,
             'password' => $application->password,
-            'terminal_id' => $application->terminal,
+            // 'terminal_id' => $application->terminal,
         ];
 
         $params = [
@@ -61,10 +61,8 @@ class OnlinePaymentService
                 ->get($gatewayUrl, $fullParams);
             $result = $response->json();
 
-            dd($result);
 
-            Log::debug('SATIM Payment Response', $result);
-
+            // Log::debug('SATIM Payment Response', $result);
             if ($response->successful() && isset($result['errorCode']) && $result['errorCode'] == 0) {
                 return redirect()->away($result['formUrl']);
             }
@@ -75,6 +73,7 @@ class OnlinePaymentService
 
             Log::error('Payment Gateway Error: ' . $e->getMessage());
             return back()->withErrors(['payment' => 'Connection to payment gateway failed']);
+
         }
     }
 
