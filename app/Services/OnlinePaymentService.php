@@ -37,12 +37,12 @@ class OnlinePaymentService
         $orderId = $transaction->client_order_id;
 
         $returnUrl = route('confirm') . '?orderNumber=' . $orderId . '&bool=0';
-
         $jsonParams = json_encode([
             "orderNumber" => $orderId,
             "udf1" => $orderId,
             "udf5" => "00",
-            "force_terminal_id" => "E010901161"
+            // "force_terminal_id" => "E010901161"
+            "force_terminal_id" => "HEHEHEHE",
         ]);
 
         $response = Http::timeout(60)
@@ -68,7 +68,13 @@ class OnlinePaymentService
             $errorMessage = $result['errorMessage'] ?? 'Unknown error';
             return redirect("https://efawtara.com/?MessageReturn=" . urlencode($errorMessage));
         }
+
+
+
+
     }
+
+
     // public function execute(Request $request)
     // {
     //     $request->validate([
