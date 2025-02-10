@@ -57,7 +57,7 @@ class PaymentService
             'amount' => $transaction->price * 100,
             'currency' => '012',
             'returnUrl' => route('payment.confirm', $transaction->client_order_id),
-            'failUrl' => route('payment.failed', $transaction->client_order_id),
+            // 'failUrl' => route('payment.failed', $transaction->client_order_id),
             'language' => 'EN',
             'jsonParams' => json_encode([
                 "force_terminal_id" => $application->terminal,
@@ -80,7 +80,6 @@ class PaymentService
 
     public function confirmPayment(string $clientOrderId, string $appKey): array
     {
-        dd('hehehe');
         $transaction = Transaction::where('client_order_id', $clientOrderId)
             ->with('application')
             ->firstOrFail();
