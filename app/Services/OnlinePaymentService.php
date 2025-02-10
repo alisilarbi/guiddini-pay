@@ -37,7 +37,7 @@ class OnlinePaymentService
         $credentials = [
             'userName' => $application->username,
             'password' => $application->password,
-            // 'terminal_id' => $application->terminal,
+            'terminal_id' => $application->terminal,
         ];
 
         $params = [
