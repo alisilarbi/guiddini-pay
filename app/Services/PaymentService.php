@@ -75,7 +75,7 @@ class PaymentService
                 'status' => $response->json('errorCode') == 0 ? 'pending_confirmation' : 'gateway_error'
             ]);
 
-            dd('hehe');
+            dd($response);
         }
 
         return $response->json();
