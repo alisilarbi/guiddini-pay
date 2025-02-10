@@ -61,6 +61,7 @@ class OnlinePaymentService
                 ->post($gatewayUrl, $fullParams);
 
             $result = $response->json();
+            dd($result);
 
             Log::debug('SATIM Payment Response', $result);
 
@@ -71,6 +72,8 @@ class OnlinePaymentService
             $errorMessage = $result['errorMessage'] ?? 'Unknown payment gateway error';
             return back()->withErrors(['payment' => $errorMessage]);
         } catch (\Exception $e) {
+
+            dd($e->getMessage());
             Log::error('Payment Gateway Error: ' . $e->getMessage());
             return back()->withErrors(['payment' => 'Connection to payment gateway failed']);
         }
