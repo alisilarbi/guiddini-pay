@@ -72,7 +72,6 @@ class OnlinePaymentService
             return back()->withErrors(['payment' => $errorMessage]);
         } catch (\Exception $e) {
 
-            dd($e->getMessage());
             Log::error('Payment Gateway Error: ' . $e->getMessage());
             return back()->withErrors(['payment' => 'Connection to payment gateway failed']);
         }
@@ -82,6 +81,8 @@ class OnlinePaymentService
     public function confirm(Request $request)
     {
         $orderId = $request->input('orderId');
+
+        dd($orderId);
 
         // Verify payment status
         $verificationResponse = Http::get('https://test.satim.dz/payment/rest/confirmOrder.do', [
