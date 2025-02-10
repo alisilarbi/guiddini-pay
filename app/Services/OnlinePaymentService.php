@@ -50,7 +50,8 @@ class OnlinePaymentService
             'jsonParams' => json_encode([
                 "force_terminal_id" => $credentials['terminal_id'],
                 "udf1" => $transaction->client_order_id,
-                "udf5" => "00"
+                "udf5" => "00",
+                "udf2" => $transaction->client_order_id,
             ])
         ];
 
