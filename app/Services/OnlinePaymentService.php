@@ -45,7 +45,7 @@ class OnlinePaymentService
             'amount' => $request->price * 100,
             'currency' => '012',
             'returnUrl' => route('payment.confirm', ['order_id' => $transaction->id]),
-            'failUrl' => route('payment.failed'),
+            'failUrl' => route('payment.failed', ['order_id' => $transaction->id]),
             'language' => 'EN', //
             'jsonParams' => json_encode([
                 "force_terminal_id" => $credentials['terminal_id'],
@@ -79,6 +79,11 @@ class OnlinePaymentService
         }
     }
 
+    public function failed(Request $request)
+    {
+        dd($request->all());
+    }
+
     // Payment confirmation handler
     public function confirm(Request $request)
     {
@@ -102,10 +107,5 @@ class OnlinePaymentService
         }
 
         return view('payment.confirmation');
-    }
-
-    public function failed(Request $request)
-    {
-        dd($request->all());
     }
 }
