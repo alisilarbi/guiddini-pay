@@ -59,7 +59,6 @@ class OnlinePaymentService
         try {
             $response = Http::timeout(30)
                 ->get($gatewayUrl, $fullParams);
-
             $result = $response->json();
 
             dd($result);
