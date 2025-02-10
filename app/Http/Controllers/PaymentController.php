@@ -58,9 +58,10 @@ class PaymentController extends Controller
                 $request->header('X-App-Key')
             );
 
+            dd($result);
+
             if ($result['status'] === 'success') {
 
-                dd($result);
                 return view('payment.success', [
                     'transaction' => $result['transaction'],
                     'response' => $result['gateway_response']
