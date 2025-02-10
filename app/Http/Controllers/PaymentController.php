@@ -18,6 +18,7 @@ class PaymentController extends Controller
 
     public function initiate(Request $request)
     {
+        dd('hehe');
         try {
             $validated = $request->validate([
                 'pack_name' => 'required|string|max:255',
@@ -32,7 +33,7 @@ class PaymentController extends Controller
                 $request->header('X-App-Key')
             );
 
-            dd($result);
+
 
             if ($result['gateway_response']['errorCode'] == 0) {
 
