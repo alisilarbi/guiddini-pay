@@ -20,10 +20,7 @@ class PaymentService
 
             $transaction = $this->createTransaction($data, $application);
             $response = $this->callPaymentGateway($transaction, $application);
-            dd([
-                'transaction' => $transaction,
-                'gateway_response' => $response,
-            ]);
+
             return [
                 'transaction' => $transaction,
                 'gateway_response' => $response,
@@ -70,6 +67,8 @@ class PaymentService
         ];
 
         $response = Http::timeout(30)->get($this->gatewayUrl . 'register.do', $params);
+
+        dd($response);
 
         if ($response->successful()) {
             $transaction->update([
