@@ -116,11 +116,7 @@ class PaymentService
             'result' => $result,
             'transaction' => $transaction,
         ]);
-
-
         // $updateData = ['confirmation_response' => $result];
-
-
 
         $updateData = [
             'confirmation_response' => $result,
