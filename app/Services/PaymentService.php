@@ -81,12 +81,9 @@ class PaymentService
 
     public function confirmPayment(string $clientOrderId, string $appKey = null): array
     {
-
-
         $transaction = Transaction::where('client_order_id', $clientOrderId)
             ->with('application')
             ->first();
-
 
         $params = [
             'userName' => $transaction->application->username,
@@ -99,7 +96,7 @@ class PaymentService
             $response = Http::timeout(30)->get($this->gatewayUrl . 'confirmOrder.do', $params);
             $result = $response->json();
 
-            // dd($result);
+            dd($result);
             $this->updateTransactionStatus($transaction, $result);
 
             return [
