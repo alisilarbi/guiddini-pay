@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 class PaymentService
 {
     protected string $gatewayUrl = 'https://test.satim.dz/payment/rest/';
-    protected int $orderIdStart = 615000;
+    protected int $orderIdStart = 617000;
 
     public function initiatePayment(array $data, string $appKey): array
     {
