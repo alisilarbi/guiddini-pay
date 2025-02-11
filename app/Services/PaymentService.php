@@ -126,13 +126,13 @@ class PaymentService
 
         switch ((string) $errorCode) {
             case '0':
-                $updateData['status'] = $this->determineFinalStatus($result);
+                $updateData['gateway_confirmation_status'] = $this->determineFinalStatus($result);
                 break;
             case '2':
-                $updateData['status'] = 'already_confirmed';
+                $updateData['gateway_confirmation_status'] = 'already_confirmed';
                 break;
             default:
-                $updateData['status'] = 'failed';
+                $updateData['gateway_confirmation_status'] = 'failed';
         }
 
         $transaction->update($updateData);
