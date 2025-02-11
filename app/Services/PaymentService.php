@@ -122,6 +122,7 @@ class PaymentService
             'price' => $result['Amount'] / 100 ?? null,
             'currency' => $result['currency'] ?? null,
         ];
+        dd($updateData);
 
         switch ($result['errorCode'] ?? null) {
             case 0:
@@ -136,7 +137,6 @@ class PaymentService
 
         $transaction->update($updateData);
 
-        dd($transaction);
     }
 
     protected function determineFinalStatus(array $result): string
