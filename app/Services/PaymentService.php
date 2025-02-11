@@ -78,7 +78,7 @@ class PaymentService
         return $response->json();
     }
 
-    public function confirmPayment(string $clientOrderId, string $appKey): array
+    public function confirmPayment(string $clientOrderId, string $appKey = null): array
     {
         $transaction = Transaction::where('client_order_id', $clientOrderId)
             ->with('application')
@@ -86,6 +86,9 @@ class PaymentService
 
         dd('hehe');
         dd($transaction);
+
+
+
 
         $params = [
             'userName' => $transaction->application->username,
