@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Application;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
@@ -32,5 +33,10 @@ class Transaction extends Model
         static::creating(function ($transaction) {
             $transaction->status = 'Processing';
         });
+    }
+
+    public function transaction()
+    {
+        return $this->belongsTo(Application::class);
     }
 }
