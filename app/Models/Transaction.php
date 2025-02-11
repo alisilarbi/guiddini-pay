@@ -23,6 +23,7 @@ class Transaction extends Model
         'gateway_order_id',
         'gateway_bool',
         'gateway_response_message',
+        'gateway_confirmation_status',
         'gateway_error_code',
         'gateway_code',
     ];
