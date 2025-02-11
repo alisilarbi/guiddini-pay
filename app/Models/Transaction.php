@@ -17,6 +17,7 @@ class Transaction extends Model
         'email',
         'phone',
         'status',
+        'application_id',
 
         'client_order_id',
         'gateway_order_id',

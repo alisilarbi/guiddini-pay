@@ -38,6 +38,7 @@ class PaymentService
             'phone' => $data['phone'],
             'client_order_id' => $this->generateClientOrderId(),
             'status' => 'initiated',
+            'application_id' => $application->id,
         ]);
     }
 
