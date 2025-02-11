@@ -85,7 +85,6 @@ class PaymentController extends Controller
 
             $result = $this->paymentService->confirmPayment(
                 $clientOrderId,
-                // $request->header('X-App-Key')
             );
 
             dd($result);

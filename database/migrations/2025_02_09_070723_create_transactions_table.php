@@ -27,7 +27,7 @@ return new class extends Migration
 
             $table->string('client_order_id')->nullable();
             $table->string('gateway_order_id')->nullable();
-            $table->string('gateway_bool')->nullable();
+            $table->string('gateway_confirmation_status')->nullable();
             $table->string('gateway_response_message')->nullable();
             $table->string('gateway_error_code')->nullable();
             $table->string('gateway_code')->nullable();

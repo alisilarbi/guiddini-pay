@@ -79,7 +79,7 @@ class PaymentService
         return $response->json();
     }
 
-    public function confirmPayment(string $clientOrderId, string $appKey = null): array
+    public function confirmPayment(string $clientOrderId): array
     {
         $transaction = Transaction::where('client_order_id', $clientOrderId)
             ->with('application')
