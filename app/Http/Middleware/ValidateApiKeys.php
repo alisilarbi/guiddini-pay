@@ -30,7 +30,7 @@ class ValidateApiKeys
             return response()->json(['error' => 'Invalid API keys'], 401);
         }
 
-        return $next($request);
+        // return $next($request);
     }
 
     private function isValidKeys($appKey, $secretKey): bool
