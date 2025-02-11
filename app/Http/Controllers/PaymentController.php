@@ -83,6 +83,7 @@ class PaymentController extends Controller
         // $transaction = Transaction::where('client_order_id', $clientOrderId)->first();
         // return view('payment.failed', compact('transaction'));
 
+        dd($request->header('X-App-Key'));
 
         try {
             $result = $this->paymentService->confirmPayment(
