@@ -123,7 +123,6 @@ class PaymentService
             'price' => $result['Amount'] / 100 ?? null,
             'currency' => $result['currency'] ?? null,
         ];
-        dd($updateData);
 
         switch ((string) $errorCode) {
             case '0':
