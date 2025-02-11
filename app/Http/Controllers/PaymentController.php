@@ -32,7 +32,7 @@ class PaymentController extends Controller
                 $request->header('X-App-Key')
             );
 
-            dd('ehe');
+            dd('haha');
 
             if ($result['gateway_response']['errorCode'] == 0) {
                 dd($result);
