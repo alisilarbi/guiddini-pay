@@ -57,7 +57,9 @@ class PaymentController extends Controller
                 $request->header('X-App-Key')
             );
 
-            dd($result);
+
+
+            dd('hehe');
 
             if ($result['status'] === 'success') {
 
