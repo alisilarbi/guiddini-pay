@@ -80,11 +80,13 @@ class PaymentService
 
     public function confirmPayment(string $clientOrderId, string $appKey = null): array
     {
+
+        dd('hehe');
+
         $transaction = Transaction::where('client_order_id', $clientOrderId)
             ->with('application')
             ->first();
 
-        dd('hehe');
         dd($transaction);
 
 
