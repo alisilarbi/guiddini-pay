@@ -31,7 +31,6 @@ class PaymentController extends Controller
                 $validated,
                 $request->header('X-App-Key')
             );
-            dd('jejee');
 
             if ($result['gateway_response']['errorCode'] == 0) {
                 dd($result);
