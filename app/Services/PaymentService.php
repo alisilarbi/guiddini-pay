@@ -99,7 +99,7 @@ class PaymentService
             $response = Http::timeout(30)->get($this->gatewayUrl . 'confirmOrder.do', $params);
             $result = $response->json();
 
-            dd($result);
+            // dd($result);
             $this->updateTransactionStatus($transaction, $result);
 
             return [
@@ -129,6 +129,8 @@ class PaymentService
         }
 
         $transaction->update($updateData);
+
+        dd($transaction);
     }
 
     protected function determineFinalStatus(array $result): string
