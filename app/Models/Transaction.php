@@ -12,7 +12,7 @@ class Transaction extends Model
 
     protected $fillable = [
         'pack_name',
-        'amount',
+        'price',
         'name',
         'email',
         'phone',
