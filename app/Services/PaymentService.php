@@ -58,8 +58,8 @@ class PaymentService
             'amount' => $transaction->price * 100,
             'currency' => '012',
             'returnUrl' => route('payment.confirm', $transaction->client_order_id, $application->app_key),
-            // 'failUrl' => route('payment.failed', $transaction->client_order_id),
-            'language' => 'EN',
+            'failUrl' => route('payment.failed', $transaction->client_order_id),
+            'language' => 'FR',
             'jsonParams' => json_encode([
                 "force_terminal_id" => $application->terminal,
                 "udf1" => $transaction->client_order_id,
@@ -89,7 +89,7 @@ class PaymentService
             'userName' => $transaction->application->username,
             'password' => $transaction->application->password,
             'orderId' => $transaction->gateway_order_id,
-            'language' => 'EN',
+            'language' => 'FR',
         ];
 
         try {
