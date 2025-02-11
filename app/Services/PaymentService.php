@@ -112,6 +112,7 @@ class PaymentService
 
     protected function updateTransactionStatus(Transaction $transaction, array $result): void
     {
+        $errorCode = $result['ErrorCode'] ?? null;
         $updateData = [
             'confirmation_response' => $result,
             'gateway_order_id' => $result['OrderNumber'] ?? null,
@@ -124,11 +125,11 @@ class PaymentService
         ];
         dd($updateData);
 
-        switch ($result['errorCode'] ?? null) {
-            case 0:
+        switch ((string) $errorCode) {
+            case '0':
                 $updateData['status'] = $this->determineFinalStatus($result);
                 break;
-            case 2:
+            case '2':
                 $updateData['status'] = 'already_confirmed';
                 break;
             default:
@@ -136,7 +137,6 @@ class PaymentService
         }
 
         $transaction->update($updateData);
-
     }
 
     protected function determineFinalStatus(array $result): string
@@ -146,4 +146,6 @@ class PaymentService
         }
         return 'requires_verification';
     }
+
+
 }
