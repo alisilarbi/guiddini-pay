@@ -114,9 +114,6 @@ class PaymentService
 
     protected function updateTransactionStatus(Transaction $transaction, array $result): void
     {
-
-
-
         $updateData = [
             'confirmation_response' => $result,
             'gateway_order_id' => $result['OrderNumber'] ?? null,
