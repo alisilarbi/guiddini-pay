@@ -59,7 +59,7 @@ class PaymentController extends Controller
                 $request->header('X-App-Key')
             );
 
-            dd('hehe');
+            dd($result);
 
             if ($result['status'] === 'success') {
 
@@ -87,14 +87,6 @@ class PaymentController extends Controller
             );
 
             dd($result);
-
-            if ($result['status'] === 'success') {
-
-                return view('payment.success', [
-                    'transaction' => $result['transaction'],
-                    'response' => $result['gateway_response']
-                ]);
-            }
 
             return redirect()->route('payment.failed', $clientOrderId)
                 ->withErrors(['confirm' => $result['message'] ?? 'Confirmation failed']);
