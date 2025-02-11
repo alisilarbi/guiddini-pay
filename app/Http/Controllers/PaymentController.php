@@ -32,8 +32,10 @@ class PaymentController extends Controller
                 $request->header('X-App-Key')
             );
 
+            dd($result);
+
             if ($result['gateway_response']['errorCode'] == 0) {
-                return $result;
+
 
                 return redirect()->away($result['gateway_response']['formUrl']);
             }
