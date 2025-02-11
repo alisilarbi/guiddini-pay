@@ -87,12 +87,6 @@ class PaymentService
             ->with('application')
             ->first();
 
-        // $applicatin = Application::where('')
-
-        dd($transaction);
-
-
-
 
         $params = [
             'userName' => $transaction->application->username,
@@ -104,6 +98,8 @@ class PaymentService
         try {
             $response = Http::timeout(30)->get($this->gatewayUrl . 'confirmOrder.do', $params);
             $result = $response->json();
+
+            dd($result);
             $this->updateTransactionStatus($transaction, $result);
 
             return [
