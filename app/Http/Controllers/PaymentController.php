@@ -83,7 +83,9 @@ class PaymentController extends Controller
         // $transaction = Transaction::where('client_order_id', $clientOrderId)->first();
         // return view('payment.failed', compact('transaction'));
 
-        dd($request->all());
+
+        dd($clientOrderId);
+
 
         try {
 
