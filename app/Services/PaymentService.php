@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 class PaymentService
 {
     protected string $gatewayUrl = 'https://test.satim.dz/payment/rest/';
-    protected int $orderIdStart = 592000;
+    protected int $orderIdStart = 602000;
 
     public function initiatePayment(array $data, string $appKey): array
     {
@@ -85,6 +85,8 @@ class PaymentService
         $transaction = Transaction::where('client_order_id', $clientOrderId)
             // ->with('application')
             ->first();
+
+        // $applicatin = Application::where('')
 
         dd($transaction);
 
