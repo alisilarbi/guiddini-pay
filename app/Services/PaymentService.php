@@ -124,12 +124,9 @@ class PaymentService
             'gateway_response_message' => $result['actionCodeDescription'] ?? null,
             'gateway_error_code' => $result['ErrorCode'] ?? null,
             'gateway_code' => $result['authCode'] ?? null,
-            'amount' => $result['Amount'] ?? null,
+            'price' => $result['Amount'] / 100 ?? null,
             'currency' => $result['currency'] ?? null,
         ];
-
-        dd($updateData);
-
 
         switch ($result['errorCode'] ?? null) {
             case 0:
