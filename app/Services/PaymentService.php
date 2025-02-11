@@ -83,7 +83,7 @@ class PaymentService
 
 
         $transaction = Transaction::where('client_order_id', $clientOrderId)
-            ->with('application')
+            // ->with('application')
             ->first();
 
         dd($transaction);
