@@ -36,7 +36,7 @@ class Transaction extends Model
         });
     }
 
-    public function transaction()
+    public function application()
     {
         return $this->belongsTo(Application::class);
     }
