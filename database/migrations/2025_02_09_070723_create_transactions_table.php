@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->uuid('id')->primary();
 
-            $table->uuid('application_name');
-            $table->foreign('application_name')->references('id')->on('applications');
+            $table->uuid('application_id');
+            $table->foreign('application_id')->references('id')->on('applications');
 
             $table->string('pack_name');
             $table->double('price', 10, 2);
