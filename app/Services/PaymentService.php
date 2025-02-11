@@ -112,13 +112,15 @@ class PaymentService
 
     protected function updateTransactionStatus(Transaction $transaction, array $result): void
     {
-        dd([
-            'result' => $result,
-            'transaction' => $transaction,
-        ]);
+        // dd([
+        //     'result' => $result,
+        //     'transaction' => $transaction,
+        // ]);
 
 
         $updateData = ['confirmation_response' => $result];
+
+        dd($updateData);
 
         switch ($result['errorCode'] ?? null) {
             case 0:
