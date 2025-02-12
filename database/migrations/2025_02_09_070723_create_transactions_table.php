@@ -17,20 +17,19 @@ return new class extends Migration
             $table->uuid('application_id');
             $table->foreign('application_id')->references('id')->on('applications');
 
-            $table->string('pack_name');
-            $table->double('price', 10, 2);
-            $table->string('name')->nullable();
-            $table->string('email')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('status')->nullable();
-
+            $table->string('status')->default('pending');
+            $table->string('amount', 10, 2);
 
             $table->string('client_order_id')->nullable();
+
             $table->string('gateway_order_id')->nullable();
             $table->string('gateway_confirmation_status')->nullable();
             $table->string('gateway_response_message')->nullable();
             $table->string('gateway_error_code')->nullable();
             $table->string('gateway_code')->nullable();
+
+            $table->timestamp('paid_at')->nullable();
+            $table->timestamp('refunded_at')->nullable();
 
             $table->timestamps();
         });

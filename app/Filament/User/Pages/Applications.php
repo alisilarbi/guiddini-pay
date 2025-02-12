@@ -9,13 +9,26 @@ use Filament\Tables\Table;
 
 use App\Models\Application;
 use Illuminate\Support\Str;
+use Illuminate\Support\HtmlString;
+use Filament\Forms\Components\Grid;
 use Filament\Tables\Actions\Action;
 use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Wizard;
+use Illuminate\Support\Facades\Blade;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
+use Illuminate\Support\Facades\Storage;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Columns\ToggleColumn;
+use Filament\Forms\Components\Wizard\Step;
+use Filament\Infolists\Components\Fieldset;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ImageEntry;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
@@ -31,20 +44,20 @@ class Applications extends Page implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(Application::query())
+            ->query(Application::query()->with(['info', 'user']))
             ->columns([
-                TextColumn::make('name'),
+                TextColumn::make('info.name')
+                    ->label('App name'),
 
-                TextColumn::make('app_key')
-                    ->copyable()
-                    ->copyMessage('API Key copied'),
+                TextColumn::make('info.support_email')
+                    ->label('App email'),
+
+                TextColumn::make('user.name')
+                    ->label('Username'),
 
                 TextColumn::make('updated_at')
                     ->dateTime(),
 
-                TextColumn::make('username'),
-                TextColumn::make('password'),
-                TextColumn::make('terminal'),
 
             ])
             ->filters([
@@ -52,70 +65,135 @@ class Applications extends Page implements HasForms, HasTable
             ])
             ->actions([
                 ViewAction::make('view')
-                    ->form([
-                        TextInput::make('name')
-                            ->disabled(),
+                    ->infolist([
+                        Fieldset::make('General Information')
+                            ->schema([
+                                TextEntry::make('info.name')
+                                    ->label('Name'),
 
-                        TextInput::make('app_key')
-                            ->disabled(),
+                                TextEntry::make('info.support_email')
+                                    ->label('Email'),
 
-                        TextInput::make('secret_key')
-                            ->disabled(),
+                                TextEntry::make('info.industries')
+                                    ->label('Industries'),
 
-                        TextInput::make('username')
-                            ->disabled(),
+                                // TextEntry::make('info.logo')
+                                //     ->label('Logo'),
 
-                        TextInput::make('password')
-                            ->disabled(),
+                                TextEntry::make('info.privacy_policy_url')
+                                    ->label('Privacy Policy URL'),
 
-                        TextInput::make('terminal')
-                            ->disabled()
+                                TextEntry::make('info.terms_of_service_url')
+                                    ->label('Terms of Service URL'),
+                            ]),
+
+                        Fieldset::make('Gateway Information')
+                            ->schema([
+
+                                TextEntry::make('app_key')
+                                    ->label('App Key'),
+
+                                TextEntry::make('app_secret')
+                                    ->label('App Secret'),
+
+                                TextEntry::make('website_url')
+                                    ->label('Website URL'),
+
+                                TextEntry::make('success_redirect_url')
+                                    ->label('Success Redirect URL'),
+
+                                TextEntry::make('fail_redirect_url')
+                                    ->label('Fail Redirect URL'),
+
+                            ]),
                     ])
-
             ])
+
             ->headerActions([
                 Action::make('create')
-                    ->form([
-                        TextInput::make('name')
-                            ->required(),
+                    ->steps([
 
-                        TextInput::make('username')
-                            ->required(),
+                        Step::make('Information Général')
+                            ->schema([
 
-                        TextInput::make('password')
-                            ->required(),
+                                Grid::make(2)
+                                    ->schema([
+                                        TextInput::make('name')
+                                            ->required(),
 
-                        TextInput::make('terminal')
-                            ->required(),
+                                        TextInput::make('support_email')
+                                            ->required(),
+                                    ]),
 
-                        TextInput::make('app_key')
-                            ->readOnly()
-                            ->default(Str::random(40))
-                            ->required()
-                            ->maxLength(255),
+                                TagsInput::make('industries')
+                                    ->required(),
 
-                        TextInput::make('secret_key')
-                            ->password()
-                            ->readOnly()
-                            ->default(Str::random(40))
-                            ->maxLength(255),
+                                FileUpload::make('logo')
+                                    ->image(),
+
+
+
+                            ]),
+
+                        Step::make('Fonctionnement')
+                            ->schema([
+
+                                TextInput::make('website_url')
+                                    ->required(),
+
+                                TextInput::make('success_redirect_url')
+                                    ->required(),
+
+                                TextInput::make('fail_redirect_url')
+                                    ->required(),
+
+                                Grid::make(2)
+                                    ->schema([
+                                        TextInput::make('privacy_policy_url'),
+
+                                        TextInput::make('terms_of_service_url'),
+                                    ]),
+
+                            ]),
                     ])
                     ->action(function (array $data) {
 
-                        Application::create([
+                        //handle logo
+
+
+
+                        $application = Application::createWithInfo([
+                            'website_url' => $data['website_url'],
+                            'success_redirect_url' => $data['success_redirect_url'],
+                            'fail_redirect_url' => $data['fail_redirect_url'],
+                            'is_active' => true,
+                            'is_production' => false,
+
                             'name' => $data['name'],
-                            'username' => $data['username'],
-                            'password' => $data['password'],
-                            'terminal' => $data['terminal'],
-                            'app_key' => $data['app_key'],
-                            'secret_key' => $data['secret_key'],
-                            'user_id' => Auth::user()->id,
+                            'support_email' => $data['support_email'],
+                            'industries' => $data['industries'],
+                            'privacy_policy_url' => $data['privacy_policy_url'],
+                            'terms_of_service' => $data['terms_of_service_url'],
                         ]);
+
+                        if ($data['logo']) {
+                            $tempPath = Storage::disk('public')->path($data['logo']);
+                            $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
+                            $destination = 'applications/' . $application->id;
+
+                            Storage::disk('private')->putFileAs($destination, $tempPath, $newFileName);
+                            Storage::disk('public')->delete($tempPath);
+
+                            $path = $destination . '/' . $newFileName;
+
+                            $application->update([
+                                'logo' => $path,
+                            ]);
+                        }
                     })
             ])
             ->bulkActions([
                 // ...
             ]);
     }
-
 }

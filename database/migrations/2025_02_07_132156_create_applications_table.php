@@ -14,19 +14,26 @@ return new class extends Migration
         Schema::create('applications', function (Blueprint $table) {
             $table->uuid('id')->primary();
 
-            $table->string('name');
-            $table->text('app_key');
-            $table->text('secret_key');
-
-            $table->string('username');
-            $table->string('password');
-            $table->string('terminal');
-
             $table->uuid('user_id');
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
 
-            $table->timestamp('last_used_at')->nullable();
+            $table->text('app_key');
+            $table->text('app_secret');
+            $table->text('website_url');
+            $table->text('success_redirect_url');
+            $table->text('fail_redirect_url');
+            $table->boolean('is_active')->default(true);
+            $table->boolean('is_production')->default(false);
 
+            $table->string('satim_development_username');
+            $table->string('satim_development_password');
+            $table->string('satim_development_terminal');
+
+            $table->string('satim_production_username')->nullable();
+            $table->string('satim_production_password')->nullable();
+            $table->string('satim_production_terminal')->nullable();
+
+            $table->timestamp('last_used_at')->nullable();
             $table->timestamps();
         });
     }
