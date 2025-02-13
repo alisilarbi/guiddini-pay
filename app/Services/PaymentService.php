@@ -32,7 +32,7 @@ class PaymentService
     {
         return Transaction::create([
             // 'pack_name' => $data['pack_name'],
-            'price' => $data['price'],
+            'amount' => $data['amount'],
             // 'name' => $data['name'],
             // 'email' => $data['email'],
             // 'phone' => $data['phone'],
@@ -55,7 +55,7 @@ class PaymentService
             'password' => $application->password,
             'terminal_id' => $application->terminal,
             'orderNumber' => $transaction->client_order_id,
-            'amount' => $transaction->price * 100,
+            'amount' => $transaction->amount * 100,
             'currency' => '012',
             'returnUrl' => route('payment.confirm', $transaction->client_order_id, $application->app_key),
             'failUrl' => route('payment.failed', $transaction->client_order_id),
