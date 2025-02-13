@@ -36,7 +36,7 @@ class ValidateApiKeys
     private function isValidKeys($appKey, $secretKey): bool
     {
         return \App\Models\Application::where('app_key', $appKey)
-            ->where('secret_key', $secretKey)
+            ->where('app_secret', $secretKey)
             ->exists();
     }
 }
