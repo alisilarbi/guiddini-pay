@@ -18,6 +18,8 @@ class PaymentController extends Controller
 
     public function initiate(Request $request)
     {
+
+        dd($request->all());
         try {
             $validated = $request->validate([
                 'pack_name' => 'required|string|max:255',
