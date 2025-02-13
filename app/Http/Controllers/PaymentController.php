@@ -19,14 +19,13 @@ class PaymentController extends Controller
     public function initiate(Request $request)
     {
 
-        dd($request->all());
         try {
             $validated = $request->validate([
-                'pack_name' => 'required|string|max:255',
-                'price' => 'required|numeric|min:50',
-                'name' => 'required|string|max:255',
-                'email' => 'required|email',
-                'phone' => 'required|string|max:20',
+                // 'pack_name' => 'required|string|max:255',
+                // 'price' => 'required|numeric|min:50',
+                // 'name' => 'required|string|max:255',
+                // 'email' => 'required|email',
+                // 'phone' => 'required|string|max:20',
             ]);
 
             $result = $this->paymentService->initiatePayment(
