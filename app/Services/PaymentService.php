@@ -32,7 +32,7 @@ class PaymentService
     {
         return Transaction::create([
             // 'pack_name' => $data['pack_name'],
-            // 'price' => $data['price'],
+            'price' => $data['price'],
             // 'name' => $data['name'],
             // 'email' => $data['email'],
             // 'phone' => $data['phone'],
