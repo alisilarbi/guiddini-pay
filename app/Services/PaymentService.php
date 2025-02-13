@@ -63,6 +63,8 @@ class PaymentService
             ])
         ];
 
+        Log::info($params);
+
         $response = Http::timeout(30)->get($this->gatewayUrl . 'register.do', $params);
         // dd($response);
 
