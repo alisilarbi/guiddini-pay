@@ -31,11 +31,7 @@ class PaymentService
     protected function createTransaction(array $data, Application $application): Transaction
     {
         return Transaction::create([
-            // 'pack_name' => $data['pack_name'],
             'amount' => $data['amount'],
-            // 'name' => $data['name'],
-            // 'email' => $data['email'],
-            // 'phone' => $data['phone'],
             'client_order_id' => $this->generateClientOrderId(),
             'status' => 'initiated',
             'application_id' => $application->id,

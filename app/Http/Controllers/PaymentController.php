@@ -21,11 +21,8 @@ class PaymentController extends Controller
 
         try {
             $validated = $request->validate([
-                // 'pack_name' => 'required|string|max:255',
                 'amount' => 'required|numeric|min:50',
-                // 'name' => 'required|string|max:255',
-                // 'email' => 'required|email',
-                // 'phone' => 'required|string|max:20',
+                // 'client_order_id' => 'required|string|max:20',
             ]);
 
             $result = $this->paymentService->initiatePayment(
