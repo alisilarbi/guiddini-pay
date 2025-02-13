@@ -23,7 +23,6 @@ return new class extends Migration
             $table->text('success_redirect_url');
             $table->text('fail_redirect_url');
             $table->boolean('is_active')->default(true);
-            $table->boolean('is_production')->default(false);
 
             $table->string('satim_development_username');
             $table->string('satim_development_password');
@@ -32,6 +31,10 @@ return new class extends Migration
             $table->string('satim_production_username')->nullable();
             $table->string('satim_production_password')->nullable();
             $table->string('satim_production_terminal')->nullable();
+
+            // $table->string('environment')->default('development');
+            $table->boolean('is_production')->default(false);
+
 
             $table->timestamp('last_used_at')->nullable();
             $table->timestamps();

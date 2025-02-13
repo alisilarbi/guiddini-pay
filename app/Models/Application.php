@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\User;
 use Illuminate\Support\Str;
+use App\Models\ProductionRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Model;
@@ -23,7 +24,6 @@ class Application extends Model
         'success_redirect_url',
         'fail_redirect_url',
         'is_active',
-        'is_production',
 
         'satim_development_username',
         'satim_development_password',
@@ -32,6 +32,9 @@ class Application extends Model
         'satim_production_username',
         'satim_production_password',
         'satim_production_terminal',
+
+        'environement',
+        'is_production',
 
         'last_used_at',
     ];
@@ -116,27 +119,12 @@ class Application extends Model
 
         if (!empty($infoData)) {
             $infoData['application_id'] = $application->id;
-            $application->info()->create($infoData);
+            // $application->info()->create($infoData);
+            $applicationWithInfo = $application->setRelation('info', $application->info()->create($infoData));
         }
 
-        return $application;
+        return $applicationWithInfo;
     }
-
-    // public static function createWithInfo(array $data)
-    // {
-    //     $appColumns = Schema::getColumnListing((new self)->getTable());
-
-    //     $appData = array_intersect_key($data, array_flip($appColumns));
-    //     $infoData = array_diff_key($data, $appData);
-
-    //     $application = self::create($appData);
-
-    //     if (!empty($infoData)) {
-    //         $application->info()->create($infoData);
-    //     }
-
-    //     return $application;
-    // }
 
     public function info()
     {
@@ -146,5 +134,10 @@ class Application extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function productionRequest()
+    {
+        return $this->hasMany(ProductionRequest::class);
     }
 }

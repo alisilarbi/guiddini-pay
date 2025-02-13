@@ -22,6 +22,8 @@ use Filament\Tables\Contracts\HasTable;
 use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Columns\ToggleColumn;
@@ -55,15 +57,18 @@ class Applications extends Page implements HasForms, HasTable
                 TextColumn::make('user.name')
                     ->label('Username'),
 
+                TextColumn::make('environment')
+                    ->badge(),
+
                 TextColumn::make('updated_at')
                     ->dateTime(),
-
 
             ])
             ->filters([
                 // ...
             ])
             ->actions([
+
                 ViewAction::make('view')
                     ->infolist([
                         Fieldset::make('General Information')
@@ -76,9 +81,6 @@ class Applications extends Page implements HasForms, HasTable
 
                                 TextEntry::make('info.industries')
                                     ->label('Industries'),
-
-                                // TextEntry::make('info.logo')
-                                //     ->label('Logo'),
 
                                 TextEntry::make('info.privacy_policy_url')
                                     ->label('Privacy Policy URL'),
@@ -104,9 +106,9 @@ class Applications extends Page implements HasForms, HasTable
 
                                 TextEntry::make('fail_redirect_url')
                                     ->label('Fail Redirect URL'),
-
                             ]),
-                    ])
+                        ]),
+
             ])
 
             ->headerActions([
@@ -159,10 +161,7 @@ class Applications extends Page implements HasForms, HasTable
                     ->action(function (array $data) {
 
                         //handle logo
-
-
-
-                        $application = Application::createWithInfo([
+                        $applicationWithInfo = Application::createWithInfo([
                             'website_url' => $data['website_url'],
                             'success_redirect_url' => $data['success_redirect_url'],
                             'fail_redirect_url' => $data['fail_redirect_url'],
@@ -176,17 +175,17 @@ class Applications extends Page implements HasForms, HasTable
                             'terms_of_service' => $data['terms_of_service_url'],
                         ]);
 
+
                         if ($data['logo']) {
                             $tempPath = Storage::disk('public')->path($data['logo']);
                             $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
-                            $destination = 'applications/' . $application->id;
+                            $destination = 'applications/' . $applicationWithInfo->id;
 
                             Storage::disk('private')->putFileAs($destination, $tempPath, $newFileName);
                             Storage::disk('public')->delete($tempPath);
 
                             $path = $destination . '/' . $newFileName;
-
-                            $application->update([
+                            $applicationWithInfo->info->update([
                                 'logo' => $path,
                             ]);
                         }
