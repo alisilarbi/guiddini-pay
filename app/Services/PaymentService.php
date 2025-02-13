@@ -120,7 +120,7 @@ class PaymentService
             'gateway_response_message' => $result['actionCodeDescription'] ?? null,
             'gateway_error_code' => $result['ErrorCode'] ?? null,
             'gateway_code' => $result['authCode'] ?? null,
-            'price' => $result['Amount'] / 100 ?? null,
+            'amount' => $result['Amount'] / 100 ?? null,
             'currency' => $result['currency'] ?? null,
         ];
 
