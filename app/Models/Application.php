@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Application extends Model
 {
-
     use HasUuids;
 
     protected $fillable = [
@@ -34,7 +33,6 @@ class Application extends Model
         'satim_production_terminal',
 
         'environement',
-        'is_production',
 
         'last_used_at',
     ];

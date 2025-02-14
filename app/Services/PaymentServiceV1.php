@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class PaymentService
+class PaymentServiceV1
 {
     protected string $gatewayUrl = 'https://test.satim.dz/payment/rest/';
     protected int $orderIdStart = 617000;
@@ -46,6 +46,7 @@ class PaymentService
 
     protected function callPaymentGateway(Transaction $transaction, Application $application): array
     {
+
         $params = [
             'userName' => $application->username,
             'password' => $application->password,
@@ -63,7 +64,9 @@ class PaymentService
             ])
         ];
 
+
         $response = Http::timeout(30)->get($this->gatewayUrl . 'register.do', $params);
+
         if ($response->successful()) {
             $transaction->update([
                 'gateway_order_id' => $response->json('orderId'),

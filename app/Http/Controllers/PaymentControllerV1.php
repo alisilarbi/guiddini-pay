@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Services\PaymentService;
 use Illuminate\Validation\ValidationException;
 
-class PaymentController extends Controller
+class PaymentControlleV01 extends Controller
 {
     protected PaymentService $paymentService;
 

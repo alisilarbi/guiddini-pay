@@ -32,9 +32,7 @@ return new class extends Migration
             $table->string('satim_production_password')->nullable();
             $table->string('satim_production_terminal')->nullable();
 
-            // $table->string('environment')->default('development');
-            $table->boolean('is_production')->default(false);
-
+            $table->string('environment')->default('development');
 
             $table->timestamp('last_used_at')->nullable();
             $table->timestamps();
