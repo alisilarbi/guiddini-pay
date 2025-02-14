@@ -109,6 +109,13 @@ class Applications extends Page implements HasForms, HasTable
                             ]),
                     ]),
 
+                Action::make('delete')
+                    ->label('Delete')
+                    ->color('danger')
+                    ->action(function ($record) {
+                        $record->delete();
+                    })
+
             ])
 
             ->headerActions([
@@ -191,12 +198,7 @@ class Applications extends Page implements HasForms, HasTable
                         }
                     }),
 
-                Action::make('delete')
-                    ->label('Delete')
-                    ->color('danger')
-                    ->action(function ($record) {
-                        $record->delete();
-                    })
+
             ])
             ->bulkActions([
                 // ...
