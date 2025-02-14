@@ -37,14 +37,23 @@ class Application extends Model
         'last_used_at',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($application) {
+            $application->info()->delete();
+        });
+    }
+
     public function __get($key)
     {
         if (array_key_exists($key, $this->attributes))
             return parent::__get($key);
 
         if ($this->relationLoaded('info') || $this->info()->exists()) {
-    return $this->info->{$key} ?? parent::__get($key);
-}
+            return $this->info->{$key} ?? parent::__get($key);
+        }
 
         return parent::__get($key);
     }

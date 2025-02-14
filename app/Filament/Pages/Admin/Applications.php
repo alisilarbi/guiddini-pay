@@ -160,6 +160,13 @@ class Applications extends Page implements HasForms, HasTable
                                 ->title('Saved successfully')
                                 ->success()
                                 ->send();
+                        }),
+
+                    Action::make('delete')
+                        ->label('Delete')
+                        ->color('danger')
+                        ->action(function($record){
+                            $record->delete();
                         })
 
                 ])->tooltip('Actions'),

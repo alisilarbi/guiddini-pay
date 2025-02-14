@@ -1,5 +1,5 @@
 <?php
- $username='SAT2405030913';
+ $username='SAT2301170552';
  $password='satim120';
 
 // Order Status Request
@@ -67,7 +67,8 @@ if ($json->ErrorCode != 0 ){
             $color="#00FF00";
             $MessageReturn=$json->params->respCode_desc ?? $json->actionCodeDescription;
             $code=$json->approvalCode;
-            $total = number_format($json->Amount/100, 2);
+
+            $total = number_format($json->Amount, 2);
 
         }
     $orderId=$_GET['gatewayOrderId'];
