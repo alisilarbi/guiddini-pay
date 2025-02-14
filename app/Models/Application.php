@@ -110,9 +110,9 @@ class Application extends Model
     public static function createWithInfo(array $data)
     {
         $data['user_id'] = $data['user_id'] ?? Auth::id();
-        $data['satim_development_username'] = 'SAT2405030913';
+        $data['satim_development_username'] = 'SAT2301170552';
         $data['satim_development_password'] = 'satim120';
-        $data['satim_development_terminal'] = 'E010901146';
+        $data['satim_development_terminal'] = 'E010900790';
 
         $data['app_key'] = self::generateAppKey();
         $data['app_secret'] = self::generateSecretKey();

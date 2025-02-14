@@ -68,7 +68,6 @@ class Applications extends Page implements HasForms, HasTable
                 // ...
             ])
             ->actions([
-
                 ViewAction::make('view')
                     ->infolist([
                         Fieldset::make('General Information')
