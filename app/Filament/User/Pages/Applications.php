@@ -107,7 +107,7 @@ class Applications extends Page implements HasForms, HasTable
                                 TextEntry::make('fail_redirect_url')
                                     ->label('Fail Redirect URL'),
                             ]),
-                        ]),
+                    ]),
 
             ])
 
@@ -189,6 +189,13 @@ class Applications extends Page implements HasForms, HasTable
                                 'logo' => $path,
                             ]);
                         }
+                    }),
+
+                Action::make('delete')
+                    ->label('Delete')
+                    ->color('danger')
+                    ->action(function ($record) {
+                        $record->delete();
                     })
             ])
             ->bulkActions([
