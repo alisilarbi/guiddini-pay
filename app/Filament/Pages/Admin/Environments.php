@@ -44,11 +44,6 @@ class Environments extends Page implements HasForms, HasTable
                             ->weight(FontWeight::Bold),
                     ]),
 
-                    // Stack::make([
-                    //     TextColumn::make('type')
-                    //     ->badge(),
-                    // ]),
-
                     Stack::make([
                         TextColumn::make('satim_development_username'),
                         TextColumn::make('satim_development_password'),
@@ -73,36 +68,6 @@ class Environments extends Page implements HasForms, HasTable
                             ->schema([
                                 TextInput::make('name')
                                     ->required(),
-
-                                Select::make('type')
-                                    ->selectablePlaceholder(false)
-                                    ->required()
-                                    ->options([
-                                        'development' => 'Development',
-                                        'production' => 'Production',
-                                    ])
-                                    ->live()
-                                    // ->disableOptionWhen(function (string $value, Get $get) {
-                                    //     if (
-                                    //         $value === 'production' &&
-                                    //         (empty($get('satim_production_username')) ||
-                                    //             empty($get('satim_production_password')) ||
-                                    //             empty($get('satim_production_terminal')))
-                                    //     ) {
-                                    //         return true;
-                                    //     }
-
-                                    //     if (
-                                    //         $value === 'development' &&
-                                    //         (empty($get('satim_development_username')) ||
-                                    //             empty($get('satim_development_password')) ||
-                                    //             empty($get('satim_development_terminal')))
-                                    //     ) {
-                                    //         return true;
-                                    //     }
-
-                                    //     return false;
-                                    // }),
                             ]),
 
                         Fieldset::make('Development')

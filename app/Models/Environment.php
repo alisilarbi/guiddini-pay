@@ -12,7 +12,6 @@ class Environment extends Model
 
     protected $fillable = [
         'user_id',
-
         'name',
 
         'satim_development_username',
