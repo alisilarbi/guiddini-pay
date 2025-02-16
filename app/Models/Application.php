@@ -17,16 +17,18 @@ class Application extends Model
 
     protected $fillable = [
         'name',
-        'support_email',
 
         'app_key',
         'app_secret',
+
         'website_url',
         'success_redirect_url',
         'fail_redirect_url',
 
         'logo',
         'user_id',
+
+        'environment_id',
     ];
 
     public static function generateAppKey(): string

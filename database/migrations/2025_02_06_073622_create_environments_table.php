@@ -15,7 +15,6 @@ return new class extends Migration
             $table->uuid('id');
 
             $table->string('name');
-
             $table->string('type')->nullable();
 
             $table->string('satim_development_username')->nullable();

@@ -2,12 +2,15 @@
 
 namespace App\Filament\Pages\Admin;
 
+use Filament\Forms\Get;
 use Filament\Pages\Page;
 use Filament\Tables\Table;
 use App\Models\Application;
+use App\Models\Environment;
 use Illuminate\Support\Str;
 use Filament\Forms\Components\Grid;
 use Filament\Tables\Actions\Action;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
@@ -18,6 +21,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Infolists\Components\Fieldset;
@@ -40,45 +44,37 @@ class Applications extends Page implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(Application::query()->with(['info', 'user']))
+            ->query(Application::query()->with(['environment', 'user']))
             ->columns([
-                TextColumn::make('info.name')
+                TextColumn::make('name')
                     ->label('App name'),
-
-                TextColumn::make('info.support_email')
-                    ->label('App email'),
 
                 TextColumn::make('user.name')
                     ->label('Owner'),
 
+                TextColumn::make('environment.type')
+                    ->label('Environment'),
+
                 TextColumn::make('updated_at')
                     ->dateTime(),
+
+                SelectColumn::make('environment.type')
+                    ->options([
+                        'development' => 'Development',
+                        'production' => 'Production',
+                    ])
 
             ])
             ->actions([
                 ActionGroup::make([
                     ViewAction::make('view')
                         ->infolist([
+
                             Fieldset::make('General Information')
                                 ->schema([
-                                    TextEntry::make('info.name')
+
+                                    TextEntry::make('name')
                                         ->label('Name'),
-
-                                    TextEntry::make('info.support_email')
-                                        ->label('Email'),
-
-                                    TextEntry::make('info.industries')
-                                        ->label('Industries'),
-
-                                    TextEntry::make('info.privacy_policy_url')
-                                        ->label('Privacy Policy URL'),
-
-                                    TextEntry::make('info.terms_of_service_url')
-                                        ->label('Terms of Service URL'),
-                                ]),
-
-                            Fieldset::make('Gateway Information')
-                                ->schema([
 
                                     TextEntry::make('app_key')
                                         ->label('App Key'),
@@ -99,61 +95,29 @@ class Applications extends Page implements HasForms, HasTable
                             Fieldset::make('SATIM TEST')
                                 ->schema([
 
-                                    TextEntry::make('satim_development_username')
+                                    TextEntry::make('environment.satim_development_username')
                                         ->label('Username'),
 
-                                    TextEntry::make('satim_development_password')
+                                    TextEntry::make('environment.satim_development_password')
                                         ->label('Password'),
 
-                                    TextEntry::make('satim_development_terminal')
+                                    TextEntry::make('environment.satim_development_terminal')
                                         ->label('Terminal ID'),
                                 ]),
 
                             Fieldset::make('SATIM PROD')
                                 ->schema([
 
-                                    TextEntry::make('satim_production_username')
+                                    TextEntry::make('environment.satim_production_username')
                                         ->label('Username'),
 
-                                    TextEntry::make('satim_production_password')
+                                    TextEntry::make('environment.satim_production_password')
                                         ->label('Password'),
 
-                                    TextEntry::make('satim_production_terminal')
+                                    TextEntry::make('environment.satim_production_terminal')
                                         ->label('Terminal ID'),
                                 ]),
                         ]),
-
-                    Action::make('production_info')
-                        ->label('Production Info')
-                        ->fillForm(function ($record) {
-                            return [
-                                'satim_production_username' => $record->satim_production_username,
-                                'satim_production_password' => $record->satim_production_password,
-                                'satim_production_terminal' => $record->satim_production_terminal,
-                            ];
-                        })
-                        ->form([
-                            TextInput::make('satim_production_username')
-                                ->required(),
-
-                            TextInput::make('satim_production_password')
-                                ->required(),
-
-                            TextInput::make('satim_production_terminal')
-                                ->required(),
-                        ])
-                        ->action(function ($data, $record) {
-                            $record->update([
-                                'satim_production_username' => $data['satim_production_username'],
-                                'satim_production_password' => $data['satim_production_password'],
-                                'satim_production_terminal' => $data['satim_production_terminal'],
-                            ]);
-
-                            Notification::make()
-                                ->title('Saved successfully')
-                                ->success()
-                                ->send();
-                        }),
 
                     Action::make('delete')
                         ->label('Delete')
@@ -167,10 +131,8 @@ class Applications extends Page implements HasForms, HasTable
             ->headerActions([
                 Action::make('create')
                     ->steps([
-
                         Step::make('Information Général')
                             ->schema([
-
                                 Grid::make(2)
                                     ->schema([
                                         TextInput::make('name')
@@ -180,49 +142,65 @@ class Applications extends Page implements HasForms, HasTable
                                             ->required(),
                                     ]),
 
-                                TagsInput::make('industries')
-                                    ->required(),
-
                                 FileUpload::make('logo')
                                     ->image(),
-
-
-
                             ]),
-
                         Step::make('Fonctionnement')
                             ->schema([
-
                                 TextInput::make('website_url')
-                                    ->required(),
-
-                                TextInput::make('success_redirect_url')
-                                    ->required(),
-
-                                TextInput::make('fail_redirect_url')
                                     ->required(),
 
                                 Grid::make(2)
                                     ->schema([
-                                        TextInput::make('privacy_policy_url'),
+                                        TextInput::make('success_redirect_url')
+                                            ->required(),
 
-                                        TextInput::make('terms_of_service_url'),
-                                    ]),
+                                        TextInput::make('fail_redirect_url')
+                                            ->required(),
+                                    ])
 
                             ]),
+
+                        Step::make('env')
+                            ->label('Environment')
+                            ->schema([
+                                Select::make('environment')
+                                    ->live()
+                                    ->options(Environment::all()->pluck('name', 'id')),
+
+                                Select::make('environment_type')
+                                    ->live()
+                                    ->options(function (Get $get) {
+
+                                        if (!$get('environment')) {
+                                            return [];
+                                        }
+
+                                        $env = Environment::where('id', $get('environment'))->first();
+                                        if (!$env || !$env->satim_production_username || !$env->satim_production_password || !$env->satim_production_terminal) {
+                                            return collect([
+                                                ['id' => 'development', 'name' => 'Development'],
+                                                ['id' => 'production', 'name' => 'Production'],
+                                            ])->pluck('name', 'id')->toArray();
+                                        }
+
+                                        return collect([
+                                            ['id' => 'development', 'name' => 'Development'],
+                                        ])->pluck('name', 'id')->toArray();
+                                    })
+                            ]),
+
+
                     ])
                     ->action(function (array $data) {
 
-                        $applicationWithInfo = Application::createWithInfo([
+                        $applicationWithInfo = Application::create([
+                            'name' => $data['name'],
+
                             'website_url' => $data['website_url'],
                             'success_redirect_url' => $data['success_redirect_url'],
                             'fail_redirect_url' => $data['fail_redirect_url'],
-                            'is_active' => true,
-                            'is_production' => false,
 
-                            'name' => $data['name'],
-                            'support_email' => $data['support_email'],
-                            'industries' => $data['industries'],
                             'privacy_policy_url' => $data['privacy_policy_url'],
                             'terms_of_service' => $data['terms_of_service_url'],
                         ]);

@@ -15,7 +15,6 @@ return new class extends Migration
             $table->uuid('id')->primary();
 
             $table->string('name');
-            $table->string('support_email');
 
             $table->text('app_key');
             $table->text('app_secret');
