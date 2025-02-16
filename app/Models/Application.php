@@ -110,6 +110,7 @@ class Application extends Model
     public static function createWithInfo(array $data)
     {
         $data['user_id'] = $data['user_id'] ?? Auth::id();
+
         $data['satim_development_username'] = 'SAT2301170552';
         $data['satim_development_password'] = 'satim120';
         $data['satim_development_terminal'] = 'E010900790';
@@ -143,8 +144,4 @@ class Application extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function productionRequest()
-    {
-        return $this->hasMany(ProductionRequest::class);
-    }
 }

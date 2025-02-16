@@ -20,7 +20,9 @@ class PaymentService
 
             $transaction = $this->createTransaction($data, $application);
             $response = $this->callPaymentGateway($transaction, $application);
+
             dd($response);
+
             return [
                 'transaction' => $transaction,
                 'gateway_response' => $response,
