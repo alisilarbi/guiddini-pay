@@ -100,7 +100,6 @@ class Environments extends Page implements HasForms, HasTable
                             'user_id' => Auth::user()->id,
 
                             'name' => $data['name'],
-                            'type' => $data['type'],
 
                             'satim_development_username' => $data['satim_development_username'],
                             'satim_development_password' => $data['satim_development_password'],
