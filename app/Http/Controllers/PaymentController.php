@@ -20,7 +20,7 @@ class PaymentController extends Controller
     {
         $validated = $request->validate([
             'amount' => 'required|numeric|min:100',
-            'client_order_id' => 'required|string|max:20',
+            'client_order_id' => 'required|string',
         ]);
 
         $result = $this->paymentService->initiatePayment(
