@@ -14,27 +14,21 @@ return new class extends Migration
         Schema::create('applications', function (Blueprint $table) {
             $table->uuid('id')->primary();
 
-            $table->uuid('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->string('name');
+            $table->string('support_email');
 
             $table->text('app_key');
             $table->text('app_secret');
+
             $table->text('website_url');
             $table->text('success_redirect_url');
             $table->text('fail_redirect_url');
-            $table->boolean('is_active')->default(true);
 
-            $table->string('satim_development_username');
-            $table->string('satim_development_password');
-            $table->string('satim_development_terminal');
+            $table->string('logo')->nullable();
 
-            $table->string('satim_production_username')->nullable();
-            $table->string('satim_production_password')->nullable();
-            $table->string('satim_production_terminal')->nullable();
+            $table->uuid('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
 
-            $table->string('environment')->default('development');
-
-            $table->timestamp('last_used_at')->nullable();
             $table->timestamps();
         });
     }
