@@ -52,22 +52,65 @@ class Applications extends Page implements HasForms, HasTable
                 TextColumn::make('user.name')
                     ->label('Owner'),
 
-                TextColumn::make('environment.type')
-                    ->label('Environment'),
 
-                TextColumn::make('updated_at')
-                    ->dateTime(),
+                SelectColumn::make('environment.id')
+                    ->options(Environment::all()->pluck('name', 'id')),
 
-                SelectColumn::make('environment.type')
-                    ->options([
-                        'development' => 'Development',
-                        'production' => 'Production',
-                    ])
+                SelectColumn::make('environment_type')
+                    // ->options([
+                    //     'development' => 'Development',
+                    //     'production' => 'Production',
+                    // ])
+                    ->options(function ($record) {
+                        $env = $record->environment;
+
+                        if (!$env) {
+                            return [
+                                'development' => 'Development',
+                            ];
+                        }
+
+                        if ($env->satim_production_username && $env->satim_production_password && $env->satim_production_terminal) {
+                            return [
+                                'development' => 'Development',
+                                'production' => 'Production',
+                            ];
+                        }
+
+                        return [
+                            'development' => 'Development',
+                        ];
+                    })
+                    ->rules(['required'])
+                    ->selectablePlaceholder(false)
+
+                // ->options(function (Get $get) {
+
+                //     if (!$get('environment')) {
+                //         return [];
+                //     }
+
+                //     $env = Environment::where('id', $get('environment'))->first();
+                //     if (!$env || $env->satim_production_username || $env->satim_production_password || $env->satim_production_terminal) {
+                //         return collect([
+                //             ['id' => 'development', 'name' => 'Development'],
+                //             ['id' => 'production', 'name' => 'Production'],
+                //         ])->pluck('name', 'id')->toArray();
+                //     }
+
+                //     return collect([
+                //         ['id' => 'development', 'name' => 'Development'],
+                //     ])->pluck('name', 'id')->toArray();
+                // }),
+
+                // TextColumn::make('updated_at')
+                //     ->dateTime(),
 
             ])
             ->actions([
                 ActionGroup::make([
                     ViewAction::make('view')
+                        ->icon('heroicon-o-eye')
                         ->infolist([
 
                             Fieldset::make('General Information')
@@ -122,6 +165,7 @@ class Applications extends Page implements HasForms, HasTable
                     Action::make('delete')
                         ->label('Delete')
                         ->color('danger')
+                        ->icon('heroicon-o-x-circle')
                         ->action(function ($record) {
                             $record->delete();
                         })
@@ -133,14 +177,8 @@ class Applications extends Page implements HasForms, HasTable
                     ->steps([
                         Step::make('Information Général')
                             ->schema([
-                                Grid::make(2)
-                                    ->schema([
-                                        TextInput::make('name')
-                                            ->required(),
-
-                                        TextInput::make('support_email')
-                                            ->required(),
-                                    ]),
+                                TextInput::make('name')
+                                    ->required(),
 
                                 FileUpload::make('logo')
                                     ->image(),
@@ -166,10 +204,12 @@ class Applications extends Page implements HasForms, HasTable
                             ->schema([
                                 Select::make('environment')
                                     ->live()
+                                    ->required()
                                     ->options(Environment::all()->pluck('name', 'id')),
 
                                 Select::make('environment_type')
                                     ->live()
+                                    ->required()
                                     ->options(function (Get $get) {
 
                                         if (!$get('environment')) {
@@ -177,7 +217,7 @@ class Applications extends Page implements HasForms, HasTable
                                         }
 
                                         $env = Environment::where('id', $get('environment'))->first();
-                                        if (!$env || !$env->satim_production_username || !$env->satim_production_password || !$env->satim_production_terminal) {
+                                        if (!$env || $env->satim_production_username || $env->satim_production_password || $env->satim_production_terminal) {
                                             return collect([
                                                 ['id' => 'development', 'name' => 'Development'],
                                                 ['id' => 'production', 'name' => 'Production'],
@@ -188,37 +228,40 @@ class Applications extends Page implements HasForms, HasTable
                                             ['id' => 'development', 'name' => 'Development'],
                                         ])->pluck('name', 'id')->toArray();
                                     })
+
                             ]),
 
 
                     ])
                     ->action(function (array $data) {
 
-                        $applicationWithInfo = Application::create([
+                        $application = Application::create([
                             'name' => $data['name'],
-
                             'website_url' => $data['website_url'],
                             'success_redirect_url' => $data['success_redirect_url'],
                             'fail_redirect_url' => $data['fail_redirect_url'],
-
-                            'privacy_policy_url' => $data['privacy_policy_url'],
-                            'terms_of_service' => $data['terms_of_service_url'],
                         ]);
 
+                        // if ($data['logo']) {
+                        //     $tempPath = Storage::disk('public')->path($data['logo']);
+                        //     $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
+                        //     $destination = 'applications/' . $application->id;
 
-                        if ($data['logo']) {
-                            $tempPath = Storage::disk('public')->path($data['logo']);
-                            $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
-                            $destination = 'applications/' . $applicationWithInfo->id;
+                        //     Storage::disk('private')->putFileAs($destination, $tempPath, $newFileName);
+                        //     Storage::disk('public')->delete($tempPath);
 
-                            Storage::disk('private')->putFileAs($destination, $tempPath, $newFileName);
-                            Storage::disk('public')->delete($tempPath);
+                        //     $path = $destination . '/' . $newFileName;
+                        //     $application->info->update([
+                        //         'logo' => $path,
+                        //     ]);
+                        // }
 
-                            $path = $destination . '/' . $newFileName;
-                            $applicationWithInfo->info->update([
-                                'logo' => $path,
-                            ]);
-                        }
+                        $env = Environment::where('id', $data['environment'])->first();
+
+                        $application->update([
+                            'environment_type' => $data['environment_type'],
+                            'environment_id' => $env->id,
+                        ]);
                     }),
 
 

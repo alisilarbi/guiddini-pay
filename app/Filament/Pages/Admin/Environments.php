@@ -36,12 +36,6 @@ class Environments extends Page implements HasForms, HasTable
         return $table
             ->query(Environment::query()->with(['user']))
             ->columns([
-                // TextColumn::make('name'),
-                // TextColumn::make('type')
-                //     ->badge(),
-                // TextColumn::make('satim_development_user'),
-
-
 
                 Split::make([
 
@@ -50,10 +44,10 @@ class Environments extends Page implements HasForms, HasTable
                             ->weight(FontWeight::Bold),
                     ]),
 
-                    Stack::make([
-                        TextColumn::make('type')
-                        ->badge(),
-                    ]),
+                    // Stack::make([
+                    //     TextColumn::make('type')
+                    //     ->badge(),
+                    // ]),
 
                     Stack::make([
                         TextColumn::make('satim_development_username'),
@@ -88,27 +82,27 @@ class Environments extends Page implements HasForms, HasTable
                                         'production' => 'Production',
                                     ])
                                     ->live()
-                                    ->disableOptionWhen(function (string $value, Get $get) {
-                                        if (
-                                            $value === 'production' &&
-                                            (empty($get('satim_production_username')) ||
-                                                empty($get('satim_production_password')) ||
-                                                empty($get('satim_production_terminal')))
-                                        ) {
-                                            return true;
-                                        }
+                                    // ->disableOptionWhen(function (string $value, Get $get) {
+                                    //     if (
+                                    //         $value === 'production' &&
+                                    //         (empty($get('satim_production_username')) ||
+                                    //             empty($get('satim_production_password')) ||
+                                    //             empty($get('satim_production_terminal')))
+                                    //     ) {
+                                    //         return true;
+                                    //     }
 
-                                        if (
-                                            $value === 'development' &&
-                                            (empty($get('satim_development_username')) ||
-                                                empty($get('satim_development_password')) ||
-                                                empty($get('satim_development_terminal')))
-                                        ) {
-                                            return true;
-                                        }
+                                    //     if (
+                                    //         $value === 'development' &&
+                                    //         (empty($get('satim_development_username')) ||
+                                    //             empty($get('satim_development_password')) ||
+                                    //             empty($get('satim_development_terminal')))
+                                    //     ) {
+                                    //         return true;
+                                    //     }
 
-                                        return false;
-                                    }),
+                                    //     return false;
+                                    // }),
                             ]),
 
                         Fieldset::make('Development')

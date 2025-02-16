@@ -29,6 +29,7 @@ class Application extends Model
         'user_id',
 
         'environment_id',
+        'environment_type',
     ];
 
     public static function generateAppKey(): string
@@ -48,17 +49,23 @@ class Application extends Model
 
     public function environment()
     {
-        return $this->hasOne(Environment::class);
+        return $this->belongsTo(Environment::class);
     }
 
-    // protected static function boot()
-    // {
-    //     parent::boot();
+    protected static function boot()
+    {
+        parent::boot();
 
-    //     static::deleting(function ($application) {
-    //         $application->info()->delete();
-    //     });
-    // }
+        static::creating(function($application){
+            $application->app_key = self::generateAppKey();
+            $application->app_secret = self::generateSecretKey();
+            $application->user_id = Auth::user()->id;
+        });
+
+        // static::deleting(function ($application) {
+        //     $application->info()->delete();
+        // });
+    }
 
     // public function __get($key)
     // {

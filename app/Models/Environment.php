@@ -14,7 +14,6 @@ class Environment extends Model
         'user_id',
 
         'name',
-        'type',
 
         'satim_development_username',
         'satim_development_password',

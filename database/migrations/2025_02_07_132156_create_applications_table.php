@@ -31,6 +31,8 @@ return new class extends Migration
             $table->uuid('environment_id')->nullable();
             $table->foreign('environment_id')->references('id')->on('environments');
 
+            $table->string('environment_type')->default('development');
+
             $table->timestamps();
         });
     }
