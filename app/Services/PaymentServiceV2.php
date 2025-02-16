@@ -8,43 +8,50 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class PaymentService
+class PaymentServiceV2
 {
     protected string $gatewayUrl = 'https://test.satim.dz/payment/rest/';
     protected int $orderIdStart = 617000;
 
     public function initiatePayment(array $data, string $appKey): array
     {
-        $application = Application::where('app_key', $appKey)->firstOrFail();
+        return DB::transaction(function () use ($data, $appKey) {
+            $application = Application::where('app_key', $appKey)->firstOrFail();
 
-        $transaction = $this->createTransaction($data, $application);
-        $response = $this->callPaymentGateway($transaction, $application);
+            $transaction = $this->createTransaction($data, $application);
+            $response = $this->callPaymentGateway($transaction, $application);
 
-        dd($response);
+            dd($response);
 
-        return [
-            'transaction' => $transaction,
-            'gateway_response' => $response,
-        ];
+            return [
+                'transaction' => $transaction,
+                'gateway_response' => $response,
+            ];
+        });
     }
 
     protected function createTransaction(array $data, Application $application): Transaction
     {
         return Transaction::create([
             'amount' => $data['amount'],
-            'client_order_id' => $data['client_order_id'],
+            'client_order_id' => $this->generateClientOrderId(),
             'status' => 'initiated',
             'application_id' => $application->id,
         ]);
     }
 
+    protected function generateClientOrderId(): int
+    {
+        $lastOrder = Transaction::lockForUpdate()->orderBy('client_order_id', 'desc')->first();
+        return $lastOrder ? $lastOrder->client_order_id + 1 : $this->orderIdStart;
+    }
+
     protected function callPaymentGateway(Transaction $transaction, Application $application): array
     {
-        dd($transaction);
-
         $params = [
             'userName' => $application->username,
             'password' => $application->password,
+            'terminal_id' => $application->terminal,
             'orderNumber' => $transaction->client_order_id,
             'amount' => $transaction->amount * 100,
             'currency' => '012',
@@ -136,9 +143,5 @@ class PaymentService
         return 'requires_verification';
     }
 
-    protected function generateClientOrderId(): int
-    {
-        $lastOrder = Transaction::lockForUpdate()->orderBy('client_order_id', 'desc')->first();
-        return $lastOrder ? $lastOrder->client_order_id + 1 : $this->orderIdStart;
-    }
+
 }

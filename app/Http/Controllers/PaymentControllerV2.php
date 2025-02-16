@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Services\PaymentService;
 use Illuminate\Validation\ValidationException;
 
-class PaymentController extends Controller
+class PaymentControllerV2 extends Controller
 {
     protected PaymentService $paymentService;
 
@@ -18,25 +18,33 @@ class PaymentController extends Controller
 
     public function initiate(Request $request)
     {
-        $validated = $request->validate([
-            'amount' => 'required|numeric|min:100',
-            'client_order_id' => 'required|string|max:20',
-        ]);
 
-        $result = $this->paymentService->initiatePayment(
-            $validated,
-            $request->header('X-App-Key')
-        );
+        try {
+            $validated = $request->validate([
+                'amount' => 'required|numeric|min:50',
+                'client_order_id' => 'required|string|max:20',
+            ]);
 
-        dd($result['gateway_response']['formUrl']);
+            $result = $this->paymentService->initiatePayment(
+                $validated,
+                $request->header('X-App-Key')
+            );
 
-        if ($result['gateway_response']['errorCode'] == 0) {
-            return redirect()->away($result['gateway_response']['formUrl']);
+            dd($result['gateway_response']['formUrl']);
+
+            if ($result['gateway_response']['errorCode'] == 0) {
+                return redirect()->away($result['gateway_response']['formUrl']);
+            }
+
+            return back()->withErrors([
+                'payment' => $result['gateway_response']['errorMessage'] ?? 'Payment initiation failed'
+            ]);
+        } catch (ValidationException $e) {
+            return back()->withErrors($e->errors());
+        } catch (\Exception $e) {
+            report($e);
+            return back()->withErrors(['payment' => 'Payment processing error']);
         }
-
-        return back()->withErrors([
-            'payment' => $result['gateway_response']['errorMessage'] ?? 'Payment initiation failed'
-        ]);
     }
 
     public function confirm(Request $request, $clientOrderId)
