@@ -27,7 +27,10 @@ return new class extends Migration
             $table->string('logo')->nullable();
 
             $table->uuid('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->foreign('user_id')->references('id')->on('users');
+
+            $table->uuid('environment_id')->nullable();
+            $table->foreign('envionment_id')->references('id')->on('environments');
 
             $table->timestamps();
         });

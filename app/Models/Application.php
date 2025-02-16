@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Environment;
 use Illuminate\Support\Str;
 use App\Models\ProductionRequest;
 use Illuminate\Support\Facades\Auth;
@@ -27,6 +28,26 @@ class Application extends Model
         'logo',
         'user_id',
     ];
+
+    public static function generateAppKey(): string
+    {
+        return 'APP-' . strtoupper(Str::random(18));
+    }
+
+    public static function generateSecretKey(): string
+    {
+        return 'SEC-' . Str::random(32);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function environment()
+    {
+        return $this->hasOne(Environment::class);
+    }
 
     // protected static function boot()
     // {
@@ -88,15 +109,7 @@ class Application extends Model
     //     return true;
     // }
 
-    public static function generateAppKey(): string
-    {
-        return 'APP-' . strtoupper(Str::random(18));
-    }
 
-    public static function generateSecretKey(): string
-    {
-        return 'SEC-' . Str::random(32);
-    }
 
     // public static function createWithInfo(array $data)
     // {
@@ -125,9 +138,6 @@ class Application extends Model
     //     return $applicationWithInfo;
     // }
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+
 
 }
