@@ -14,9 +14,6 @@ return new class extends Migration
         Schema::create('environments', function (Blueprint $table) {
             $table->uuid('id');
 
-            $table->uuid('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
-
             $table->string('type')->nullable();
 
             $table->string('satim_development_username')->nullable();
@@ -27,6 +24,8 @@ return new class extends Migration
             $table->string('satim_production_password')->nullable();
             $table->string('satim_production_terminal')->nullable();
 
+            $table->uuid('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
 
             $table->timestamps();
         });

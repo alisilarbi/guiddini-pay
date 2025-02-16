@@ -14,9 +14,6 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->uuid('id')->primary();
 
-            $table->uuid('application_id');
-            $table->foreign('application_id')->references('id')->on('applications');
-
             $table->string('status')->default('pending');
             $table->string('amount', 10, 2);
 
@@ -28,8 +25,10 @@ return new class extends Migration
             $table->string('gateway_error_code')->nullable();
             $table->string('gateway_code')->nullable();
 
+            $table->uuid('application_id');
+            $table->foreign('application_id')->references('id')->on('applications');
+
             $table->timestamp('paid_at')->nullable();
-            $table->timestamp('refunded_at')->nullable();
 
             $table->timestamps();
         });

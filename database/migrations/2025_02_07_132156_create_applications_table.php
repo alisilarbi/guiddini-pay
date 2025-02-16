@@ -30,7 +30,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users');
 
             $table->uuid('environment_id')->nullable();
-            $table->foreign('envionment_id')->references('id')->on('environments');
+            $table->foreign('environment_id')->references('id')->on('environments');
 
             $table->timestamps();
         });
