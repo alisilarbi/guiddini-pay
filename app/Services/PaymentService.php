@@ -43,7 +43,7 @@ class PaymentService
 
         $application->load('environment');
 
-        dd($application->environment);
+        dd($application);
 
         $params = [
             'userName' => $application->username,
