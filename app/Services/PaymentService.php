@@ -41,7 +41,9 @@ class PaymentService
     protected function callPaymentGateway(Transaction $transaction, Application $application): array
     {
 
-        dd($application->load('environment'));
+        $application = $application->load('environment');
+
+        dd($application->environment);
 
         $params = [
             'userName' => $application->username,
@@ -58,8 +60,6 @@ class PaymentService
                 "udf1" => $transaction->client_order_id,
                 "udf5" => "00",
             ])
-
-
         ];
 
 
