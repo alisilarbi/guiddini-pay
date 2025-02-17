@@ -65,7 +65,7 @@ class PaymentController extends Controller
             ->withErrors(['confirm' => $result['message'] ?? 'Confirmation failed']);
     }
 
-    public function failed(Request $request, $clientOrderId)
+    public function failed(Request $request)
     {
 
         dd($request->all());
