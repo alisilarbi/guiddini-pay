@@ -4,9 +4,10 @@ namespace App\Services;
 
 use App\Models\Application;
 use App\Models\Transaction;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 
 class PaymentService
 {
@@ -17,13 +18,8 @@ class PaymentService
     {
         $application = Application::where('app_key', $appKey)->first();
 
-        dd($application->environment);
-
-
-
         $transaction = $this->createTransaction($data, $application);
         $response = $this->callPaymentGateway($transaction, $application);
-        dd($response);
 
         return [
             'transaction' => $transaction,
@@ -49,7 +45,7 @@ class PaymentService
         $params = [
             'userName' => $application->username,
             'password' => $application->password,
-            'terminal_id' => $application->terminal,
+            'terminal_id' => $application->environment->terminal,
             'orderNumber' => $this->generateClientOrderId(),
             'amount' => $transaction->amount * 100,
             'currency' => '012',
@@ -151,6 +147,8 @@ class PaymentService
 
     protected function generateClientOrderId(): int
     {
+
+        // return Str::random(6);
         $lastOrder = Transaction::lockForUpdate()->orderBy('client_order_id', 'desc')->first();
         return $lastOrder ? $lastOrder->client_order_id + 1 : $this->orderIdStart;
     }
