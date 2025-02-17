@@ -15,7 +15,7 @@ class PaymentService
 
     public function initiatePayment(array $data, string $appKey): array
     {
-        $application = Application::where('app_key', $appKey)->firstOrFail();
+        $application = Application::where('app_key', $appKey)->firstOrFail()->with('environment');
 
         $transaction = $this->createTransaction($data, $application);
         $response = $this->callPaymentGateway($transaction, $application);
