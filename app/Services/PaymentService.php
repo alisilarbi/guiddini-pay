@@ -41,7 +41,7 @@ class PaymentService
     {
 
 
-        dd(Str::rand(5));
+        dd(Str::random(5));
         $params = [
             'userName' => $application->environment->satim_development_username,
             'password' => $application->environment->satim_development_password,
