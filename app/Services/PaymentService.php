@@ -56,7 +56,16 @@ class PaymentService
                 "udf1" => $transaction->client_order_id,
                 "udf5" => "00",
             ])
+
+
         ];
+
+
+        dd([
+            'gatewayUrl' => $this->gatewayUrl,
+            'params' => $params,
+        ]);
+
 
         $response = Http::timeout(30)->get($this->gatewayUrl . 'register.do', $params);
         dd($response->json());
