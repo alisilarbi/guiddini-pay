@@ -15,9 +15,9 @@ class PaymentService
 
     public function initiatePayment(array $data, string $appKey): array
     {
-        $application = Application::with('environment', 'user')->where('app_key', $appKey)->first();
+        $application = Application::where('app_key', $appKey)->first();
 
-        dd($application);
+        dd($application->environment);
 
 
 
@@ -43,11 +43,6 @@ class PaymentService
 
     protected function callPaymentGateway(Transaction $transaction, Application $application): array
     {
-
-        // $application->load('environment');
-
-        // $application->loadMissing('environment');
-
 
         dd($application->environment);
 
