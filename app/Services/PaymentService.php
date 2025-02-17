@@ -40,6 +40,8 @@ class PaymentService
     protected function callPaymentGateway(Transaction $transaction, Application $application): array
     {
 
+
+        dd($this->generateClientOrderId());
         $params = [
             'userName' => $application->environment->satim_development_username,
             'password' => $application->environment->satim_development_password,
@@ -140,7 +142,7 @@ class PaymentService
     protected function generateClientOrderId(): int
     {
 
-        // return Str::random(6);
+        return Str::random(6);
         $lastOrder = Transaction::lockForUpdate()->orderBy('client_order_id', 'desc')->first();
         return $lastOrder ? $lastOrder->client_order_id + 1 : $this->orderIdStart;
     }
