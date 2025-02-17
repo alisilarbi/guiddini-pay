@@ -15,7 +15,7 @@ class PaymentService
 
     public function initiatePayment(array $data, string $appKey): array
     {
-        $application = Application::where('app_key', $appKey)->with('environment')->firstOrFail();
+        $application = Application::with('environment')->where('app_key', $appKey)->firstOrFail();
 
         dd($application);
 
