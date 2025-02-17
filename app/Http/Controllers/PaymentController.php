@@ -44,7 +44,8 @@ class PaymentController extends Controller
     public function confirm(Request $request, $clientOrderId)
     {
 
-        dd($result);
+        dd($request->all());
+
 
         $result = $this->paymentService->confirmPayment(
             $clientOrderId,
@@ -66,20 +67,15 @@ class PaymentController extends Controller
 
     public function failed(Request $request, $clientOrderId)
     {
-        try {
 
-            $result = $this->paymentService->confirmPayment(
-                $clientOrderId,
-            );
+        dd($request->all());
 
-            dd($result);
+        $result = $this->paymentService->confirmPayment(
+            $clientOrderId,
+        );
 
-            return redirect()->route('payment.failed', $clientOrderId)
-                ->withErrors(['confirm' => $result['message'] ?? 'Confirmation failed']);
-        } catch (\Exception $e) {
-            report($e);
-            return redirect()->route('payment.failed', $clientOrderId)
-                ->withErrors(['confirm' => 'Payment confirmation error']);
-        }
+
+        return redirect()->route('payment.failed', $clientOrderId)
+            ->withErrors(['confirm' => $result['message'] ?? 'Confirmation failed']);
     }
 }
