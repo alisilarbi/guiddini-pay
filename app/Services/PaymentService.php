@@ -43,9 +43,9 @@ class PaymentService
         dd($application->environment);
 
         $params = [
-            'userName' => $application->username,
-            'password' => $application->password,
-            'terminal_id' => $application->environment->terminal,
+            'userName' => $application->environment->satim_development_username,
+            'password' => $application->environment->satim_development_password,
+            'terminal_id' => $application->environment->satim_development_terminal,
             'orderNumber' => $this->generateClientOrderId(),
             'amount' => $transaction->amount * 100,
             'currency' => '012',
@@ -53,7 +53,7 @@ class PaymentService
             'failUrl' => route('payment.failed', $transaction->client_order_id),
             'language' => 'FR',
             'jsonParams' => json_encode([
-                "force_terminal_id" => $application->terminal,
+                "force_terminal_id" => $application->environment->satim_development_terminal,
                 "udf1" => $transaction->client_order_id,
                 "udf5" => "00",
             ])
