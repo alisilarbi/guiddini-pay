@@ -17,7 +17,7 @@ class PaymentService
     {
         $application = Application::where('app_key', $appKey)->first();
 
-        dd($application->env());
+        dd($application->env()->first());
 
         $transaction = $this->createTransaction($data, $application);
         $response = $this->callPaymentGateway($transaction, $application);
