@@ -41,7 +41,10 @@ class PaymentService
     protected function callPaymentGateway(Transaction $transaction, Application $application): array
     {
 
-        $application->load('environment');
+        // $application->load('environment');
+
+        $application->loadMissing('environment');
+
 
         dd($application);
 
