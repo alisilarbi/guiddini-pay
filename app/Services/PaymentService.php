@@ -41,12 +41,11 @@ class PaymentService
     {
 
 
-        dd(Str::random(5));
         $params = [
             'userName' => $application->environment->satim_development_username,
             'password' => $application->environment->satim_development_password,
             'terminal_id' => $application->environment->satim_development_terminal,
-            'orderNumber' => $this->generateClientOrderId(),
+            'orderNumber' => Str::random(5),
             'amount' => $transaction->amount * 100,
             'currency' => '012',
             'returnUrl' => route('payment.confirm', $transaction->client_order_id, $application->app_key),
