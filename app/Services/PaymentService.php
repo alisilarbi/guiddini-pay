@@ -45,6 +45,7 @@ class PaymentService
             'userName' => $application->username,
             'password' => $application->password,
             'orderNumber' => $transaction->client_order_id,
+            'terminal_id' => $application->terminal,
             'amount' => $transaction->amount * 100,
             'currency' => '012',
             'returnUrl' => route('payment.confirm', $transaction->client_order_id, $application->app_key),
