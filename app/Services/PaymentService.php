@@ -58,12 +58,6 @@ class PaymentService
         ];
 
 
-        dd([
-            'gatewayUrl' => $this->gatewayUrl,
-            'params' => $params,
-        ]);
-
-
         $response = Http::timeout(30)->get($this->gatewayUrl . 'register.do', $params);
         dd($response->json());
         if ($response->successful()) {
