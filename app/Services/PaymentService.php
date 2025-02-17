@@ -81,22 +81,16 @@ class PaymentService
             'language' => 'FR',
         ];
 
-        try {
-            $response = Http::timeout(30)->get($this->gatewayUrl . 'confirmOrder.do', $params);
-            $result = $response->json();
+        $response = Http::timeout(30)->get($this->gatewayUrl . 'confirmOrder.do', $params);
+        $result = $response->json();
 
-            // dd($result);
-            $this->updateTransactionStatus($transaction, $result);
+        $this->updateTransactionStatus($transaction, $result);
 
-            return [
-                'status' => 'success',
-                'transaction' => $transaction,
-                'gateway_response' => $result
-            ];
-        } catch (\Exception $e) {
-            Log::error("Confirmation failed: {$e->getMessage()}");
-            return ['status' => 'error', 'message' => $e->getMessage()];
-        }
+        return [
+            'status' => 'success',
+            'transaction' => $transaction,
+            'gateway_response' => $result
+        ];
     }
 
     protected function updateTransactionStatus(Transaction $transaction, array $result): void
