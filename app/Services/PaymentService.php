@@ -46,7 +46,7 @@ class PaymentService
         // $application->loadMissing('environment');
 
 
-        dd($application->environment_id);
+        dd($application->environment);
 
         $params = [
             'userName' => $application->username,
