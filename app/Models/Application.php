@@ -47,7 +47,7 @@ class Application extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function env()
+    public function environment()
     {
         return $this->belongsTo(Environment::class);
     }
