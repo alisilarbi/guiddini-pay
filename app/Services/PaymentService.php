@@ -76,7 +76,7 @@ class PaymentService
 
         $params = [
             'userName' => $transaction->application->environment->satim_development_username,
-            'password' => $transaction->application->evironment->satim_development_password,
+            'password' => $transaction->application->environment->satim_development_password,
             'orderId' => $transaction->gateway_order_id,
             'language' => 'FR',
         ];
