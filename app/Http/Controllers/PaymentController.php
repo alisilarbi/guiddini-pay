@@ -29,7 +29,6 @@ class PaymentController extends Controller
         );
 
         dd($result['gateway_response']['formUrl']);
-
         if ($result['gateway_response']['errorCode'] == 0) {
             return redirect()->away($result['gateway_response']['formUrl']);
         }
