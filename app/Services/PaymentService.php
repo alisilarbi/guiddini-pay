@@ -142,7 +142,6 @@ class PaymentService
     protected function generateClientOrderId(): int
     {
 
-        return Str::random(6);
         $lastOrder = Transaction::lockForUpdate()->orderBy('client_order_id', 'desc')->first();
         return $lastOrder ? $lastOrder->client_order_id + 1 : $this->orderIdStart;
     }
