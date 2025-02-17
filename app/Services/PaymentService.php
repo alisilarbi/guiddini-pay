@@ -68,11 +68,13 @@ class PaymentService
         return $response->json();
     }
 
-    public function confirmPayment(string $clientOrderId): array
+    public function confirmPayment(string $gateway_order_id): array
     {
-        $transaction = Transaction::where('client_order_id', $clientOrderId)
+        $transaction = Transaction::where('gateway_order_id', $gateway_order_id)
             ->with('application')
             ->first();
+
+        dd($transaction);
 
         $params = [
             'userName' => $transaction->application->username,

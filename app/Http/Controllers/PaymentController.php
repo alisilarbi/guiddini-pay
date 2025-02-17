@@ -67,16 +67,13 @@ class PaymentController extends Controller
 
     public function failed(Request $request)
     {
-
-        dd($request->all());
-
         $result = $this->paymentService->confirmPayment(
-            $clientOrderId,
+            $request->orderId,
         );
 
-
-
-        return redirect()->route('payment.failed', $clientOrderId)
-            ->withErrors(['confirm' => $result['message'] ?? 'Confirmation failed']);
+        dd([
+            'finished' => 'Finished',
+            'result' => $result,''
+        ]);
     }
 }
