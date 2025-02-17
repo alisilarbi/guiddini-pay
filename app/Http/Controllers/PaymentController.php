@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Services\PaymentService;
 use Illuminate\Validation\ValidationException;
 
@@ -31,8 +32,8 @@ class PaymentController extends Controller
         dd($result);
 
         if ($result['gateway_response']['errorCode'] == 0) {
-
-            return redirect()->away($result['gateway_response']['formUrl']);
+            return response()->json($result, Response::HTTP_OK);
+            // return redirect()->away($result['gateway_response']['formUrl']);
         }
 
         return back()->withErrors([
