@@ -75,8 +75,8 @@ class PaymentService
             ->first();
 
         $params = [
-            'userName' => $transaction->application->username,
-            'password' => $transaction->application->password,
+            'userName' => $transaction->application->environment->satim_development_username,
+            'password' => $transaction->application->evironment->satim_development_password,
             'orderId' => $transaction->gateway_order_id,
             'language' => 'FR',
         ];
