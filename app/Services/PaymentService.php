@@ -17,6 +17,8 @@ class PaymentService
     {
         $application = Application::where('app_key', $appKey)->with('environment')->firstOrFail();
 
+        dd($application);
+
         $transaction = $this->createTransaction($data, $application);
         $response = $this->callPaymentGateway($transaction, $application);
 
