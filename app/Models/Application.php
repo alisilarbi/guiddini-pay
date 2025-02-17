@@ -49,7 +49,7 @@ class Application extends Model
 
     public function environment()
     {
-        return $this->belongsTo(Environment::class);
+        return $this->belongsTo(Environment::class, 'environment_id', 'id');
     }
 
     protected static function boot()
