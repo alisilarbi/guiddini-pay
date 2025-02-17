@@ -41,7 +41,7 @@ class PaymentService
     {
 
 
-        dd($this->generateClientOrderId());
+        dd(Str::rand(5));
         $params = [
             'userName' => $application->environment->satim_development_username,
             'password' => $application->environment->satim_development_password,
@@ -141,7 +141,6 @@ class PaymentService
 
     protected function generateClientOrderId(): int
     {
-
         $lastOrder = Transaction::lockForUpdate()->orderBy('client_order_id', 'desc')->first();
         return $lastOrder ? $lastOrder->client_order_id + 1 : $this->orderIdStart;
     }
