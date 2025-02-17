@@ -74,8 +74,6 @@ class PaymentService
             ->with('application')
             ->first();
 
-        dd($transaction);
-
         $params = [
             'userName' => $transaction->application->username,
             'password' => $transaction->application->password,
@@ -85,6 +83,7 @@ class PaymentService
 
         $response = Http::timeout(30)->get($this->gatewayUrl . 'confirmOrder.do', $params);
         $result = $response->json();
+        dd($result);
 
         $this->updateTransactionStatus($transaction, $result);
 
