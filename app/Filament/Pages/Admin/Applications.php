@@ -207,27 +207,27 @@ class Applications extends Page implements HasForms, HasTable
                                     ->required()
                                     ->options(Environment::all()->pluck('name', 'id')),
 
-                                // Select::make('environment_type')
-                                //     ->live()
-                                //     ->required()
-                                //     ->options(function (Get $get) {
+                                Select::make('environment_type')
+                                    ->live()
+                                    ->required()
+                                    ->options(function (Get $get) {
 
-                                //         if (!$get('environment')) {
-                                //             return [];
-                                //         }
+                                        if (!$get('environment')) {
+                                            return [];
+                                        }
 
-                                //         $env = Environment::where('id', $get('environment'))->first();
-                                //         if (!$env || $env->satim_production_username || $env->satim_production_password || $env->satim_production_terminal) {
-                                //             return collect([
-                                //                 ['id' => 'development', 'name' => 'Development'],
-                                //                 ['id' => 'production', 'name' => 'Production'],
-                                //             ])->pluck('name', 'id')->toArray();
-                                //         }
+                                        $env = Environment::where('id', $get('environment'))->first();
+                                        if (!$env || $env->satim_production_username || $env->satim_production_password || $env->satim_production_terminal) {
+                                            return collect([
+                                                ['id' => 'development', 'name' => 'Development'],
+                                                ['id' => 'production', 'name' => 'Production'],
+                                            ])->pluck('name', 'id')->toArray();
+                                        }
 
-                                //         return collect([
-                                //             ['id' => 'development', 'name' => 'Development'],
-                                //         ])->pluck('name', 'id')->toArray();
-                                //     })
+                                        return collect([
+                                            ['id' => 'development', 'name' => 'Development'],
+                                        ])->pluck('name', 'id')->toArray();
+                                    })
 
                             ]),
 
