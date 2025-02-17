@@ -47,7 +47,7 @@ class PaymentService
             'amount' => $transaction->amount * 100,
             'currency' => '012',
             'returnUrl' => route('payment.confirm', $transaction->client_order_id, $application->app_key),
-            'failUrl' => route('payment.failed', $transaction->client_order_id),
+            'failUrl' => route('payment.failed'),
             'language' => 'FR',
             'jsonParams' => json_encode([
                 "force_terminal_id" => $application->environment->satim_development_terminal,
