@@ -17,7 +17,6 @@ class PaymentService
     public function initiatePayment(array $data, string $appKey): array
     {
 
-        dd('service initiate');
         $application = Application::where('app_key', $appKey)->first();
 
         $transaction = $this->createTransaction($data, $application);
