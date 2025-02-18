@@ -19,6 +19,7 @@ class PaymentController extends Controller
 
     public function initiate(Request $request)
     {
+        dd('controller initiate');
         $validated = $request->validate([
             'amount' => 'required|numeric|min:100',
         ]);
@@ -28,7 +29,6 @@ class PaymentController extends Controller
             $request->header('X-App-Key')
         );
 
-        dd($result);
 
         if ($result['gateway_response']['errorCode'] == 0) {
             return response()->json($result, Response::HTTP_OK);
@@ -42,8 +42,7 @@ class PaymentController extends Controller
 
     public function confirm(Request $request)
     {
-        dd('in the confirm function in controller');
-        dd($request->all());
+        dd('controller confirm');
 
         $result = $this->paymentService->confirmPayment(
             $clientOrderId,
@@ -66,12 +65,9 @@ class PaymentController extends Controller
     public function failed(Request $request)
     {
 
-        dd('hehe');
-
+        dd('controller failed');
         $result = $this->paymentService->confirmPayment(
             $request->orderId,
         );
-
-
     }
 }

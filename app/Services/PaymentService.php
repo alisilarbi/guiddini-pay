@@ -16,6 +16,8 @@ class PaymentService
 
     public function initiatePayment(array $data, string $appKey): array
     {
+
+        dd('service initiate');
         $application = Application::where('app_key', $appKey)->first();
 
         $transaction = $this->createTransaction($data, $application);
@@ -29,9 +31,10 @@ class PaymentService
 
     protected function createTransaction(array $data, Application $application): Transaction
     {
+        dd('service create transaction');
         return Transaction::create([
             'amount' => $data['amount'],
-            'order_number' => $this->generateClientOrderNumber($application),
+            'order_number' => $this->generateOrderNumber($application),
             'status' => 'initiated',
             'application_id' => $application->id,
             'environment_id' => $application->environment->id,
@@ -40,6 +43,7 @@ class PaymentService
 
     protected function callPaymentGateway(Transaction $transaction, Application $application): array
     {
+        dd('service call payment gateway');
         $params = [
             'userName' => $application->environment->satim_development_username,
             'password' => $application->environment->satim_development_password,
@@ -70,7 +74,8 @@ class PaymentService
 
     public function confirmPayment(string $gateway_order_id): array
     {
-        dd($gateway_order_id);
+
+        dd('service confirm payment');
         $transaction = Transaction::where('gateway_order_id', $gateway_order_id)
             ->with('application')
             ->first();
@@ -97,6 +102,8 @@ class PaymentService
 
     protected function updateTransactionStatus(Transaction $transaction, array $result): void
     {
+
+        dd('service update transaction');
         $errorCode = $result['ErrorCode'] ?? null;
         $updateData = [
             'confirmation_response' => $result,
@@ -125,14 +132,16 @@ class PaymentService
 
     protected function determineFinalStatus(array $result): string
     {
+        dd('service determine final status');
         if (($result['actionCode'] ?? 1) === 0 && ($result['OrderStatus'] ?? 0) === 2) {
             return 'completed';
         }
         return 'requires_verification';
     }
 
-    protected function generateClientOrderNumber(Application $application): string
+    protected function generateOrderNumber(Application $application): string
     {
+        dd('service generate order number');
         $environmentId = $application->environment->id;
 
         do {
