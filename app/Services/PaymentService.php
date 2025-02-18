@@ -31,7 +31,7 @@ class PaymentService
     {
         return Transaction::create([
             'amount' => $data['amount'],
-            'client_order_id' => $this->generateClientOrderNumber($application),
+            'order_number' => $this->generateClientOrderNumber($application),
             'status' => 'initiated',
             'application_id' => $application->id,
             'environment_id' => $application->environment->id,
