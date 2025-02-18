@@ -88,10 +88,10 @@ class PaymentService
         return $response->json();
     }
 
-    public function confirmPayment(string $order_number): array
+    public function confirmPayment(string $order_id): array
     {
 
-        $transaction = Transaction::where('order_number', $order_number)
+        $transaction = Transaction::where('order_id', $order_id)
             ->with('application')
             ->first();
 
