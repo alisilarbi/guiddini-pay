@@ -92,7 +92,6 @@ class PaymentService
     public function confirmPayment(string $gateway_order_id): array
     {
 
-        dd('service confirm payment');
         $transaction = Transaction::where('gateway_order_id', $gateway_order_id)
             ->with('application')
             ->first();
