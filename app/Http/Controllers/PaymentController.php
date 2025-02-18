@@ -66,13 +66,12 @@ class PaymentController extends Controller
     public function failed(Request $request)
     {
 
+        dd('hehe');
+
         $result = $this->paymentService->confirmPayment(
             $request->orderId,
         );
 
-        dd([
-            'finished' => 'Finished',
-            'result' => $result,''
-        ]);
+
     }
 }
