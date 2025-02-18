@@ -41,24 +41,11 @@ class PaymentController extends Controller
 
     public function confirm(Request $request)
     {
-        dd('controller confirm');
-
         $result = $this->paymentService->confirmPayment(
-            $clientOrderId,
-            $request->header('X-App-Key')
+            $request->orderId,
         );
 
-
-        if ($result['status'] === 'success') {
-
-            return view('payment.success', [
-                'transaction' => $result['transaction'],
-                'response' => $result['gateway_response']
-            ]);
-        }
-
-        return redirect()->route('payment.failed', $clientOrderId)
-            ->withErrors(['confirm' => $result['message'] ?? 'Confirmation failed']);
+        dd($result);
     }
 
     public function failed(Request $request)
