@@ -57,7 +57,6 @@ class PaymentService
         ];
 
         $response = Http::timeout(30)->get($this->gatewayUrl . 'register.do', $params);
-        dd($response);
         if ($response->successful()) {
             $transaction->update([
                 'gateway_order_id' => $response->json('orderId'),
@@ -147,11 +146,6 @@ class PaymentService
             Transaction::where('order_number', $orderNumber)->where('environment_id', $environmentId)->exists()
         );
 
-        dd($orderNumber);
-
-        // return (int) $orderNumber;
-
-
-
+        return $orderNumber;
     }
 }
