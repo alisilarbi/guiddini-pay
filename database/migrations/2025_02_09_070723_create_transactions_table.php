@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('action_code_description')->nullable();
             $table->string('error_code')->nullable();
             $table->string('error_message')->nullable();
+            $table->string('confirmation_status')->nullable();
 
 
             $table->uuid('application_id');
