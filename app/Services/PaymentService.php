@@ -81,7 +81,7 @@ class PaymentService
         $response = Http::timeout(30)->get($this->gatewayUrl . 'register.do', $params);
         if ($response->successful()) {
             $transaction->update([
-                'order_number' => $response->json('orderId'),
+                'order_id' => $response->json('orderId'),
                 'status' => $response->json('errorCode') == 0 ? 'pending_confirmation' : 'gateway_error'
             ]);
         }
@@ -89,23 +89,22 @@ class PaymentService
         return $response->json();
     }
 
-    public function confirmPayment(string $gateway_order_id): array
+    public function confirmPayment(string $order_id): array
     {
 
-        $transaction = Transaction::where('gateway_order_id', $gateway_order_id)
+        $transaction = Transaction::where('order_id', $order_id)
             ->with('application')
             ->first();
 
         $params = [
             'userName' => $transaction->application->environment->satim_development_username,
             'password' => $transaction->application->environment->satim_development_password,
-            'orderId' => $transaction->gateway_order_id,
+            'orderId' => $transaction->order_id,
             'language' => 'FR',
         ];
 
         $response = Http::timeout(30)->get($this->gatewayUrl . 'confirmOrder.do', $params);
         $result = $response->json();
-        dd($result);
 
         $this->updateTransactionStatus($transaction, $result);
 
