@@ -139,7 +139,7 @@ class PaymentService
 
             $base36Value = base_convert($uniqidValue, 16, 36);
 
-            $shortValue = substr($base36Value, 0, 10);
+            $shortValue = substr($base36Value, 0, 20);
 
             $orderNumber = strtoupper($shortValue);
 
