@@ -44,8 +44,6 @@ class PaymentController extends Controller
     public function confirm(Request $request, $clientOrderId)
     {
 
-        dd($request->all());
-
 
         $result = $this->paymentService->confirmPayment(
             $clientOrderId,
