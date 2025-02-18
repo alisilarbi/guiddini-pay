@@ -132,27 +132,42 @@ class PaymentService
 
     protected function generateClientOrderNumber(Application $application): string
     {
+        // $environmentId = $application->environment->id;
+
+        // do {
+        //     $timestampPart = substr(time(), -6);
+        //     $randomPart = str_pad((string) random_int(0, 999999), 4, '0', STR_PAD_LEFT);
+
+        //     $orderNumber = $timestampPart . $randomPart;
+        // } while (
+
+        //     // Transaction::where('order_number', $orderNumber)
+        //     // ->whereHas('application', function ($query) use ($environmentId) {
+        //     //     $query->where('environment_id', $environmentId);
+        //     // })->exists()
+
+
+        //     Transaction::where('order_number', $orderNumber)->where('environment_id', $environmentId)->exists()
+
+        // );
+
+        // dd($orderNumber);
+
+        // // return (int) $orderNumber;
+
+
         $environmentId = $application->environment->id;
 
         do {
-            $timestampPart = substr(time(), -6);
-            $randomPart = str_pad((string) random_int(0, 999999), 4, '0', STR_PAD_LEFT);
-
-            $orderNumber = $timestampPart . $randomPart;
-        } while (
-
-            // Transaction::where('order_number', $orderNumber)
-            // ->whereHas('application', function ($query) use ($environmentId) {
-            //     $query->where('environment_id', $environmentId);
-            // })->exists()
-
-
-            Transaction::where('order_number', $orderNumber)->where('environment_id', $environmentId)->exists()
-
+            $orderNumber = strtoupper(substr(uniqid('', true), -10));
+        } while (Transaction::where('order_number', $orderNumber)
+            ->whereHas('application', function ($query) use ($environmentId) {
+                $query->where('environment_id', $environmentId);
+            })->exists()
         );
 
         dd($orderNumber);
 
-        // return (int) $orderNumber;
+        return $orderNumber;
     }
 }
