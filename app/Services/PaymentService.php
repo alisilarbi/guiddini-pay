@@ -28,6 +28,26 @@ class PaymentService
         ];
     }
 
+    protected function generateOrderNumber(Application $application): string
+    {
+        $environmentId = $application->environment->id;
+
+        do {
+            $uniqidValue = uniqid(mt_rand(), true);
+
+            $base36Value = base_convert($uniqidValue, 16, 36);
+
+            $shortValue = substr($base36Value, 0, 20);
+
+            $orderNumber = strtoupper($shortValue);
+
+        } while (
+            Transaction::where('order_number', $orderNumber)->where('environment_id', $environmentId)->exists()
+        );
+
+        return $orderNumber;
+    }
+
     protected function createTransaction(array $data, Application $application): Transaction
     {
         return Transaction::create([
@@ -137,24 +157,5 @@ class PaymentService
         return 'requires_verification';
     }
 
-    protected function generateOrderNumber(Application $application): string
-    {
-        dd('service generate order number');
-        $environmentId = $application->environment->id;
 
-        do {
-            $uniqidValue = uniqid(mt_rand(), true);
-
-            $base36Value = base_convert($uniqidValue, 16, 36);
-
-            $shortValue = substr($base36Value, 0, 20);
-
-            $orderNumber = strtoupper($shortValue);
-
-        } while (
-            Transaction::where('order_number', $orderNumber)->where('environment_id', $environmentId)->exists()
-        );
-
-        return $orderNumber;
-    }
 }
