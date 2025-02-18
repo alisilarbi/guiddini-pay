@@ -141,7 +141,6 @@ class PaymentService
             $randomPart = str_pad((string) random_int(0, 99999999), 8, '0', STR_PAD_LEFT);
 
             $orderNumber = $timestampPart . $randomPart;
-            dd($orderNumber);
         } while (Transaction::where('order_number', $orderNumber)
             ->whereHas('application', function ($query) use ($environmentId) {
                 $query->where('environment_id', $environmentId);
