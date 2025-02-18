@@ -134,26 +134,26 @@ class PaymentService
 
         dd($updateData);
 
-        switch ((string) $errorCode) {
-            case '0':
-                $updateData['gateway_confirmation_status'] = $this->determineFinalStatus($result);
-                break;
-            case '2':
-                $updateData['gateway_confirmation_status'] = 'already_confirmed';
-                break;
-            default:
-                $updateData['gateway_confirmation_status'] = 'failed';
-        }
+        // switch ((string) $errorCode) {
+        //     case '0':
+        //         $updateData['gateway_confirmation_status'] = $this->determineFinalStatus($result);
+        //         break;
+        //     case '2':
+        //         $updateData['gateway_confirmation_status'] = 'already_confirmed';
+        //         break;
+        //     default:
+        //         $updateData['gateway_confirmation_status'] = 'failed';
+        // }
 
         $transaction->update($updateData);
     }
 
-    protected function determineFinalStatus(array $result): string
-    {
-        dd('service determine final status');
-        if (($result['actionCode'] ?? 1) === 0 && ($result['OrderStatus'] ?? 0) === 2) {
-            return 'completed';
-        }
-        return 'requires_verification';
-    }
+    // protected function determineFinalStatus(array $result): string
+    // {
+    //     dd('service determine final status');
+    //     if (($result['actionCode'] ?? 1) === 0 && ($result['OrderStatus'] ?? 0) === 2) {
+    //         return 'completed';
+    //     }
+    //     return 'requires_verification';
+    // }
 }
