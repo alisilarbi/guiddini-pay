@@ -30,7 +30,6 @@ class PaymentService
 
     protected function createTransaction(array $data, Application $application): Transaction
     {
-        dd('service create transaction');
         return Transaction::create([
             'amount' => $data['amount'],
             'order_number' => $this->generateOrderNumber($application),
