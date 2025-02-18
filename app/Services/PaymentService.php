@@ -96,6 +96,8 @@ class PaymentService
             ->with('application')
             ->first();
 
+            dd($transaction);
+
         $params = [
             'userName' => $transaction->application->environment->satim_development_username,
             'password' => $transaction->application->environment->satim_development_password,
