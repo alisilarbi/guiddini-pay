@@ -132,42 +132,26 @@ class PaymentService
 
     protected function generateClientOrderNumber(Application $application): string
     {
-        // $environmentId = $application->environment->id;
-
-        // do {
-        //     $timestampPart = substr(time(), -6);
-        //     $randomPart = str_pad((string) random_int(0, 999999), 4, '0', STR_PAD_LEFT);
-
-        //     $orderNumber = $timestampPart . $randomPart;
-        // } while (
-
-        //     // Transaction::where('order_number', $orderNumber)
-        //     // ->whereHas('application', function ($query) use ($environmentId) {
-        //     //     $query->where('environment_id', $environmentId);
-        //     // })->exists()
-
-
-        //     Transaction::where('order_number', $orderNumber)->where('environment_id', $environmentId)->exists()
-
-        // );
-
-        // dd($orderNumber);
-
-        // // return (int) $orderNumber;
-
-
         $environmentId = $application->environment->id;
 
         do {
-            $orderNumber = strtoupper(substr(uniqid('', true), -10));
-        } while (Transaction::where('order_number', $orderNumber)
-            ->whereHas('application', function ($query) use ($environmentId) {
-                $query->where('environment_id', $environmentId);
-            })->exists()
+            $uniqidValue = uniqid(mt_rand(), true);
+
+            $base36Value = base_convert($uniqidValue, 16, 36);
+
+            $shortValue = substr($base36Value, 0, 10);
+
+            $orderNumber = strtoupper($shortValue);
+
+        } while (
+            Transaction::where('order_number', $orderNumber)->where('environment_id', $environmentId)->exists()
         );
 
         dd($orderNumber);
 
-        return $orderNumber;
+        // return (int) $orderNumber;
+
+
+
     }
 }
