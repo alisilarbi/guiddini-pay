@@ -61,7 +61,6 @@ class PaymentService
 
     protected function callPaymentGateway(Transaction $transaction, Application $application): array
     {
-        dd('service call payment gateway');
         $params = [
             'userName' => $application->environment->satim_development_username,
             'password' => $application->environment->satim_development_password,
