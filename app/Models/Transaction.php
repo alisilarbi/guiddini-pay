@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Application;
+use App\Models\Environment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
@@ -12,7 +13,9 @@ class Transaction extends Model
 
     protected $fillable = [
         'status',
+
         'application_id',
+        'environment_id',
 
         'amount',
 
@@ -42,5 +45,10 @@ class Transaction extends Model
     public function application()
     {
         return $this->belongsTo(Application::class);
+    }
+
+    public function environment()
+    {
+        return $this->belongsTo(Environment::class);
     }
 }

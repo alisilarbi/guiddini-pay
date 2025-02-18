@@ -31,6 +31,9 @@ return new class extends Migration
             $table->uuid('application_id');
             $table->foreign('application_id')->references('id')->on('applications');
 
+            $table->uuid('environment_id');
+            $table->foreign('environment_id')->references('id')->on('environments');
+
             $table->timestamps();
         });
     }
