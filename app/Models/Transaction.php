@@ -30,6 +30,7 @@ class Transaction extends Model
         'error_code',
         'error_message',
         'order_number',
+        'confirmation_status',
 
     ];
 
