@@ -47,7 +47,7 @@ class PaymentService
             'orderNumber' => Str::random(5),
             'amount' => $transaction->amount * 100,
             'currency' => '012',
-            'returnUrl' => route('payment.confirm', $transaction->order_number, $application->app_key),
+            'returnUrl' => route('payment.confirm', $transaction->order_number),
             'failUrl' => route('payment.failed'),
             'language' => 'FR',
             'jsonParams' => json_encode([
@@ -60,7 +60,7 @@ class PaymentService
         $response = Http::timeout(30)->get($this->gatewayUrl . 'register.do', $params);
         if ($response->successful()) {
             $transaction->update([
-                'gateway_order_id' => $response->json('orderId'),
+                'order_number' => $response->json('orderId'),
                 'status' => $response->json('errorCode') == 0 ? 'pending_confirmation' : 'gateway_error'
             ]);
         }
