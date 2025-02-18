@@ -47,7 +47,7 @@ class PaymentService
             'orderNumber' => Str::random(5),
             'amount' => $transaction->amount * 100,
             'currency' => '012',
-            'returnUrl' => route('payment.confirm', $transaction->client_order_id, $application->app_key),
+            'returnUrl' => route('payment.confirm', $transaction->order_number, $application->app_key),
             'failUrl' => route('payment.failed'),
             'language' => 'FR',
             'jsonParams' => json_encode([
