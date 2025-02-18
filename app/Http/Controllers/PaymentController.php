@@ -67,6 +67,8 @@ class PaymentController extends Controller
 
     public function failed(Request $request)
     {
+
+        dd($request->all());
         $result = $this->paymentService->confirmPayment(
             $request->orderId,
         );
