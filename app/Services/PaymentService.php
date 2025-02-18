@@ -95,7 +95,6 @@ class PaymentService
             ->with('application')
             ->first();
 
-        dd($transaction);
 
         $params = [
             'userName' => $transaction->application->environment->satim_development_username,
@@ -103,6 +102,8 @@ class PaymentService
             'orderId' => $transaction->order_id,
             'language' => 'FR',
         ];
+
+        dd($params);
 
         $response = Http::timeout(30)->get($this->gatewayUrl . 'confirmOrder.do', $params);
         $result = $response->json();
