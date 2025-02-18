@@ -110,7 +110,6 @@ class PaymentService
         $this->updateTransactionStatus($transaction, $result);
 
         return [
-            'status' => 'success',
             'transaction' => $transaction,
             'gateway_response' => $result
         ];
