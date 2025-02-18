@@ -21,7 +21,6 @@ class PaymentController extends Controller
     {
         $validated = $request->validate([
             'amount' => 'required|numeric|min:100',
-            'client_order_id' => 'required|string',
         ]);
 
         $result = $this->paymentService->initiatePayment(
@@ -41,9 +40,9 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function confirm(Request $request, $clientOrderId)
+    public function confirm(Request $request)
     {
-
+        dd($request->all());
 
         $result = $this->paymentService->confirmPayment(
             $clientOrderId,
