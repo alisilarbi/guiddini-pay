@@ -147,8 +147,6 @@ class PaymentService
             })->exists()
         );
 
-        dd($orderNumber);
-
         return $orderNumber;
     }
 }
