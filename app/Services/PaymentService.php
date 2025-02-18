@@ -130,23 +130,29 @@ class PaymentService
         return 'requires_verification';
     }
 
-    protected function generateClientOrderNumber(Application $application): int
+    protected function generateClientOrderNumber(Application $application): string
     {
         $environmentId = $application->environment->id;
 
         do {
-            $microtime = microtime(true);
-            $timestampPart = str_replace('.', '', sprintf('%.6f', $microtime));
-
-            $randomPart = str_pad((string) random_int(0, 99999999), 8, '0', STR_PAD_LEFT);
+            $timestampPart = substr(time(), -6);
+            $randomPart = str_pad((string) random_int(0, 999999), 4, '0', STR_PAD_LEFT);
 
             $orderNumber = $timestampPart . $randomPart;
-        } while (Transaction::where('order_number', $orderNumber)
-            ->whereHas('application', function ($query) use ($environmentId) {
-                $query->where('environment_id', $environmentId);
-            })->exists()
+        } while (
+
+            // Transaction::where('order_number', $orderNumber)
+            // ->whereHas('application', function ($query) use ($environmentId) {
+            //     $query->where('environment_id', $environmentId);
+            // })->exists()
+
+
+            Transaction::where('order_number', $orderNumber)->where('environment_id', $environmentId)->exists()
+
         );
 
-        return $orderNumber;
+        dd($orderNumber);
+
+        // return (int) $orderNumber;
     }
 }
