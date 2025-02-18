@@ -118,22 +118,21 @@ class PaymentService
 
     protected function updateTransactionStatus(Transaction $transaction, array $result): void
     {
-        dd([
-            'transaction' => $transaction,
-            'result' => $result
-        ]);
-
-
         $errorCode = $result['ErrorCode'] ?? null;
         $updateData = [
-            'gateway_order_id' => $result['OrderNumber'] ?? null,
-            'gateway_confirmation_status' => $result['actionCode'] ?? null,
-            'gateway_response_message' => $result['actionCodeDescription'] ?? null,
-            'gateway_error_code' => $result['ErrorCode'] ?? null,
-            'gateway_code' => $result['authCode'] ?? null,
-            'amount' => $result['Amount'] / 100 ?? null,
-            'currency' => $result['currency'] ?? null,
+
+            'card_holder_name' => $result['cardholderName'],
+            'deposit_amount' => $result['depositAmount'],
+            'currency' => $result['currency'],
+            'aut_code' => $result['authCode'],
+            'action_code' => $result['actionCode'],
+            'action_code_description' => $result['actionCodeDescription'],
+            'error_code' => $result['ErrorCode'],
+            'error_message' => $result['ErrorMessage'],
+            // 'params' => $result['params'],
         ];
+
+        dd($updateData);
 
         switch ((string) $errorCode) {
             case '0':
