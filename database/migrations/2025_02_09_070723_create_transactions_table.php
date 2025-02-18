@@ -15,20 +15,21 @@ return new class extends Migration
             $table->uuid('id')->primary();
 
             $table->string('status')->default('pending');
-            $table->string('amount', 10, 2);
+            $table->string('amount', 10, 2)->nullable();
+            $table->string('order_number')->nullable();
+            $table->string('order_id')->nullable();
+            $table->string('card_holder_name')->nullable();
+            $table->string('deposit_amount')->nullable();
+            $table->string('currency')->nullable();
+            $table->string('auth_code')->nullable();
+            $table->string('action_code')->nullable();
+            $table->string('action_code_description')->nullable();
+            $table->string('error_code')->nullable();
+            $table->string('error_message')->nullable();
 
-            $table->string('client_order_id')->nullable();
-
-            $table->string('gateway_order_id')->nullable();
-            $table->string('gateway_confirmation_status')->nullable();
-            $table->string('gateway_response_message')->nullable();
-            $table->string('gateway_error_code')->nullable();
-            $table->string('gateway_code')->nullable();
 
             $table->uuid('application_id');
             $table->foreign('application_id')->references('id')->on('applications');
-
-            $table->timestamp('paid_at')->nullable();
 
             $table->timestamps();
         });

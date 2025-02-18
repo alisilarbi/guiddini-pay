@@ -11,21 +11,23 @@ class Transaction extends Model
     use HasUuids;
 
     protected $fillable = [
-        'pack_name',
-        'amount',
-        'name',
-        'email',
-        'phone',
         'status',
         'application_id',
 
-        'client_order_id',
-        'gateway_order_id',
-        'gateway_bool',
-        'gateway_response_message',
-        'gateway_confirmation_status',
-        'gateway_error_code',
-        'gateway_code',
+        'amount',
+
+        'order_number',
+        'order_id',
+        'card_holder_name',
+        'deposit_amount',
+        'currency',
+        'auth_code',
+        'action_code',
+        'action_code_description',
+        'error_code',
+        'error_message',
+        'order_number',
+
     ];
 
     protected static function boot()
