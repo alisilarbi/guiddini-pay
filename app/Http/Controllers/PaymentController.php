@@ -66,5 +66,7 @@ class PaymentController extends Controller
         $result = $this->paymentService->confirmPayment(
             $request->orderId,
         );
+
+        dd($result);
     }
 }

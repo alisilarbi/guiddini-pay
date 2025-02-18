@@ -132,8 +132,6 @@ class PaymentService
             // 'params' => $result['params'],
         ];
 
-        dd($updateData);
-
         // switch ((string) $errorCode) {
         //     case '0':
         //         $updateData['gateway_confirmation_status'] = $this->determineFinalStatus($result);
