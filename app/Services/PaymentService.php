@@ -103,8 +103,6 @@ class PaymentService
             'language' => 'FR',
         ];
 
-        dd($params);
-
         $response = Http::timeout(30)->get($this->gatewayUrl . 'confirmOrder.do', $params);
         $result = $response->json();
 
