@@ -107,6 +107,11 @@ class PaymentService
         $result = $response->json();
 
         $this->updateTransactionStatus($transaction, $result);
+        dd([
+            'status' => 'success',
+            'transaction' => $transaction,
+            'gateway_response' => $result
+        ]);
 
         return [
             'status' => 'success',
