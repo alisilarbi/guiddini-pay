@@ -139,15 +139,15 @@ class PaymentService
 
             $randomPart = str_pad((string) random_int(0, 99999999), 8, '0', STR_PAD_LEFT);
 
-            $orderId = $timestampPart . $randomPart;
-        } while (Transaction::where('client_order_id', $orderId)
+            $orderNumber = $timestampPart . $randomPart;
+        } while (Transaction::where('order_number', $orderNumber)
             ->whereHas('application', function ($query) use ($environmentId) {
                 $query->where('environment_id', $environmentId);
             })->exists()
         );
 
-        dd($orderId);
+        dd($orderNumber);
 
-        return $orderId;
+        return $orderNumber;
     }
 }
