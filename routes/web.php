@@ -12,7 +12,7 @@ Route::get('/', function () {
 
 Route::prefix('payment')->group(function () {
     Route::get('/confirm/{order_number}', [PaymentController::class, 'confirm'])->name('payment.confirm');
-    Route::get('/failed', [PaymentController::class, 'failed'])->name('payment.failed');
+    Route::get('/failed/{order_number}', [PaymentController::class, 'failed'])->name('payment.failed');
 });
 
 
