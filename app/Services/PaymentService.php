@@ -148,7 +148,6 @@ class PaymentService
 
     protected function determineFinalStatus(array $result): string
     {
-        dd('service determine final status');
         if (($result['actionCode'] ?? 1) === 0 && ($result['OrderStatus'] ?? 0) === 2) {
             return 'completed';
         }
