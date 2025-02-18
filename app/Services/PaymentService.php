@@ -123,7 +123,7 @@ class PaymentService
             'card_holder_name' => $result['cardholderName'],
             'deposit_amount' => $result['depositAmount'],
             'currency' => $result['currency'],
-            'aut_code' => $result['authCode'],
+            'auth_code' => $result['authCode'],
             'action_code' => $result['actionCode'],
             'action_code_description' => $result['actionCodeDescription'],
             'error_code' => $result['ErrorCode'],
