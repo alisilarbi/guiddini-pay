@@ -118,11 +118,14 @@ class PaymentService
 
     protected function updateTransactionStatus(Transaction $transaction, array $result): void
     {
-        dd($result);
-        dd('service update transaction');
+        dd([
+            'transaction' => $transaction,
+            'result' => $result
+        ]);
+
+
         $errorCode = $result['ErrorCode'] ?? null;
         $updateData = [
-            'confirmation_response' => $result,
             'gateway_order_id' => $result['OrderNumber'] ?? null,
             'gateway_confirmation_status' => $result['actionCode'] ?? null,
             'gateway_response_message' => $result['actionCodeDescription'] ?? null,
