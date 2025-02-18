@@ -31,7 +31,7 @@ class PaymentService
     {
         return Transaction::create([
             'amount' => $data['amount'],
-            'client_order_id' => $this->generateClientOrderNumber(),
+            'client_order_id' => $this->generateClientOrderNumber($application),
             'status' => 'initiated',
             'application_id' => $application->id,
         ]);
@@ -131,6 +131,7 @@ class PaymentService
 
     protected function generateClientOrderNumber(Application $application): int
     {
+        dd($application);
         do {
             $orderId = (int) (microtime(true) * 10000) + random_int(100, 999);
         } while (Transaction::where('client_order_id', $orderId)
