@@ -131,7 +131,7 @@ class PaymentService
 
     protected function generateClientOrderNumber(Application $application): int
     {
-        dd($application);
+        dd($application->environment);
         do {
             $orderId = (int) (microtime(true) * 10000) + random_int(100, 999);
         } while (Transaction::where('client_order_id', $orderId)
