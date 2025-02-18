@@ -31,7 +31,7 @@ class PaymentService
     {
         return Transaction::create([
             'amount' => $data['amount'],
-            'client_order_id' => $data['client_order_id'],
+            'client_order_id' => $this->generateClientOrderNumber(),
             'status' => 'initiated',
             'application_id' => $application->id,
         ]);
@@ -129,9 +129,15 @@ class PaymentService
         return 'requires_verification';
     }
 
-    protected function generateClientOrderId(): int
+    protected function generateClientOrderNumber(Application $application): int
     {
-        $lastOrder = Transaction::lockForUpdate()->orderBy('client_order_id', 'desc')->first();
-        return $lastOrder ? $lastOrder->client_order_id + 1 : $this->orderIdStart;
+        do {
+            $orderId = (int) (microtime(true) * 10000) + random_int(100, 999);
+        } while (Transaction::where('client_order_id', $orderId)
+            ->whereHas('application', function ($q) use ($application) {
+                $q->where('environment_id', $application->environment->id);
+            })->exists()
+        );
+        return $orderId;
     }
 }
