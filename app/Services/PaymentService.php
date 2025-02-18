@@ -34,6 +34,7 @@ class PaymentService
             'client_order_id' => $this->generateClientOrderNumber($application),
             'status' => 'initiated',
             'application_id' => $application->id,
+            'environment_id' => $application->environment->id,
         ]);
     }
 
