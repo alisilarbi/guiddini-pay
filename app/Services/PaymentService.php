@@ -40,7 +40,6 @@ class PaymentService
             $shortValue = substr($base36Value, 0, 20);
 
             $orderNumber = strtoupper($shortValue);
-
         } while (
             Transaction::where('order_number', $orderNumber)->where('environment_id', $environmentId)->exists()
         );
@@ -89,14 +88,14 @@ class PaymentService
         return $response->json();
     }
 
-    public function confirmPayment(string $order_id): array
+    public function confirmPayment(string $order_number): array
     {
 
-        $transaction = Transaction::where('order_id', $order_id)
+        $transaction = Transaction::where('order_number', $order_number)
             ->with('application')
             ->first();
 
-            dd($transaction);
+        dd($transaction);
 
         $params = [
             'userName' => $transaction->application->environment->satim_development_username,
@@ -160,6 +159,4 @@ class PaymentService
         }
         return 'requires_verification';
     }
-
-
 }
