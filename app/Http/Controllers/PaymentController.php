@@ -59,6 +59,7 @@ class PaymentController extends Controller
         }
 
         if (isset($result['errorCode']) && $result['errorCode'] == 0) {
+            dd($result);
             return response()->json($result, Response::HTTP_OK);
         }
 
