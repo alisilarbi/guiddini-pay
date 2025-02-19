@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
+use Exception;
 use App\Models\Application;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Http\Client\TimeoutException;
 use Illuminate\Http\Client\RequestException;
-use Exception;
+use Illuminate\Http\Client\ConnectionException;
+use SebastianBergmann\Invoker\TimeoutException;
 
 class PaymentService
 {
@@ -108,7 +108,10 @@ class PaymentService
             }
             $statusCode = $response->status();
             $errorMessage = $response->json('errorMessage', 'Unknown gateway error');
+
+
             if (in_array($statusCode, [401, 403])) {
+                dd('we are here');
                 $transaction->update(['status' => 'gateway_access_denied']);
                 return [
                     'errorCode' => $statusCode,
@@ -116,6 +119,8 @@ class PaymentService
                     'details' => $errorMessage
                 ];
             }
+
+
             $transaction->update(['status' => 'gateway_failure']);
             return [
                 'errorCode' => $statusCode,

@@ -44,15 +44,23 @@ class PaymentController extends Controller
     protected function formatResponse(array $result)
     {
         if (isset($result['gateway_response'])) {
-            return (($result['gateway_response']['errorCode'] ?? null) == 0)
-                ? response()->json($result, Response::HTTP_OK)
-                : response()->json([
-                    'error' => $result['gateway_response']['errorMessage'] ?? 'Payment error',
-                    'gateway_response' => $result['gateway_response']
-                ], Response::HTTP_BAD_REQUEST);
+
+            $errorCode = $result['gateway_response']['errorCode'] ?? null;
+            if ($errorCode == 0) {
+                return response()->json($result, Response::HTTP_OK);
+            }
+            return response()->json([
+                'error' => $result['gateway_response']['errorMessage'] ?? 'Payment error',
+                'gateway_response' => $result['gateway_response']
+            ], Response::HTTP_BAD_REQUEST);
+
+
         }
-        return ((isset($result['errorCode']) && $result['errorCode'] == 0))
-            ? response()->json($result, Response::HTTP_OK)
-            : response()->json($result, Response::HTTP_BAD_REQUEST);
+
+        if (isset($result['errorCode']) && $result['errorCode'] == 0) {
+            return response()->json($result, Response::HTTP_OK);
+        }
+
+        return response()->json($result, Response::HTTP_BAD_REQUEST);
     }
 }
