@@ -47,8 +47,11 @@ class PaymentController extends Controller
 
             $errorCode = $result['gateway_response']['errorCode'] ?? null;
             if ($errorCode == 0) {
+                dd('error code zero');
                 return response()->json($result, Response::HTTP_OK);
             }
+
+            dd('turn it up');
 
             return response()->json([
                 'error' => $result['gateway_response']['errorMessage'] ?? 'Payment error',
