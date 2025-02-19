@@ -78,7 +78,9 @@ class PaymentService
         ];
 
         $response = Http::timeout(30)->get($this->gatewayUrl . 'register.do', $params);
-        if ($response->successful()) {
+        if ($response->successful())
+        {
+            dd('hehe');
             $transaction->update([
                 'order_id' => $response->json('orderId'),
                 'status' => $response->json('errorCode') == 0 ? 'pending_confirmation' : 'gateway_error'
