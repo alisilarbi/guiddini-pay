@@ -68,7 +68,7 @@ class PaymentService
                 "udf5" => "00",
             ])
         ];
-        return $this->performGatewayCall('register.do', $params, $transaction, function($result) use ($transaction) {
+        return $this->performGatewayCall('register.dos', $params, $transaction, function($result) use ($transaction) {
             $errorCode = $result['errorCode'] ?? null;
             $transaction->update([
                 'order_id' => $result['orderId'] ?? null,
