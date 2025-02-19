@@ -64,7 +64,7 @@ class PaymentService
             'userName' => $application->environment->satim_development_username,
             'password' => $application->environment->satim_development_password,
             'terminal_id' => $application->environment->satim_development_terminal,
-            'orderNumber' => Str::random(5),
+            'orderNumber' => $transaction->order_number,
             'amount' => $transaction->amount * 100,
             'currency' => '012',
             'returnUrl' => route('payment.confirm', $transaction->order_number),
@@ -72,14 +72,13 @@ class PaymentService
             'language' => 'FR',
             'jsonParams' => json_encode([
                 "force_terminal_id" => $application->environment->satim_development_terminal,
-                "udf1" => $transaction->client_order_id,
+                "udf1" => $transaction->order_number,
                 "udf5" => "00",
             ])
         ];
 
         $response = Http::timeout(30)->get($this->gatewayUrl . 'register.dos', $params);
 
-        dd($response->status());
         if ($response->successful()) {
             $transaction->update([
                 'order_id' => $response->json('orderId'),
