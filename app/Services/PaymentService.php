@@ -89,6 +89,8 @@ class PaymentService
 
         if($response->failed())
         {
+
+            dd('failed');
             $transaction->update([
                 'status' => 'gateway_failure',
             ]);
