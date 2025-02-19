@@ -94,7 +94,7 @@ class PaymentService
             ]);
         }
 
-        dd($response);
+        dd($response->json());
 
         return $response->json();
     }
