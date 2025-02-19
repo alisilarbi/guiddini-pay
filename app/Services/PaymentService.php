@@ -79,7 +79,7 @@ class PaymentService
 
         $response = Http::timeout(30)->get($this->gatewayUrl . 'register.dos', $params);
 
-
+        dd($response->status);
         if ($response->successful()) {
             $transaction->update([
                 'order_id' => $response->json('orderId'),
@@ -93,8 +93,6 @@ class PaymentService
                 'status' => 'gateway_failure',
             ]);
         }
-
-        dd($response->json());
 
         return $response->json();
     }
