@@ -86,12 +86,12 @@ class PaymentService
             ]);
         }
 
-        if($response->failed())
-        {
-            $transaction->update([
-                'status' => 'gateway_failure',
-            ]);
-        }
+        // if($response->failed())
+        // {
+        //     $transaction->update([
+        //         'status' => 'gateway_failure',
+        //     ]);
+        // }
 
         return $response->json();
     }
