@@ -78,22 +78,28 @@ class PaymentService
         ];
 
         $response = Http::timeout(30)->get($this->gatewayUrl . 'register.do', $params);
-        if ($response->successful()) {
-            dd([
-                'body' => $response->body(),
-                'fluent' => $response->fluent(),
-                'headers' => $response->headers(),
-                'status' => $response->status(),
-                'effectiveUri' => $response->effectiveUri(),
-                'cookies' => $response->cookies(),
-            ]);
-            $transaction->update([
-                'order_id' => $response->json('orderId'),
-                'status' => $response->json('errorCode') == 0 ? 'pending_confirmation' : 'gateway_error'
-            ]);
-        }
+
+        $transaction->update([
+            'status' => 'gateway_failure',
+        ]);
 
         return $response->json();
+
+        // if ($response->successful()) {
+        //     $transaction->update([
+        //         'order_id' => $response->json('orderId'),
+        //         'status' => $response->json('errorCode') == 0 ? 'pending_confirmation' : 'gateway_error'
+        //     ]);
+        // }
+
+        // if($response->failed())
+        // {
+        //     $transaction->update([
+        //         'status' => 'gateway_failure',
+        //     ]);
+        // }
+
+        // return $response->json();
     }
 
     public function confirmPayment(string $order_id): array
