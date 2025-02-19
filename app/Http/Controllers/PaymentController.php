@@ -49,6 +49,7 @@ class PaymentController extends Controller
             if ($errorCode == 0) {
                 return response()->json($result, Response::HTTP_OK);
             }
+
             return response()->json([
                 'error' => $result['gateway_response']['errorMessage'] ?? 'Payment error',
                 'gateway_response' => $result['gateway_response']

@@ -68,7 +68,7 @@ class PaymentService
                 "udf5" => "00",
             ])
         ];
-        return $this->performGatewayCall('register.dos', $params, $transaction, function($result) use ($transaction) {
+        return $this->performGatewayCall('register.do', $params, $transaction, function($result) use ($transaction) {
             $errorCode = $result['errorCode'] ?? null;
             $transaction->update([
                 'order_id' => $result['orderId'] ?? null,
@@ -83,12 +83,14 @@ class PaymentService
         $transaction = Transaction::where('order_id', $order_id)
             ->with('application')
             ->first();
+
         $params = [
             'userName' => $transaction->application->environment->satim_development_username,
             'password' => $transaction->application->environment->satim_development_password,
             'orderId' => $transaction->order_id,
             'language' => 'FR',
         ];
+
         return $this->performGatewayCall('confirmOrder.do', $params, $transaction, function($result) use ($transaction) {
             $this->updateTransactionStatus($transaction, $result);
             return [
@@ -119,7 +121,6 @@ class PaymentService
                     'details' => $errorMessage
                 ];
             }
-
 
             $transaction->update(['status' => 'gateway_failure']);
             return [
