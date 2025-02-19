@@ -12,7 +12,7 @@ use SebastianBergmann\Invoker\TimeoutException;
 
 class PaymentService
 {
-    protected string $gatewayUrl = 'https://test.satim.dz/payment/rest/';
+    protected string $gatewayUrl = 'https://cib.satim.dz/payment/rest/';
 
     public function initiatePayment(array $data, string $appKey): array
     {
