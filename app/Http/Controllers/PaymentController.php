@@ -55,7 +55,6 @@ class PaymentController extends Controller
                 'gateway_response' => $result['gateway_response']
             ], Response::HTTP_BAD_REQUEST);
 
-
         }
 
         if (isset($result['errorCode']) && $result['errorCode'] == 0) {

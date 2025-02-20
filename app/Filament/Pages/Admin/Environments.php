@@ -13,6 +13,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Enums\FontWeight;
 use Filament\Forms\Components\Fieldset;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\TextInput;
@@ -57,6 +58,47 @@ class Environments extends Page implements HasForms, HasTable
                     ]),
                 ])
 
+            ])
+            ->actions([
+                EditAction::make('update')
+                    ->form([
+                        Fieldset::make('Information')
+                            ->columns(2)
+                            ->schema([
+                                TextInput::make('name')
+                                    ->required(),
+                            ]),
+
+                        Fieldset::make('Development')
+                            ->columns(3)
+                            ->schema([
+                                TextInput::make('satim_development_username')
+                                    ->live()
+                                    ->required(),
+                                TextInput::make('satim_development_password')
+                                    ->live()
+                                    ->required(),
+                                TextInput::make('satim_development_terminal')
+                                    ->live()
+                                    ->required(),
+                            ]),
+
+                        Fieldset::make('Production')
+                            ->columns(3)
+                            ->schema([
+                                TextInput::make('satim_production_username')
+                                    ->live()
+                                    ->required(fn($get) => $get('satim_production_password') || $get('satim_production_terminal')),
+
+                                TextInput::make('satim_production_password')
+                                    ->live()
+                                    ->required(fn($get) => $get('satim_production_username') || $get('satim_production_terminal')),
+
+                                TextInput::make('satim_production_terminal')
+                                    ->live()
+                                    ->required(fn($get) => $get('satim_production_username') || $get('satim_production_password')),
+                            ])
+                    ])
             ])
             ->headerActions([
                 Action::make('create')
