@@ -40,7 +40,7 @@ class PaymentController extends Controller
         $result = $this->paymentService->confirmPayment($request->orderId);
         $formattedResponse = $this->formatResponse($result);
 
-        dd($result);
+        dd($result['transaction']->environment);
     }
 
     protected function formatResponse(array $result)
