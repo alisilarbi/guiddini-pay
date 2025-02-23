@@ -38,11 +38,14 @@ class PaymentController extends Controller
     public function failed(Request $request)
     {
         $result = $this->paymentService->confirmPayment($request->orderId);
-        $formattedResponse = $this->formatResponse($result);
 
-        $failRedirectUrl = $result['transaction']->application->fail_redirect_url;
+        $response = $this->formatResponse($result);
 
-        return redirect()->to($failRedirectUrl, $formattedResponse);
+        $url = $result['transaction']->application->fail_redirect_url;
+
+        $queryString = http_build_query($response);
+
+        return redirect()->to($url . '?' . $queryString);
     }
 
     protected function formatResponse(array $result)
@@ -58,7 +61,6 @@ class PaymentController extends Controller
                 'error' => $result['gateway_response']['errorMessage'] ?? 'Payment error',
                 'gateway_response' => $result['gateway_response']
             ], Response::HTTP_BAD_REQUEST);
-
         }
 
         if (isset($result['errorCode']) && $result['errorCode'] == 0) {
