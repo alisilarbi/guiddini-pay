@@ -52,6 +52,8 @@ class PaymentController extends Controller
 
         $response = $this->formatResponse($result);
 
+        dd($response);
+
         $url = $result['transaction']->application->fail_redirect_url;
 
         $queryString = http_build_query($response);
