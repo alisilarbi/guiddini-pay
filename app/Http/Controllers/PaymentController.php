@@ -34,7 +34,6 @@ class PaymentController extends Controller
     {
         // $result = $this->paymentService->confirmPayment($request->orderId);
         // return $this->formatResponse($result);
-
         $result = $this->paymentService->confirmPayment($request->orderId);
         $response = $this->formatResponse($result);
 
@@ -51,13 +50,9 @@ class PaymentController extends Controller
         // return $this->formatResponse($result);
 
         $result = $this->paymentService->confirmPayment($request->orderId);
-
         $response = $this->formatResponse($result);
-
         dd($response);
-
         $url = $result['transaction']->application->fail_redirect_url;
-
         $queryString = http_build_query($response);
 
         return redirect()->to($url . '?' . $queryString);
