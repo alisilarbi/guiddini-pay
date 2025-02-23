@@ -26,6 +26,7 @@ class PaymentController extends Controller
             $request->header('X-App-Key')
         );
 
+        return $result;
         return $this->formatResponse($result);
     }
 
