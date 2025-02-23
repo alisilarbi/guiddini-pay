@@ -40,7 +40,9 @@ class PaymentController extends Controller
         $result = $this->paymentService->confirmPayment($request->orderId);
         $formattedResponse = $this->formatResponse($result);
 
-        dd($result['transaction']->application);
+        $failRedirectUrl = $result['transaction']->application->fail_redirect_url;
+
+        return redirect()->to($failRedirectUrl, $formattedResponse);
     }
 
     protected function formatResponse(array $result)
