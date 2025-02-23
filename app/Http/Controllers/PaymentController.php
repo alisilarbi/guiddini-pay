@@ -18,7 +18,7 @@ class PaymentController extends Controller
     public function initiate(Request $request)
     {
         $validated = $request->validate([
-            'amount' => 'required|numeric|min:100',
+            'amount' => 'required|numeric|min:50|decimal:0,2',
         ]);
 
         $result = $this->paymentService->initiatePayment(
@@ -32,45 +32,32 @@ class PaymentController extends Controller
     public function confirm(Request $request)
     {
         $result = $this->paymentService->confirmPayment($request->orderId);
-        $response = $this->formatResponse($result);
-        $url = $result['transaction']->application->success_redirect_url;
-        $queryString = http_build_query($response);
-
-        return redirect()->to($url . '?' . $queryString);
+        return $this->formatResponse($result);
     }
 
     public function failed(Request $request)
     {
-        $result = $this->paymentService->confirmPayment($request->orderId);
-
-        $response = $this->formatResponse($result);
-
-        $url = $result['transaction']->application->fail_redirect_url;
-
-        $queryString = http_build_query($response);
-
-        return redirect()->to($url . '?' . $queryString);
+        $result = $this->paymentService->handleFailedPayment($request->orderId);
+        return $this->formatResponse($result);
     }
 
     protected function formatResponse(array $result)
     {
-        if (isset($result['gateway_response'])) {
+        $success = $result['success'] ?? false;
+        $statusCode = $success ? Response::HTTP_OK : Response::HTTP_BAD_REQUEST;
 
-            $errorCode = $result['gateway_response']['errorCode'] ?? null;
-            if ($errorCode == 0) {
-                return response()->json($result, Response::HTTP_OK);
-            }
+        $responseData = [
+            'success' => $success,
+            'code' => $result['code'] ?? ($success ? 'SUCCESS' : 'UNKNOWN_ERROR'),
+            'message' => $result['message'] ?? ($success ? 'Operation successful' : 'An error occurred'),
+            'data' => $result['data'] ?? null
+        ];
 
-            return response()->json([
-                'error' => $result['gateway_response']['errorMessage'] ?? 'Payment error',
-                'gateway_response' => $result['gateway_response']
-            ], Response::HTTP_BAD_REQUEST);
+        if (!$success) {
+            $responseData['errors'] = $result['errors'] ?? null;
+            $responseData['gateway_response'] = $result['gateway_response'] ?? null;
         }
 
-        if (isset($result['errorCode']) && $result['errorCode'] == 0) {
-            return response()->json($result, Response::HTTP_OK);
-        }
-
-        return response()->json($result, Response::HTTP_BAD_REQUEST);
+        return response()->json($responseData, $statusCode);
     }
 }

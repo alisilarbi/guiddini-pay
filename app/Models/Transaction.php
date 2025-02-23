@@ -32,6 +32,8 @@ class Transaction extends Model
         'order_number',
         'confirmation_status',
 
+        'environment_type',
+
     ];
 
     protected static function boot()

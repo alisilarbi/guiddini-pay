@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('error_message')->nullable();
             $table->string('confirmation_status')->nullable();
 
+            $table->string('environment_type');
 
             $table->uuid('application_id');
             $table->foreign('application_id')->references('id')->on('applications');
