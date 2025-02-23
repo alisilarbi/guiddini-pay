@@ -38,8 +38,9 @@ class PaymentController extends Controller
     public function failed(Request $request)
     {
         $result = $this->paymentService->confirmPayment($request->orderId);
-        $resultFormatted = $this->formatResponse($result);
-        dd($resultFormatted);
+        $formattedResponse = $this->formatResponse($result);
+
+        dd($result);
     }
 
     protected function formatResponse(array $result)
