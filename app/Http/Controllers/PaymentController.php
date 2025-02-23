@@ -44,11 +44,6 @@ class PaymentController extends Controller
 
     protected function formatResponse(array $result)
     {
-
-        if (isset($result['errorCode']) && $result['errorCode'] == 0) {
-            return response()->json($result, Response::HTTP_OK);
-        }
-
         if (isset($result['gateway_response'])) {
 
             $errorCode = $result['gateway_response']['errorCode'] ?? null;
