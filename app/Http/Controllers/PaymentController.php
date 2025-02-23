@@ -31,15 +31,10 @@ class PaymentController extends Controller
 
     public function confirm(Request $request)
     {
-        // $result = $this->paymentService->confirmPayment($request->orderId);
-        // return $this->formatResponse($result);
-
         $result = $this->paymentService->confirmPayment($request->orderId);
-        $resposne = $this->formatResponse($result);
-
+        $response = $this->formatResponse($result);
         $url = $result['transaction']->application->success_redirect_url;
-
-        $queryString = http_build_query($result);
+        $queryString = http_build_query($response);
 
         return redirect()->to($url . '?' . $queryString);
     }
