@@ -44,14 +44,14 @@ class PaymentController extends Controller
 
     protected function formatResponse(array $result)
     {
+
+        dd($result);
         if (isset($result['gateway_response'])) {
 
             $errorCode = $result['gateway_response']['errorCode'] ?? null;
             if ($errorCode == 0) {
                 return response()->json($result, Response::HTTP_OK);
             }
-
-            dd('we got here');
 
             return response()->json([
                 'error' => $result['gateway_response']['errorMessage'] ?? 'Payment error',
