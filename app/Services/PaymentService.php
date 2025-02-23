@@ -32,7 +32,6 @@ class PaymentService
                 ],
                 'gateway_response' => $response
             ];
-
         } catch (Exception $e) {
             return $this->handleException($e, 'initiate_payment_error');
         }
@@ -57,7 +56,6 @@ class PaymentService
                     'gateway_response' => $response
                 ]
             ];
-
         } catch (Exception $e) {
             return $this->handleException($e, 'confirmation_error');
         }
@@ -82,7 +80,6 @@ class PaymentService
                     'gateway_response' => $response
                 ]
             ];
-
         } catch (Exception $e) {
             return $this->handleException($e, 'failure_handling_error');
         }
@@ -143,7 +140,6 @@ class PaymentService
             $this->updateTransactionStatus($transaction, $result);
 
             return $result;
-
         } catch (RequestException $e) {
             $transaction->update(['status' => 'gateway_error']);
             return [
@@ -171,7 +167,7 @@ class PaymentService
         $env = $transaction->application->environment;
         $prefix = $transaction->environment_type === 'production' ? 'satim_production' : 'satim_development';
 
-        return match($type) {
+        return match ($type) {
             'username' => $env->{$prefix . '_username'},
             'password' => $env->{$prefix . '_password'},
             'terminal' => $env->{$prefix . '_terminal'},
@@ -229,11 +225,16 @@ class PaymentService
     private function generateOrderNumber(Application $application): string
     {
         $environmentId = $application->environment->id;
+
         do {
-            $orderNumber = strtoupper(substr(base_convert(uniqid(mt_rand(), 16, 36), 0, 20));
-        } while (Transaction::where('order_number', $orderNumber)
+            $unique = uniqid(mt_rand(), true);
+            $orderNumber = strtoupper(substr(base_convert($unique, 16, 36), 0, 20));
+        } while (
+            Transaction::where('order_number', $orderNumber)
             ->where('environment_id', $environmentId)
-            ->exists());
+            ->exists()
+        );
+
         return $orderNumber;
     }
 }
