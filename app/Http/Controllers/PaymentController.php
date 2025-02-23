@@ -51,6 +51,8 @@ class PaymentController extends Controller
                 return response()->json($result, Response::HTTP_OK);
             }
 
+            // dd('we got here')
+
             return response()->json([
                 'error' => $result['gateway_response']['errorMessage'] ?? 'Payment error',
                 'gateway_response' => $result['gateway_response']
