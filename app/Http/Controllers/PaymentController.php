@@ -45,7 +45,7 @@ class PaymentController extends Controller
     protected function formatResponse(array $result)
     {
 
-        dd($result);
+        dd($result['gateway_response']);
         if (isset($result['gateway_response'])) {
 
             $errorCode = $result['gateway_response']['errorCode'] ?? null;
