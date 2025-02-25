@@ -16,26 +16,26 @@ class ValidateApiKeys
      */
     public function handle(Request $request, Closure $next)
     {
-        // $appKey = $request->header('x-app-key');
-        // $secretKey = $request->header('x-secret-key');
+        $appKey = $request->header('x-app-key');
+        $secretKey = $request->header('x-secret-key');
 
-        // if (!$appKey || !$secretKey) {
-        //     return response()->json(['error' => 'Invalid API keys'], 401);
-        // }
+        if (!$appKey || !$secretKey) {
+            return response()->json(['error' => 'Invalid API keys'], 401);
+        }
 
-        // $application = Application::where('app_key', $appKey)
-        //     ->where('app_secret', $secretKey)
-        //     ->first();
+        $application = Application::where('app_key', $appKey)
+            ->where('app_secret', $secretKey)
+            ->first();
 
-        // if (!$application) {
-        //     return response()->json(['error' => 'Invalid API keys'], 401);
-        // }
+        if (!$application) {
+            return response()->json(['error' => 'Invalid API keys'], 401);
+        }
 
-        // $origin = $request->header('Origin') ?? $request->header('Referer');
+        $origin = $request->header('Origin') ?? $request->header('Referer');
 
-        // if ($origin && rtrim($origin, '/') !== rtrim($application->website_url, '/')) {
-        //     return response()->json(['error' => 'Unauthorized origin'], 403);
-        // }
+        if ($origin && rtrim($origin, '/') !== rtrim($application->website_url, '/')) {
+            return response()->json(['error' => 'Unauthorized origin'], 403);
+        }
 
         return $next($request);
     }
