@@ -28,9 +28,12 @@ class PaymentService
                 'message' => 'Payment initiated successfully',
                 'data' => [
                     'formUrl' => $response['formUrl'] ?? null,
-                    'transaction' => $transaction
-                ],
-                'gateway_response' => $response
+                    'transaction' => [
+                        'amount' => $transaction->amount,
+                        'order_number' => $transaction->order_number,
+                        'status' => $transaction->status,
+                    ]
+                ]
             ];
         } catch (Exception $e) {
             return $this->handleException($e, 'initiate_payment_error');
