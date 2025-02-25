@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use App\Models\Application;
 use Illuminate\Http\Request;
+use App\Http\Resources\ApiResponseResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class ValidateApiKeys
@@ -20,7 +21,7 @@ class ValidateApiKeys
         $secretKey = $request->header('x-secret-key');
 
         if (!$appKey || !$secretKey) {
-            return response()->json(['error' => 'Invalid API keys'], 401);
+            return (new ApiResponseResource(['success' => false, 'code' => 'INVALID_API_KEYS', 'message' => 'Invalid API keys']))->response()->setStatusCode(401);
         }
 
         $application = Application::where('app_key', $appKey)
@@ -28,22 +29,15 @@ class ValidateApiKeys
             ->first();
 
         if (!$application) {
-            return response()->json(['error' => 'Invalid API keys'], 401);
+            return (new ApiResponseResource(['success' => false, 'code' => 'INVALID_API_KEYS', 'message' => 'Invalid API keys']))->response()->setStatusCode(401);
         }
 
         $origin = $request->header('Origin') ?? $request->header('Referer');
 
         if ($origin && rtrim($origin, '/') !== rtrim($application->website_url, '/')) {
-            return response()->json(['error' => 'Unauthorized origin'], 403);
+            return (new ApiResponseResource(['success' => false, 'code' => 'UNAUTHORIZED_ORIGIN', 'message' => 'Unauthorized origin']))->response()->setStatusCode(403);
         }
 
         return $next($request);
     }
-
-    // private function isValidKeys($appKey, $secretKey): bool
-    // {
-    //     return \App\Models\Application::where('app_key', $appKey)
-    //         ->where('app_secret', $secretKey)
-    //         ->exists();
-    // }
 }
