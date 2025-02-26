@@ -45,8 +45,7 @@ class PaymentService
 
         $transaction = Transaction::where('order_number', $orderId)
             ->with('application')
-            ->first();
-        // ->firstOrFail();
+            ->firstOrFail();
 
         dd($transaction);
 
