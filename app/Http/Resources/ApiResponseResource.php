@@ -12,14 +12,35 @@ class ApiResponseResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    public static $wrap = null;
+
+    public function toArray($request): array
     {
+        if ($this->resource['success'] ?? false) {
+            return [
+                'data' => $this->resource['data'] ?? null,
+                'meta' => [
+                    'code' => $this->resource['code'] ?? 'SUCCESS',
+                    'message' => $this->resource['message'] ?? 'Operation succeeded',
+                ]
+            ];
+        }
+
         return [
-            'success' => $this->resource['success'] ?? false,
-            'code' => $this->resource['code'] ?? ($this->resource['success'] ? 'SUCCESS' : 'ERROR'),
-            'message' => $this->resource['message'] ?? ($this->resource['success'] ? 'Operation successful' : 'Operation failed'),
-            'data' => $this->resource['data'] ?? [],
-            'errors' => $this->resource['errors'] ?? null
+            'errors' => [
+                [
+                    'status' => (string)($this->resource['http_code'] ?? 500),
+                    'code' => $this->resource['code'] ?? 'INTERNAL_ERROR',
+                    'title' => $this->resource['message'] ?? 'Unexpected error occurred',
+                    'detail' => $this->resource['errors']['system'] ?? null,
+                    'meta' => $this->resource['errors'] ?? []
+                ]
+            ]
         ];
+    }
+
+    public function withResponse($request, $response)
+    {
+        $response->setStatusCode($this->resource['http_code'] ?? 500);
     }
 }
