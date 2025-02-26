@@ -43,7 +43,7 @@ class PaymentService
     public function confirmPayment(string $orderId): array
     {
 
-        $transaction = Transaction::where('gateway_order_id', $orderId)
+        $transaction = Transaction::where('order_number', $orderId)
             ->with('application')
             ->first();
         // ->firstOrFail();
