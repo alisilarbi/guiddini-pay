@@ -43,11 +43,12 @@ class PaymentService
     public function confirmPayment(string $orderId): array
     {
 
-        dd($orderId);
         try {
             $transaction = Transaction::where('gateway_order_id', $orderId)
                 ->with('application')
                 ->firstOrFail();
+
+            dd($transaction);
 
             $this->setEnvironment($transaction);
             $response = $this->callConfirmationGateway($transaction);
@@ -145,7 +146,6 @@ class PaymentService
             $result = $response->json();
             $this->updateTransactionStatus($transaction, $result);
             return $result;
-
         } catch (RequestException $e) {
             $transaction->update(['status' => 'gateway_error']);
             return [
