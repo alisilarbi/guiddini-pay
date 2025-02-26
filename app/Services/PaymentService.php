@@ -144,9 +144,7 @@ class PaymentService
 
             $result = $response->json();
             $this->updateTransactionStatus($transaction, $result);
-            dd($result);
             return $result;
-
 
         } catch (RequestException $e) {
             $transaction->update(['status' => 'gateway_error']);
