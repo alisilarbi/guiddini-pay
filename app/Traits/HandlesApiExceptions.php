@@ -2,10 +2,11 @@
 
 namespace App\Traits;
 
-use App\Exceptions\PaymentException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
+use App\Exceptions\PaymentException;
+use App\Http\Resources\ApiResponseResource;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 trait HandlesApiExceptions
 {
