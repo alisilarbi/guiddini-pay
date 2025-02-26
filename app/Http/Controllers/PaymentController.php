@@ -53,6 +53,8 @@ class PaymentController extends Controller
             $redirectUrl = $result['data']['transaction']->application->success_redirect_url;
             $queryParams = http_build_query($result['gateway_response']);
 
+            dd($redirectUrl);
+
             return redirect()->to("$redirectUrl?$queryParams");
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
