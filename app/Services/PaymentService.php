@@ -138,7 +138,14 @@ class PaymentService
                 ->get($this->gatewayBaseUrl . $endpoint, $params);
 
             $result = $response->json();
-            dd($result);
+            if (!$response->successful()) {
+                dd('not success');
+            }
+
+            if (!$response->successful()) {
+                dd('sucess');
+            }
+
 
             if (!$response->successful()) {
                 throw new RequestException($response);
