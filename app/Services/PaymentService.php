@@ -137,12 +137,11 @@ class PaymentService
             $response = Http::timeout(30)
                 ->get($this->gatewayBaseUrl . $endpoint, $params);
 
-            $result = $response->json();
             if (!$response->successful()) {
                 dd('not success');
             }
 
-            if (!$response->successful()) {
+            if ($response->successful()) {
                 dd('sucess');
             }
 
