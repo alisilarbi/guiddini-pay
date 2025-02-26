@@ -43,11 +43,31 @@ class PaymentService
     public function confirmPayment(string $orderId): array
     {
 
+        $transaction = Transaction::where('gateway_order_id', $orderId)
+            ->with('application')
+            ->first();
+        // ->firstOrFail();
+
+        dd($transaction);
+
+        $this->setEnvironment($transaction);
+        $response = $this->callConfirmationGateway($transaction);
+
+        return [
+            'success' => ($response['errorCode'] ?? 1) === 0,
+            'code' => 'PAYMENT_CONFIRMED',
+            'message' => 'Payment confirmation processed',
+            'data' => [
+                'transaction' => $transaction,
+                'gateway_response' => $response
+            ]
+        ];
+
         try {
             $transaction = Transaction::where('gateway_order_id', $orderId)
                 ->with('application')
                 ->first();
-                // ->firstOrFail();
+            // ->firstOrFail();
 
             dd($transaction);
 
