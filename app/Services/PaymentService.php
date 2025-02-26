@@ -47,8 +47,6 @@ class PaymentService
             ->with('application')
             ->firstOrFail();
 
-        dd($transaction);
-
         $this->setEnvironment($transaction);
         $response = $this->callConfirmationGateway($transaction);
 
