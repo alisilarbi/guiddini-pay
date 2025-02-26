@@ -42,6 +42,8 @@ class PaymentService
 
     public function confirmPayment(string $orderId): array
     {
+
+        dd($orderId);
         try {
             $transaction = Transaction::where('order_id', $orderId)
                 ->with('application')
