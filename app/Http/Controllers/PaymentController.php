@@ -49,6 +49,7 @@ class PaymentController extends Controller
 
         try {
             $result = $this->paymentService->confirmPayment($orderId);
+            dd($result);
 
             $redirectUrl = $result['transaction']['application']['success_redirect_url'];
             dd($redirectUrl);
