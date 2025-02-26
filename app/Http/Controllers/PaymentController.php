@@ -51,8 +51,8 @@ class PaymentController extends Controller
             $result = $this->paymentService->confirmPayment($orderId);
 
             $redirectUrl = $result['data']['transaction']->application->success_redirect_url;
-            dd($redirectUrl);
 
+            dd($result);
             $queryParams = http_build_query($result['gateway_response']);
 
 
