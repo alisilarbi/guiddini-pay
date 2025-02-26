@@ -137,7 +137,7 @@ class PaymentService
             $response = Http::timeout(30)
                 ->get($this->gatewayBaseUrl . $endpoint, $params);
 
-                dd($response);
+                dd($response->all());
 
             if (!$response->successful()) {
                 throw new RequestException($response);
