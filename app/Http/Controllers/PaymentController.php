@@ -52,8 +52,7 @@ class PaymentController extends Controller
 
             $redirectUrl = $result['data']['transaction']->application->success_redirect_url;
 
-            dd($result);
-            $queryParams = http_build_query($result['gateway_response']);
+            $queryParams = http_build_query($result['data']['gateway_response']);
 
 
             return redirect()->to("$redirectUrl?$queryParams");
