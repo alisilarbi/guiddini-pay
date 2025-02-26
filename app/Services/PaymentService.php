@@ -137,13 +137,15 @@ class PaymentService
             $response = Http::timeout(30)
                 ->get($this->gatewayBaseUrl . $endpoint, $params);
 
-                dd($response->all());
+            $result = $response->json();
+            dd($result);
 
             if (!$response->successful()) {
                 throw new RequestException($response);
             }
 
             $result = $response->json();
+
             $this->updateTransactionStatus($transaction, $result);
 
             return $result;
