@@ -32,14 +32,14 @@ class ApiResponseResource extends JsonResource
                 'type' => 'transactions',
                 'id' => $data['transaction']['order_number'],
                 'attributes' => [
-                    'amount' => $data['transaction']['amount'],
-                    'status' => $data['transaction']['status'],
-                    'confirmation_status' => $data['transaction']['confirmation_status'],
+                    'amount' => $data['transaction']->amount,
+                    'status' => $data['transaction']->status,
+                    'confirmation_status' => $data['transaction']->confirmation_status,
                     'form_url' => $data['formUrl']
                 ],
                 'links' => [
-                    'self' => route('payment.status', $data['transaction']['order_number']),
-                    'confirm' => route('payment.confirm', $data['transaction']['order_number'])
+                    'self' => route('payment.status', $data['transaction']->order_number),
+                    'confirm' => route('payment.confirm', $data['transaction']->order_number)
                 ]
             ],
             'meta' => [
