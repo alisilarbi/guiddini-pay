@@ -160,27 +160,32 @@ class PaymentService
 
             $this->updateTransactionStatus($transaction, $result);
 
-
             return $result;
         } catch (RequestException $e) {
+
             $transaction->update(['status' => 'gateway_error']);
             return [
                 'errorCode' => $e->getCode(),
                 'errorMessage' => 'Gateway request failed',
                 'details' => $e->response->json()
             ];
+
         } catch (ConnectionException $e) {
+
             $transaction->update(['status' => 'gateway_unreachable']);
             return [
                 'errorCode' => 'CONNECTION_ERROR',
                 'errorMessage' => 'Could not connect to payment gateway'
             ];
+
         } catch (Exception $e) {
+
             $transaction->update(['status' => 'gateway_error']);
             return [
                 'errorCode' => 'UNKNOWN_ERROR',
                 'errorMessage' => 'Unexpected payment processing error'
             ];
+
         }
     }
 
@@ -241,13 +246,16 @@ class PaymentService
 
     private function determineTransactionStatus(array $result): string
     {
+
         if (!isset($result['ErrorCode']) || $result['ErrorCode'] !== '0') {
-            return 'gateway_error';
+            $response =  'gateway_error';
         }
 
         if (!isset($result['actionCode']) || $result['actionCode'] !== '0') {
-            return 'requires_verification';
+            $response =  'requires_verification';
         }
+
+        dd($response);
 
         return 'completed';
     }
