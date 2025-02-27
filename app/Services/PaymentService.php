@@ -22,10 +22,10 @@ class PaymentService
             $this->setEnvironment($transaction);
             $response = $this->callPaymentGateway($transaction, $application);
 
-            dd($response);
+            // dd($response);
 
             return [
-                'success' => ($response['errorCode'] ?? 1) === 0,
+                'success' => ($response['errorCode'] ?? '1') === '0',
                 'code' => 'PAYMENT_INITIATED',
                 'message' => 'Payment initiated successfully',
                 'data' => [
