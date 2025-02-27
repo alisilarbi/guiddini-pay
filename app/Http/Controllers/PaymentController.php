@@ -31,7 +31,16 @@ class PaymentController extends Controller
                 $request->header('X-App-Key')
             );
 
-            dd($result);
+
+            $apiResposne = new ApiResponseResource([
+                'success' => true,
+                'code' => 'PAYMENT_INITIATED',
+                'message' => 'Payment initiated successfully',
+                'data' => $result,
+                'http_code' => 201
+            ]);
+
+            dd($apiResponse);
 
             return new ApiResponseResource([
                 'success' => true,
