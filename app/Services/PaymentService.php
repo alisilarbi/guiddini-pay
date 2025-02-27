@@ -231,7 +231,10 @@ class PaymentService
     private function updateTransactionStatus(Transaction $transaction, array $result): void
     {
 
-        dd($this->determineTransactionStatus($result));
+        dd([
+            'transaction' => $transaction,
+            'result' => $result
+        ]);
 
         $updateData = [
             'confirmation_status' => $this->determineTransactionStatus($result),
@@ -252,7 +255,7 @@ class PaymentService
 
         dd($result);
 
-        if (!isset($result['ErrorCode']) || $result['ErrorCode'] !== '0') {
+        if (!isset($result['errorCode']) || $result['errorCode'] !== '0') {
             return 'gateway_error';
         }
 
