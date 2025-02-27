@@ -234,10 +234,6 @@ class PaymentService
 
     private function updateTransactionStatus(Transaction $transaction, array $result): void
     {
-        dd([
-            'transaction' => $transaction,
-            'result' => $result
-        ]);
 
         $updateData = [
             'status' => $this->determineTransactionStatus($result),
@@ -255,6 +251,8 @@ class PaymentService
 
     private function determineTransactionStatus(array $result): string
     {
+        dd($result);
+
         if (($result['ErrorCode'] ?? 1) !== 0) return 'gateway_error';
         if (($result['actionCode'] ?? 1) !== 0) return 'requires_verification';
         return 'completed';
