@@ -256,14 +256,12 @@ class PaymentService
     {
 
         if (!isset($result['ErrorCode']) || $result['ErrorCode'] !== '0') {
-            $response =  'gateway_error';
+            return 'gateway_error';
         }
 
         if (!isset($result['actionCode']) || $result['actionCode'] !== '0') {
-            $response =  'requires_verification';
+            return 'requires_verification';
         }
-
-        dd($response);
 
         return 'completed';
     }
