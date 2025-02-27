@@ -5,6 +5,7 @@ namespace App\Services;
 use Exception;
 use App\Models\Application;
 use App\Models\Transaction;
+use App\Exceptions\PaymentException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\ConnectionException;
@@ -15,6 +16,30 @@ class PaymentService
 
     public function initiatePayment(array $data, string $appKey): array
     {
+        // try {
+        //     $application = Application::where('app_key', $appKey)->firstOrFail();
+        //     $transaction = $this->createTransaction($data, $application);
+
+        //     $this->setEnvironment($transaction);
+        //     $response = $this->callPaymentGateway($transaction, $application);
+
+        //     return [
+        //         'success' => ($response['errorCode'] ?? '1') === '0',
+        //         'code' => 'PAYMENT_INITIATED',
+        //         'message' => 'Payment initiated successfully',
+        //         'data' => [
+        //             'formUrl' => $response['formUrl'] ?? null,
+        //             'transaction' => [
+        //                 'amount' => $transaction->amount,
+        //                 'order_number' => $transaction->order_number,
+        //                 'status' => $transaction->status,
+        //             ]
+        //         ]
+        //     ];
+        // } catch (Exception $e) {
+        //     return $this->handleException($e, 'initiate_payment_error');
+        // }
+
         try {
             $application = Application::where('app_key', $appKey)->firstOrFail();
             $transaction = $this->createTransaction($data, $application);
@@ -22,21 +47,32 @@ class PaymentService
             $this->setEnvironment($transaction);
             $response = $this->callPaymentGateway($transaction, $application);
 
+            dd($response);
+
+            if (($response['errorCode'] ?? '1') !== '0') {
+                throw new PaymentException(
+                    $response['errorMessage'] ?? 'Payment gateway error',
+                    'GATEWAY_ERROR',
+                    502,
+                    ['gateway_response' => $response]
+                );
+            }
+
             return [
-                'success' => ($response['errorCode'] ?? '1') === '0',
-                'code' => 'PAYMENT_INITIATED',
-                'message' => 'Payment initiated successfully',
-                'data' => [
-                    'formUrl' => $response['formUrl'] ?? null,
-                    'transaction' => [
-                        'amount' => $transaction->amount,
-                        'order_number' => $transaction->order_number,
-                        'status' => $transaction->status,
-                    ]
+                'formUrl' => $response['formUrl'],
+                'transaction' => [
+                    'amount' => $transaction->amount,
+                    'order_number' => $transaction->order_number,
+                    'status' => $transaction->status,
                 ]
             ];
         } catch (Exception $e) {
-            return $this->handleException($e, 'initiate_payment_error');
+            throw new PaymentException(
+                'Payment initiation failed',
+                'PAYMENT_INIT_ERROR',
+                422,
+                ['system' => $e->getMessage()]
+            );
         }
     }
 
