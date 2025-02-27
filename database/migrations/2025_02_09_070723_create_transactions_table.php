@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('error_code')->nullable();
             $table->string('error_message')->nullable();
             $table->string('status')->default('processing');
-            $table->string('confirmation_status')->default('pending');
+            $table->string('confirmation_status')->default('requires_verification');
             $table->string('description')->nullable();
 
             $table->string('environment_type');
