@@ -32,16 +32,6 @@ class PaymentService
                 );
             }
 
-            $hehe =  [
-                'formUrl' => $response['formUrl'],
-                'transaction' => [
-                    'amount' => $transaction->amount,
-                    'order_number' => $transaction->order_number,
-                    'status' => $transaction->status,
-                ]
-            ];
-
-            dd($transaction);
             return [
                 'formUrl' => $response['formUrl'],
                 'transaction' => [
@@ -251,10 +241,14 @@ class PaymentService
 
     private function determineTransactionStatus(array $result): string
     {
-        dd($result);
+        if (!isset($result['ErrorCode']) || $result['ErrorCode'] !== '0') {
+            return 'gateway_error';
+        }
 
-        if (($result['ErrorCode'] ?? 1) !== 0) return 'gateway_error';
-        if (($result['actionCode'] ?? 1) !== 0) return 'requires_verification';
+        if (!isset($result['actionCode']) || $result['actionCode'] !== '0') {
+            return 'requires_verification';
+        }
+
         return 'completed';
     }
 
