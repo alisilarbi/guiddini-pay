@@ -31,6 +31,7 @@ class Transaction extends Model
         'error_message',
         'order_number',
         'confirmation_status',
+        'description',
 
         'environment_type',
 
