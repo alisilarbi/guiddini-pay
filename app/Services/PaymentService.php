@@ -37,7 +37,8 @@ class PaymentService
                 'transaction' => [
                     'amount' => $transaction->amount,
                     'order_number' => $transaction->order_number,
-                    'status' => $transaction->status,
+                    'confirmation_status' => $transaction->confirmation_status,
+                    'status' => $transaction->status
                 ]
             ];
         } catch (Exception $e) {
@@ -231,7 +232,7 @@ class PaymentService
     {
 
         $updateData = [
-            'status' => $this->determineTransactionStatus($result),
+            'confirmation_status' => $this->determineTransactionStatus($result),
             'error_code' => $result['ErrorCode'] ?? null,
             'error_message' => $result['ErrorMessage'] ?? null,
             'gateway_response' => json_encode($result)
