@@ -155,18 +155,6 @@ class PaymentService
         return $this->performGatewayCall('register.do', $params, $transaction);
     }
 
-    private function callConfirmationGateway(Transaction $transaction): array
-    {
-        $params = [
-            'userName' => $this->getCredentials($transaction, 'username'),
-            'password' => $this->getCredentials($transaction, 'password'),
-            'orderId' => $transaction->order_id,
-            'language' => 'FR',
-        ];
-
-        return $this->performGatewayCall('confirmOrder.do', $params, $transaction);
-    }
-
     private function performGatewayCall(string $endpoint, array $params, Transaction $transaction): array
     {
         try {
@@ -179,7 +167,11 @@ class PaymentService
             }
 
             $result = $response->json();
+
+            dd($result);
             $this->updateTransactionStatus($transaction, $result);
+
+
             return $result;
         } catch (RequestException $e) {
             $transaction->update(['status' => 'gateway_error']);
@@ -203,6 +195,18 @@ class PaymentService
         }
     }
 
+    private function callConfirmationGateway(Transaction $transaction): array
+    {
+        $params = [
+            'userName' => $this->getCredentials($transaction, 'username'),
+            'password' => $this->getCredentials($transaction, 'password'),
+            'orderId' => $transaction->order_id,
+            'language' => 'FR',
+        ];
+
+        return $this->performGatewayCall('confirmOrder.do', $params, $transaction);
+    }
+
     private function getCredentials(Transaction $transaction, string $type): string
     {
         $env = $transaction->application->environment;
@@ -219,16 +223,6 @@ class PaymentService
     private function createTransaction(array $data, Application $application): Transaction
     {
 
-        $transaction = Transaction::create([
-            'amount' => $data['amount'],
-            'order_number' => $this->generateOrderNumber($application),
-            'status' => 'initiated',
-            'application_id' => $application->id,
-            'environment_id' => $application->environment->id,
-            'environment_type' => $application->environment_type
-        ]);
-
-        dd($transaction);
         return Transaction::create([
             'amount' => $data['amount'],
             'order_number' => $this->generateOrderNumber($application),
