@@ -47,8 +47,6 @@ class PaymentService
             $this->setEnvironment($transaction);
             $response = $this->callPaymentGateway($transaction, $application);
 
-            dd($response);
-
             if (($response['errorCode'] ?? '1') !== '0') {
                 throw new PaymentException(
                     $response['errorMessage'] ?? 'Payment gateway error',
@@ -58,6 +56,16 @@ class PaymentService
                 );
             }
 
+            $hehe =  [
+                'formUrl' => $response['formUrl'],
+                'transaction' => [
+                    'amount' => $transaction->amount,
+                    'order_number' => $transaction->order_number,
+                    'status' => $transaction->status,
+                ]
+            ];
+
+            dd($hehe);
             return [
                 'formUrl' => $response['formUrl'],
                 'transaction' => [
