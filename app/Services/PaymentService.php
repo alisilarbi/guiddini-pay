@@ -135,7 +135,7 @@ class PaymentService
             'currency' => '012',
             'returnUrl' => route('payment.confirm', $transaction->order_number),
             // 'failUrl' => route('payment.failed', $transaction->order_number),
-            'language' => 'FR',
+            'language' => 'AR',
             'jsonParams' => json_encode([
                 "force_terminal_id" => $this->getCredentials($transaction, 'terminal'),
                 "udf1" => $transaction->order_number,
