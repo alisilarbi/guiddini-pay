@@ -168,7 +168,6 @@ class PaymentService
 
             $result = $response->json();
 
-            dd($result);
             $this->updateTransactionStatus($transaction, $result);
 
 
@@ -235,6 +234,11 @@ class PaymentService
 
     private function updateTransactionStatus(Transaction $transaction, array $result): void
     {
+        dd([
+            'transaction' => $transaction,
+            'result' => $result
+        ]);
+
         $updateData = [
             'status' => $this->determineTransactionStatus($result),
             'error_code' => $result['ErrorCode'] ?? null,
