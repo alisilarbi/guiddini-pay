@@ -218,6 +218,17 @@ class PaymentService
 
     private function createTransaction(array $data, Application $application): Transaction
     {
+
+        $transaction = Transaction::create([
+            'amount' => $data['amount'],
+            'order_number' => $this->generateOrderNumber($application),
+            'status' => 'initiated',
+            'application_id' => $application->id,
+            'environment_id' => $application->environment->id,
+            'environment_type' => $application->environment_type
+        ]);
+
+        dd($transaction);
         return Transaction::create([
             'amount' => $data['amount'],
             'order_number' => $this->generateOrderNumber($application),
