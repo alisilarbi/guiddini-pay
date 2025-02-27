@@ -16,30 +16,6 @@ class PaymentService
 
     public function initiatePayment(array $data, string $appKey): array
     {
-        // try {
-        //     $application = Application::where('app_key', $appKey)->firstOrFail();
-        //     $transaction = $this->createTransaction($data, $application);
-
-        //     $this->setEnvironment($transaction);
-        //     $response = $this->callPaymentGateway($transaction, $application);
-
-        //     return [
-        //         'success' => ($response['errorCode'] ?? '1') === '0',
-        //         'code' => 'PAYMENT_INITIATED',
-        //         'message' => 'Payment initiated successfully',
-        //         'data' => [
-        //             'formUrl' => $response['formUrl'] ?? null,
-        //             'transaction' => [
-        //                 'amount' => $transaction->amount,
-        //                 'order_number' => $transaction->order_number,
-        //                 'status' => $transaction->status,
-        //             ]
-        //         ]
-        //     ];
-        // } catch (Exception $e) {
-        //     return $this->handleException($e, 'initiate_payment_error');
-        // }
-
         try {
             $application = Application::where('app_key', $appKey)->firstOrFail();
             $transaction = $this->createTransaction($data, $application);
@@ -65,7 +41,7 @@ class PaymentService
                 ]
             ];
 
-            dd($hehe);
+            dd($transaction);
             return [
                 'formUrl' => $response['formUrl'],
                 'transaction' => [
