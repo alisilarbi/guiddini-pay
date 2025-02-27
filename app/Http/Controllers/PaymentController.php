@@ -31,7 +31,6 @@ class PaymentController extends Controller
                 $request->header('X-App-Key')
             );
 
-
             $apiResponse = new ApiResponseResource([
                 'success' => true,
                 'code' => 'PAYMENT_INITIATED',
@@ -55,19 +54,32 @@ class PaymentController extends Controller
     }
 
 
-    public function confirm(Request $request, string $orderId)
+    public function confirm(Request $request, string $orderNumber)
     {
-
         try {
-            $result = $this->paymentService->confirmPayment($orderId);
+            $result = $this->paymentService->confirmPayment($orderNumber);
+            $transaction = $result['transaction'];
+            $gatewayResponse = $result['gateway_response'];
 
-            $redirectUrl = $result['data']['transaction']->application->success_redirect_url;
+            $redirectUrl = $transaction->status === 'paid'
+                ? $transaction->application->success_redirect_url
+                : $transaction->application->fail_redirect_url;
 
-            $queryParams = http_build_query($result['data']['gateway_response']);
+            $queryParams = http_build_query([
+                'status' => $transaction->status,
+                'confirmation_status' => $transaction->confirmation_status,
+                'order_number' => $orderNumber,
+                'gateway_code' => $this->getGatewayErrorCode($gatewayResponse)
+            ]);
 
             return redirect()->to("$redirectUrl?$queryParams");
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
         }
+    }
+
+    private function getGatewayErrorCode(array $response): string
+    {
+        return (string)($response['ErrorCode'] ?? $response['errorCode'] ?? 'UNKNOWN');
     }
 }

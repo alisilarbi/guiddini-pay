@@ -23,16 +23,15 @@ class PaymentException extends Exception
         $this->errors = $errors;
     }
 
+    // Add getters
     public function getStatusCode(): int
     {
         return $this->statusCode;
     }
-
     public function getErrorCode(): string
     {
         return $this->errorCode;
     }
-
     public function getErrors(): array
     {
         return $this->errors;

@@ -9,6 +9,7 @@ use App\Exceptions\PaymentException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PaymentService
 {
@@ -21,75 +22,74 @@ class PaymentService
             $transaction = $this->createTransaction($data, $application);
 
             $this->setEnvironment($transaction);
-            $response = $this->callPaymentGateway($transaction, $application);
+            $response = $this->callPaymentGateway($transaction);
 
-            if (($response['errorCode'] ?? '1') !== '0') {
+            $errorCode = $this->getGatewayErrorCode($response);
+
+            if ($errorCode !== '0') {
+                $this->updateTransactionStatus($transaction, $response);
                 throw new PaymentException(
-                    $response['errorMessage'] ?? 'Payment gateway error',
+                    $response['ErrorMessage'] ?? $response['errorMessage'] ?? 'Payment gateway error',
                     'GATEWAY_ERROR',
-                    502,
+                    402,
                     ['gateway_response' => $response]
                 );
             }
 
             return [
                 'formUrl' => $response['formUrl'],
-                'transaction' => [
-                    'amount' => $transaction->amount,
-                    'order_number' => $transaction->order_number,
-                    'confirmation_status' => $transaction->confirmation_status,
-                    'status' => $transaction->status
-                ]
+                'transaction' => $transaction->only(['order_number', 'status', 'confirmation_status'])
             ];
-        } catch (Exception $e) {
+        } catch (ModelNotFoundException $e) {
+            throw new PaymentException('Application not found', 'APP_NOT_FOUND', 404);
+        } catch (ConnectionException $e) {
+            throw new PaymentException('Payment gateway unreachable', 'GATEWAY_UNAVAILABLE', 503);
+        } catch (RequestException $e) {
             throw new PaymentException(
-                'Payment initiation failed',
-                'PAYMENT_INIT_ERROR',
-                422,
-                ['system' => $e->getMessage()]
+                'Gateway request failed',
+                'GATEWAY_ERROR',
+                $e->response->status(),
+                ['gateway_response' => $e->response->json()]
             );
         }
     }
 
-    public function confirmPayment(string $orderId): array
+    public function confirmPayment(string $orderNumber): array
     {
-
-        $transaction = Transaction::where('order_number', $orderId)
-            ->with('application')
-            ->firstOrFail();
-
-        $this->setEnvironment($transaction);
-        $response = $this->callConfirmationGateway($transaction);
-
-        return [
-            'success' => ($response['errorCode'] ?? 1) === 0,
-            'code' => 'PAYMENT_CONFIRMED',
-            'message' => 'Payment confirmation processed',
-            'data' => [
-                'transaction' => $transaction,
-                'gateway_response' => $response
-            ]
-        ];
-
         try {
-            $transaction = Transaction::where('gateway_order_id', $orderId)
+            $transaction = Transaction::where('order_number', $orderNumber)
                 ->with('application')
                 ->firstOrFail();
 
             $this->setEnvironment($transaction);
             $response = $this->callConfirmationGateway($transaction);
 
-            return [
-                'success' => ($response['errorCode'] ?? 1) === 0,
-                'code' => 'PAYMENT_CONFIRMED',
-                'message' => 'Payment confirmation processed',
-                'data' => [
-                    'transaction' => $transaction,
-                    'gateway_response' => $response
-                ]
+            $errorCode = $this->getGatewayErrorCode($response);
+            $isSuccess = $errorCode === '0';
+
+            $updateData = [
+                'status' => $isSuccess ? 'paid' : 'failed',
+                'confirmation_status' => $isSuccess ? 'confirmed' : 'rejected',
+                'gateway_response' => json_encode($response)
             ];
-        } catch (Exception $e) {
-            return $this->handleException($e, 'confirmation_error');
+
+            $transaction->update($updateData);
+
+            return [
+                'transaction' => $transaction,
+                'gateway_response' => $response
+            ];
+        } catch (ModelNotFoundException $e) {
+            throw new PaymentException('Transaction not found', 'TRANSACTION_NOT_FOUND', 404);
+        } catch (ConnectionException $e) {
+            throw new PaymentException('Payment gateway unreachable', 'GATEWAY_UNAVAILABLE', 503);
+        } catch (RequestException $e) {
+            throw new PaymentException(
+                'Confirmation request failed',
+                'CONFIRMATION_FAILED',
+                $e->response->status(),
+                ['gateway_response' => $e->response->json()]
+            );
         }
     }
 
@@ -124,7 +124,7 @@ class PaymentService
             : 'https://test.satim.dz/payment/rest/';
     }
 
-    private function callPaymentGateway(Transaction $transaction, Application $application): array
+    private function callPaymentGateway(Transaction $transaction): array
     {
         $params = [
             'userName' => $this->getCredentials($transaction, 'username'),
@@ -170,7 +170,6 @@ class PaymentService
                 'errorMessage' => 'Gateway request failed',
                 'details' => $e->response->json()
             ];
-
         } catch (ConnectionException $e) {
 
             $transaction->update(['status' => 'gateway_unreachable']);
@@ -178,7 +177,6 @@ class PaymentService
                 'errorCode' => 'CONNECTION_ERROR',
                 'errorMessage' => 'Could not connect to payment gateway'
             ];
-
         } catch (Exception $e) {
 
             $transaction->update(['status' => 'gateway_error']);
@@ -186,7 +184,6 @@ class PaymentService
                 'errorCode' => 'UNKNOWN_ERROR',
                 'errorMessage' => 'Unexpected payment processing error'
             ];
-
         }
     }
 
@@ -283,5 +280,10 @@ class PaymentService
         );
 
         return $orderNumber;
+    }
+
+    private function getGatewayErrorCode(array $response): string
+    {
+        return (string)($response['ErrorCode'] ?? $response['errorCode'] ?? '1');
     }
 }

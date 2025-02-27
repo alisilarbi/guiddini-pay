@@ -17,15 +17,40 @@ class ApiResponseResource extends JsonResource
     public function toArray($request): array
     {
         if ($this->resource['success'] ?? false) {
-            return [
-                'data' => $this->resource['data'] ?? null,
-                'meta' => [
-                    'code' => $this->resource['code'] ?? 'SUCCESS',
-                    'message' => $this->resource['message'] ?? 'Operation succeeded',
-                ]
-            ];
+            return $this->formatSuccessResponse();
         }
 
+        return $this->formatErrorResponse();
+    }
+
+    private function formatSuccessResponse(): array
+    {
+        $data = $this->resource['data'];
+
+        return [
+            'data' => [
+                'type' => 'transactions',
+                'id' => $data['transaction']['order_number'],
+                'attributes' => [
+                    'amount' => $data['transaction']['amount'],
+                    'status' => $data['transaction']['status'],
+                    'confirmation_status' => $data['transaction']['confirmation_status'],
+                    'form_url' => $data['formUrl']
+                ],
+                'links' => [
+                    'self' => route('payment.status', $data['transaction']['order_number']),
+                    'confirm' => route('payment.confirm', $data['transaction']['order_number'])
+                ]
+            ],
+            'meta' => [
+                'code' => $this->resource['code'],
+                'message' => $this->resource['message']
+            ]
+        ];
+    }
+
+    private function formatErrorResponse(): array
+    {
         return [
             'errors' => [
                 [
