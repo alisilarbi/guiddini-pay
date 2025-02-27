@@ -238,6 +238,13 @@ class PaymentService
             'gateway_response' => json_encode($result)
         ];
 
+        dd([
+            'result' => $result,
+            'transaction' => $transaction,
+        ]);
+
+
+
         if (isset($result['orderId'])) {
             $updateData['order_id'] = $result['orderId'];
         }
