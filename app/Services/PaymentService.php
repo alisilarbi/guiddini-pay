@@ -63,10 +63,7 @@ class PaymentService
         try {
             $transaction = Transaction::where('gateway_order_id', $orderId)
                 ->with('application')
-                ->first();
-            // ->firstOrFail();
-
-            dd($transaction);
+                ->firstOrFail();
 
             $this->setEnvironment($transaction);
             $response = $this->callConfirmationGateway($transaction);

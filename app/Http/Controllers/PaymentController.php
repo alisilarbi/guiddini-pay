@@ -31,6 +31,8 @@ class PaymentController extends Controller
                 $request->header('X-App-Key')
             );
 
+            dd($result);
+
             return new ApiResponseResource([
                 'success' => true,
                 'code' => 'PAYMENT_INITIATED',
@@ -53,7 +55,6 @@ class PaymentController extends Controller
             $redirectUrl = $result['data']['transaction']->application->success_redirect_url;
 
             $queryParams = http_build_query($result['data']['gateway_response']);
-
 
             return redirect()->to("$redirectUrl?$queryParams");
         } catch (\Throwable $e) {
