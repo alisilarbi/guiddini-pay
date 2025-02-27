@@ -227,7 +227,6 @@ class PaymentService
 
     private function updateTransactionStatus(Transaction $transaction, array $result): void
     {
-        dd($result);
         $updateData = [
             'confirmation_status' => $this->determineTransactionStatus($result),
             'error_code' => $result['ErrorCode'] ?? null,
