@@ -32,7 +32,7 @@ class PaymentController extends Controller
             );
 
 
-            $apiResposne = new ApiResponseResource([
+            $apiResponse = new ApiResponseResource([
                 'success' => true,
                 'code' => 'PAYMENT_INITIATED',
                 'message' => 'Payment initiated successfully',
