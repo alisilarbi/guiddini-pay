@@ -38,7 +38,7 @@ class PaymentService
 
             return [
                 'formUrl' => $response['formUrl'],
-                'transaction' => $transaction->only(['order_number', 'status', 'confirmation_status', 'amount'])
+                'transaction' => $transaction->only(['order_number', 'status', 'confirmation_status', 'amount', 'description'])
             ];
         } catch (ModelNotFoundException $e) {
             throw new PaymentException('Application not found', 'APP_NOT_FOUND', 404);
@@ -227,6 +227,7 @@ class PaymentService
 
     private function updateTransactionStatus(Transaction $transaction, array $result): void
     {
+        dd($result);
         $updateData = [
             'confirmation_status' => $this->determineTransactionStatus($result),
             'error_code' => $result['ErrorCode'] ?? null,
