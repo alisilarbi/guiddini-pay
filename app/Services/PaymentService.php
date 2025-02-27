@@ -38,7 +38,7 @@ class PaymentService
 
             return [
                 'formUrl' => $response['formUrl'],
-                'transaction' => $transaction->only(['order_number', 'status', 'confirmation_status'])
+                'transaction' => $transaction->only(['order_number', 'status', 'confirmation_status', 'amount'])
             ];
         } catch (ModelNotFoundException $e) {
             throw new PaymentException('Application not found', 'APP_NOT_FOUND', 404);
