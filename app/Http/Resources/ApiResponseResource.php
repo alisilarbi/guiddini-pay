@@ -29,7 +29,7 @@ class ApiResponseResource extends JsonResource
 
         return [
             'data' => [
-                'type' => 'transactions',
+                'type' => 'transaction',
                 'id' => $data['transaction']['order_number'],
                 'attributes' => [
                     'amount' => $data['transaction']['amount'],
