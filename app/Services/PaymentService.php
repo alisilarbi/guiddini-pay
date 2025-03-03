@@ -64,6 +64,8 @@ class PaymentService
             $this->setEnvironment($transaction);
             $response = $this->callConfirmationGateway($transaction);
 
+            dd($response);
+
             $errorCode = $this->getGatewayErrorCode($response);
             $isSuccess = $errorCode === '0';
 
@@ -163,8 +165,17 @@ class PaymentService
 
             return $result;
         } catch (RequestException $e) {
+            $response = $e->response->json();
 
-            $transaction->update(['status' => 'gateway_error']);
+            $transaction->update([
+                'status' => 'gateway_error',
+                'error_code' => $response['ErrorCode'] ?? $response['errorCode'] ?? 'UNKNOWN',
+                'error_message' => $response['ErrorMessage'] ?? $response['errorMessage'] ?? 'Gateway request failed',
+                'action_code' => $response['actionCode'] ?? $response['ActionCode'] ?? null,
+                'action_code_description' => $response['actionCodeDescription'] ?? $response['ActionCodeDescription'] ?? null,
+                'gateway_response' => json_encode($response)
+            ]);
+
             return [
                 'errorCode' => $e->getCode(),
                 'errorMessage' => 'Gateway request failed',
@@ -228,9 +239,16 @@ class PaymentService
     private function updateTransactionStatus(Transaction $transaction, array $result): void
     {
         $updateData = [
-            'confirmation_status' => $this->determineTransactionStatus($result),
-            'error_code' => $result['ErrorCode'] ?? null,
-            'error_message' => $result['ErrorMessage'] ?? null,
+            'status' => $this->determineTransactionStatus($result),
+            'confirmation_status' => $this->determineConfirmationStatus($result),
+            'error_code' => $result['ErrorCode'] ?? $result['errorCode'] ?? null,
+            'error_message' => $result['ErrorMessage'] ?? $result['errorMessage'] ?? null,
+            'action_code' => $result['actionCode'] ?? $result['ActionCode'] ?? null,
+            'action_code_description' => $result['actionCodeDescription'] ?? $result['ActionCodeDescription'] ?? null,
+            'auth_code' => $result['authCode'] ?? $result['AuthCode'] ?? null,
+            'currency' => $result['currency'] ?? $result['Currency'] ?? null,
+            'deposit_amount' => isset($result['depositAmount']) ?
+                ($result['depositAmount'] / 100) : null,
             'gateway_response' => json_encode($result)
         ];
 
@@ -239,6 +257,12 @@ class PaymentService
         }
 
         $transaction->update($updateData);
+    }
+
+    private function determineConfirmationStatus(array $result): string
+    {
+        $errorCode = $this->getGatewayErrorCode($result);
+        return $errorCode === '0' ? 'confirmed' : 'rejected';
     }
 
     private function determineTransactionStatus(array $result): string
