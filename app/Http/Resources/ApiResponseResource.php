@@ -34,7 +34,7 @@ class ApiResponseResource extends JsonResource
                 'attributes' => [
                     'amount' => $data['transaction']['amount'],
                     'status' => $data['transaction']['status'],
-                    'confirmation_status' => $data['transaction']['confirmation_status'],
+                    // 'confirmation_status' => $data['transaction']['confirmation_status'],
                     'form_url' => $data['formUrl']
                 ],
                 // 'links' => [
