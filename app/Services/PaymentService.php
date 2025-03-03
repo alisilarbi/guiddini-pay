@@ -21,8 +21,6 @@ class PaymentService
             $application = Application::where('app_key', $appKey)->firstOrFail();
             $transaction = $this->createTransaction($data, $application);
 
-            dd($transaction);
-
             $this->setEnvironment($transaction);
             $response = $this->callPaymentGateway($transaction);
 
@@ -56,67 +54,17 @@ class PaymentService
         }
     }
 
-    public function confirmPayment(string $orderNumber): array
+    private function createTransaction(array $data, Application $application): Transaction
     {
-        try {
-            $transaction = Transaction::where('order_number', $orderNumber)
-                ->with('application')
-                ->firstOrFail();
 
-            $this->setEnvironment($transaction);
-            $response = $this->callConfirmationGateway($transaction);
-
-            $errorCode = $this->getGatewayErrorCode($response);
-            $isSuccess = $errorCode === '0';
-
-            $updateData = [
-                'status' => $isSuccess ? 'paid' : 'failed',
-                'confirmation_status' => $isSuccess ? 'confirmed' : 'rejected',
-                'gateway_response' => json_encode($response)
-            ];
-
-            $transaction->update($updateData);
-
-            return [
-                'transaction' => $transaction,
-                'gateway_response' => $response
-            ];
-        } catch (ModelNotFoundException $e) {
-            throw new PaymentException('Transaction not found', 'TRANSACTION_NOT_FOUND', 404);
-        } catch (ConnectionException $e) {
-            throw new PaymentException('Payment gateway unreachable', 'GATEWAY_UNAVAILABLE', 503);
-        } catch (RequestException $e) {
-            throw new PaymentException(
-                'Confirmation request failed',
-                'CONFIRMATION_FAILED',
-                $e->response->status(),
-                ['gateway_response' => $e->response->json()]
-            );
-        }
-    }
-
-    public function handleFailedPayment(string $orderId): array
-    {
-        try {
-            $transaction = Transaction::where('order_id', $orderId)
-                ->with('application')
-                ->firstOrFail();
-
-            $this->setEnvironment($transaction);
-            $response = $this->callConfirmationGateway($transaction);
-
-            return [
-                'success' => false,
-                'code' => 'PAYMENT_FAILED',
-                'message' => 'Payment failure processed',
-                'data' => [
-                    'transaction' => $transaction,
-                    'gateway_response' => $response
-                ]
-            ];
-        } catch (Exception $e) {
-            return $this->handleException($e, 'failure_handling_error');
-        }
+        return Transaction::create([
+            'amount' => $data['amount'],
+            'order_number' => $this->generateOrderNumber($application),
+            'status' => 'initiated',
+            'application_id' => $application->id,
+            'environment_id' => $application->environment->id,
+            'environment_type' => $application->environment_type
+        ]);
     }
 
     private function setEnvironment(Transaction $transaction): void
@@ -189,6 +137,109 @@ class PaymentService
         }
     }
 
+    private function updateTransactionStatus(Transaction $transaction, array $result): void
+    {
+        $updateData = [
+            'confirmation_status' => $this->determineTransactionConfirmationStatus($result),
+            'status' => $this->determineTransactionStatus($result),
+            'error_code' => $result['ErrorCode'] ?? null,
+            'error_message' => $result['ErrorMessage'] ?? null,
+            'gateway_response' => json_encode($result)
+        ];
+
+        if (isset($result['orderId'])) {
+            $updateData['order_id'] = $result['orderId'];
+        }
+
+        $transaction->update($updateData);
+    }
+
+    private function determineTransactionStatus(array $result): string
+    {
+        if (!isset($result['errorCode']) || $result['errorCode'] !== '0') {
+            return 'gateway_error';
+        }
+
+        return 'completed';
+    }
+
+    private function determineTransactionConfirmationStatus(array $resut): string
+    {
+        if (!isset($result['actionCode']) || $result['actionCode'] !== '0') {
+            return 'requires_verification';
+        }
+
+        return 'completed';
+    }
+
+    public function confirmPayment(string $orderNumber): array
+    {
+        try {
+            $transaction = Transaction::where('order_number', $orderNumber)
+                ->with('application')
+                ->firstOrFail();
+
+            $this->setEnvironment($transaction);
+            $response = $this->callConfirmationGateway($transaction);
+
+            $errorCode = $this->getGatewayErrorCode($response);
+            $isSuccess = $errorCode === '0';
+
+            $updateData = [
+                'status' => $isSuccess ? 'paid' : 'failed',
+                'confirmation_status' => $isSuccess ? 'confirmed' : 'rejected',
+                'gateway_response' => json_encode($response)
+            ];
+
+            $transaction->update($updateData);
+
+            return [
+                'transaction' => $transaction,
+                'gateway_response' => $response
+            ];
+        } catch (ModelNotFoundException $e) {
+            throw new PaymentException('Transaction not found', 'TRANSACTION_NOT_FOUND', 404);
+        } catch (ConnectionException $e) {
+            throw new PaymentException('Payment gateway unreachable', 'GATEWAY_UNAVAILABLE', 503);
+        } catch (RequestException $e) {
+            throw new PaymentException(
+                'Confirmation request failed',
+                'CONFIRMATION_FAILED',
+                $e->response->status(),
+                ['gateway_response' => $e->response->json()]
+            );
+        }
+    }
+
+    public function handleFailedPayment(string $orderId): array
+    {
+        try {
+            $transaction = Transaction::where('order_id', $orderId)
+                ->with('application')
+                ->firstOrFail();
+
+            $this->setEnvironment($transaction);
+            $response = $this->callConfirmationGateway($transaction);
+
+            return [
+                'success' => false,
+                'code' => 'PAYMENT_FAILED',
+                'message' => 'Payment failure processed',
+                'data' => [
+                    'transaction' => $transaction,
+                    'gateway_response' => $response
+                ]
+            ];
+        } catch (Exception $e) {
+            return $this->handleException($e, 'failure_handling_error');
+        }
+    }
+
+    private function getGatewayErrorCode(array $response): string
+    {
+        return (string)($response['ErrorCode'] ?? $response['errorCode'] ?? '1');
+    }
+
     private function callConfirmationGateway(Transaction $transaction): array
     {
         $params = [
@@ -212,48 +263,6 @@ class PaymentService
             'terminal' => $env->{$prefix . '_terminal'},
             default => throw new \InvalidArgumentException("Invalid credential type")
         };
-    }
-
-    private function createTransaction(array $data, Application $application): Transaction
-    {
-
-        return Transaction::create([
-            'amount' => $data['amount'],
-            'order_number' => $this->generateOrderNumber($application),
-            'status' => 'initiated',
-            'application_id' => $application->id,
-            'environment_id' => $application->environment->id,
-            'environment_type' => $application->environment_type
-        ]);
-    }
-
-    private function updateTransactionStatus(Transaction $transaction, array $result): void
-    {
-        $updateData = [
-            'confirmation_status' => $this->determineTransactionStatus($result),
-            'error_code' => $result['ErrorCode'] ?? null,
-            'error_message' => $result['ErrorMessage'] ?? null,
-            'gateway_response' => json_encode($result)
-        ];
-
-        if (isset($result['orderId'])) {
-            $updateData['order_id'] = $result['orderId'];
-        }
-
-        $transaction->update($updateData);
-    }
-
-    private function determineTransactionStatus(array $result): string
-    {
-        if (!isset($result['errorCode']) || $result['errorCode'] !== '0') {
-            return 'gateway_error';
-        }
-
-        if (!isset($result['actionCode']) || $result['actionCode'] !== '0') {
-            return 'requires_verification';
-        }
-
-        return 'completed';
     }
 
     private function handleException(Exception $e, string $errorCode): array
@@ -284,8 +293,5 @@ class PaymentService
         return $orderNumber;
     }
 
-    private function getGatewayErrorCode(array $response): string
-    {
-        return (string)($response['ErrorCode'] ?? $response['errorCode'] ?? '1');
-    }
+
 }
