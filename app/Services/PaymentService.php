@@ -61,9 +61,11 @@ class PaymentService
             'amount' => $data['amount'],
             'order_number' => $this->generateOrderNumber($application),
             'status' => 'initiated',
+            'confirmation_status' => 'pending',
             'application_id' => $application->id,
             'environment_id' => $application->environment->id,
-            'environment_type' => $application->environment_type
+            'environment_type' => $application->environment_type,
+            'currency' => '012'
         ]);
     }
 
@@ -114,7 +116,16 @@ class PaymentService
             return $result;
         } catch (RequestException $e) {
 
-            $transaction->update(['status' => 'gateway_error']);
+            $response = $e->response->json();
+
+            $transaction->update([
+                'status' => 'gateway_error',
+                'error_code' => $response['ErrorCode'] ?? $response['errorCode'] ?? 'UNKNOWN',
+                'error_message' => $response['ErrorMessage'] ?? $response['errorMessage'] ?? 'Gateway request failed',
+                'action_code' => $response['actionCode'] ?? $response['ActionCode'] ?? null,
+                'action_code_description' => $response['actionCodeDescription'] ?? $response['ActionCodeDescription'] ?? null,
+            ]);
+
             return [
                 'errorCode' => $e->getCode(),
                 'errorMessage' => 'Gateway request failed',
@@ -144,7 +155,13 @@ class PaymentService
             'status' => $this->determineTransactionStatus($result),
             'error_code' => $result['ErrorCode'] ?? null,
             'error_message' => $result['ErrorMessage'] ?? null,
-            'gateway_response' => json_encode($result)
+            'action_code' => $result['actionCode'] ?? $result['ActionCode'] ?? null,
+            'action_code_description' => $result['actionCodeDescription'] ?? $result['ActionCodeDescription'] ?? null,
+            'auth_code' => $result['authCode'] ?? $result['AuthCode'] ?? null,
+            'currency' => $result['currency'] ?? $result['Currency'] ?? null,
+            'deposit_amount' => isset($result['depositAmount']) ?
+                ($result['depositAmount'] / 100) : null,
+            // 'gateway_response' => json_encode($result)
         ];
 
         if (isset($result['orderId'])) {
@@ -186,6 +203,11 @@ class PaymentService
 
             $this->setEnvironment($transaction);
             $response = $this->callConfirmationGateway($transaction);
+
+            if (isset($response['Amount'])) {
+                $response['Amount'] = $response['Amount'] / 100;
+            }
+
 
             $errorCode = $this->getGatewayErrorCode($response);
             $isSuccess = $errorCode === '0';
