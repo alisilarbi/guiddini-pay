@@ -170,7 +170,7 @@ class PaymentService
         }
 
         dd([
-            'confirmatin' => 'need to be confirmed',
+            'confirmation' => 'need to be confirmed',
             'result' => $result,
         ]);
 
