@@ -156,6 +156,8 @@ class PaymentService
 
     private function determineTransactionStatus(array $result): string
     {
+
+        dd($result);
         if (!isset($result['errorCode']) || $result['errorCode'] !== '0') {
             return 'gateway_error';
         }
