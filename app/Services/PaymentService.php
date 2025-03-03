@@ -161,7 +161,7 @@ class PaymentService
             return 'gateway_error';
         }
 
-        return 'completed';
+        return 'processing';
     }
 
     private function determineTransactionConfirmationStatus(array $resut): string
@@ -169,6 +169,11 @@ class PaymentService
         if (!isset($result['actionCode']) || $result['actionCode'] !== '0') {
             return 'requires_verification';
         }
+
+        dd([
+            'confirmatin' => 'need to be confirmed',
+            'result' => $result,
+        ]);
 
         return 'completed';
     }
@@ -293,6 +298,4 @@ class PaymentService
 
         return $orderNumber;
     }
-
-
 }
