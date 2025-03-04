@@ -20,18 +20,6 @@ class TransactionUpdater
 
     public function handleConfirmationResponse(Transaction $transaction, array $response): void
     {
-        // dd([
-        //     'transaction' => $transaction,
-        //     'response' => $response
-        // ]);
-
-        // $transaction->update([
-        //     'status' => $response['Amount'] ? 'paid' : 'failed',
-        //     'confirmation_status' => ($response['ErrorCode'] ?? '1') === '0' ? 'confirmed' : 'failed',
-        //     'deposit_amount' => isset($response['Amount']) ? $response['Amount'] / 100 : null,
-        //     'gateway_response' => json_encode($response)
-        // ]);
-
 
         $updateData = [
             'deposit_amount' => isset($response['depositAmount']) ? $response['depositAmount'] / 100 : null,
@@ -43,8 +31,6 @@ class TransactionUpdater
             'pan' => $response['Pan'] ?? null,
             'ip_address' => $response['Ip'] ?? null,
         ];
-
-        // dd($updateData);
 
         $isSuccess = ($response['ErrorCode'] ?? '1') === '0'
             && ($response['actionCode'] ?? 1) === 0;
@@ -60,10 +46,13 @@ class TransactionUpdater
         $updateData['status'] = $isSuccess ? 'paid' : ($errorType ?? 'failed');
         $updateData['confirmation_status'] = $isSuccess ? 'confirmed' : 'failed';
 
+        dd([
+            'data' => $updateData,
+            'transaction' => $transaction
+        ]);
 
-        $transaction->update($updateData);
+        // $transaction->update($updateData);
 
-        dd($transaction);
     }
 
     public function handleRequestError(Transaction $transaction, RequestException $e): void
