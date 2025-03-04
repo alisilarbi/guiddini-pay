@@ -26,14 +26,17 @@ class TransactionUpdater
             'auth_code' => $response['authCode'] ?? null,
             'action_code' => $response['actionCode'] ?? null,
             'action_code_description' => $response['actionCodeDescription'] ?? null,
-            'status' => $response['OrderStatus'] ?? null,
-            'svfe_response' => $response['SvfeResponse'] ?? null,
+            'svfe_response' => $response['svfe_response'] ?? null,
             'pan' => $response['Pan'] ?? null,
             'ip_address' => $response['Ip'] ?? null,
+            // 'status' => $response['status'] ?? null,
+            // 'confirmation_status' => $response['confirmation_status'] ?? null,
         ];
 
-        $isSuccess = ($response['ErrorCode'] ?? '1') === '0'
-            && ($response['actionCode'] ?? 1) === 0;
+        $isSuccess = false;
+
+        if (($response['ErrorCode'] ?? '1') === '0' && ($response['actionCode'] ?? '1') === '0')
+            $isSuccess = true;
 
         $errorType = match ((int)($response['actionCode'] ?? -1)) {
             0 => null, // Success
@@ -46,25 +49,22 @@ class TransactionUpdater
         $updateData['status'] = $isSuccess ? 'paid' : ($errorType ?? 'failed');
         $updateData['confirmation_status'] = $isSuccess ? 'confirmed' : 'failed';
 
-        dd([
-            'data' => $updateData,
-            'transaction' => $transaction
-        ]);
 
-        $transaction->update($updateData);
+        // $transaction->update($updateData);
 
         $transaction->update([
-            'deposit_amount' => isset($response['depositAmount']) ? $response['depositAmount'] / 100 : null,
-            'auth_code' => $response['authCode'] ?? null,
-            'action_code' => $response['actionCode'] ?? null,
-            'action_code_description' => $response['actionCodeDescription'] ?? null,
-            'status' => $response['OrderStatus'] ?? null,
-            'svfe_response' => $response['SvfeResponse'] ?? null,
-            'pan' => $response['Pan'] ?? null,
-            'ip_address' => $response['Ip'] ?? null,
-
+            'deposit_amount' => $updateData['desposit_amount'],
+            'auth_code' => $updateData['auth_code'],
+            'action_code' => $updateData['action_code'],
+            'action_code_description' => $updateData['action_code_description'],
+            'status' => $updateData['status'],
+            'svfe_response' => $updateData['svfe_response'],
+            'pan' => $updateData['pan'],
+            'ip_address' => $updateData['ip_address'],
+            'confirmation_status' => $updateData['confirmation_status'],
         ]);
 
+        dd($transaction);
     }
 
     public function handleRequestError(Transaction $transaction, RequestException $e): void
