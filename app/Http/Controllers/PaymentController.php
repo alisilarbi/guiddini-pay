@@ -13,7 +13,6 @@ class PaymentController extends Controller
 {
     use HandlesApiExceptions;
 
-
     public function __construct(private PaymentService $paymentService) {}
 
     public function initiate(Request $request)
@@ -40,7 +39,6 @@ class PaymentController extends Controller
         }
     }
 
-
     public function confirm(string $orderNumber)
     {
         try {
@@ -59,6 +57,7 @@ class PaymentController extends Controller
                 'order_number' => $orderNumber,
                 'gateway_code' => $this->getGatewayErrorCode($gatewayResponse)
             ]);
+            dd("$redirectUrl?$queryParams");
 
             return redirect()->to("$redirectUrl?$queryParams");
         } catch (\Throwable $e) {
@@ -73,21 +72,8 @@ class PaymentController extends Controller
 
     public function getTransaction(Request $request)
     {
-        $transaction = Transaction::findOrFail('order_id', $request->transaction_id);
-
-        return new ApiResponseResource([
-            'success' => true,
-            'code' => 'TRANSACTION_FOUND',
-            'message' => 'Transaction retrieved successfully',
-            'data' => $transaction,
-            'http_code' => 200
-        ]);
-
-
         try {
-            // $transaction = Transaction::findOrFail($request->input('transaction_id'));
-
-            $transaction = Transaction::findOrFail('order_id', $request->transaction_id);
+            $transaction = Transaction::findOrFail($request->input('transaction_id'));
 
             return new ApiResponseResource([
                 'success' => true,
