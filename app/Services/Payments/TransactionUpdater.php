@@ -45,6 +45,7 @@ class TransactionUpdater
 
     private function determineInitiationStatus(array $response): string
     {
+        dd($response);
         return ($response['ErrorCode'] ?? '1') === '0' ? 'processing' : 'gateway_error';
     }
 }

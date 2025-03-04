@@ -1,5 +1,4 @@
 <?php
-// app/Services/Payment/Gateway/InitiateGatewayService.php
 
 namespace App\Services\Payments;
 
