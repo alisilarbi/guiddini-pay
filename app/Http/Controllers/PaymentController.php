@@ -4,20 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Services\PaymentService;
 use App\Traits\HandlesApiExceptions;
+use App\Services\Payments\PaymentService;
 use App\Http\Resources\ApiResponseResource;
 
 class PaymentController extends Controller
 {
     use HandlesApiExceptions;
 
-    protected PaymentService $paymentService;
 
-    public function __construct(PaymentService $paymentService)
-    {
-        $this->paymentService = $paymentService;
-    }
+    public function __construct(private PaymentService $paymentService) {}
 
     public function initiate(Request $request)
     {
