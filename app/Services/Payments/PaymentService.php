@@ -44,7 +44,6 @@ class PaymentService
                 ->where('order_number', $orderNumber)
                 ->firstOrFail();
 
-
             $response = $this->confirmer->execute($transaction);
 
             return [
