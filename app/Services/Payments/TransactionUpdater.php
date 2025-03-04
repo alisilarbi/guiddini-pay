@@ -32,6 +32,8 @@ class TransactionUpdater
         //     'gateway_response' => json_encode($response)
         // ]);
 
+        dd('hehe');
+
         $updateData = [
             'deposit_amount' => isset($response['depositAmount']) ? $response['depositAmount'] / 100 : null,
             'auth_code' => $response['authCode'] ?? null,
