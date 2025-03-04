@@ -37,6 +37,7 @@ class ConfirmGatewayService
             $this->updater->handleConfirmationResponse($transaction, $response);
 
             if ($this->isErrorResponse($response)) {
+                dd('error response');
                 throw new PaymentException(
                     $response['ErrorMessage'] ?? 'Confirmation failed',
                     'CONFIRMATION_FAILED',
