@@ -73,6 +73,7 @@ class PaymentController extends Controller
     {
 
         try {
+            dd($request->order_number);
             $transaction = Transaction::where('order_number', $request->order_number)->firstOrFail();
 
             return new ApiResponseResource([
