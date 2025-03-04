@@ -43,6 +43,7 @@ class PaymentController extends Controller
     {
         try {
             $result = $this->paymentService->confirmPayment($orderNumber);
+            dd($result);
 
             $transaction = $result['transaction'];
             $gatewayResponse = $result['gateway_response'];
