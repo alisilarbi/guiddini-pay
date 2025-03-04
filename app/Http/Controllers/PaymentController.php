@@ -42,7 +42,6 @@ class PaymentController extends Controller
 
     public function confirm(string $orderNumber)
     {
-        dd($orderNumber);
         try {
             $result = $this->paymentService->confirmPayment($orderNumber);
 

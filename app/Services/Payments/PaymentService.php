@@ -1,5 +1,4 @@
 <?php
-// app/Services/PaymentService.php
 
 namespace App\Services\Payments;
 
@@ -44,6 +43,8 @@ class PaymentService
             $transaction = Transaction::with('application')
                 ->where('order_number', $orderNumber)
                 ->firstOrFail();
+
+            dd($transaction);
 
             $response = $this->confirmer->execute($transaction);
 
