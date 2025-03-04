@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('status')->default('processing');
             $table->string('confirmation_status')->default('requires_verification');
             $table->string('description')->nullable();
+            $table->text('form_url')->nullable();
 
             $table->string('environment_type');
 

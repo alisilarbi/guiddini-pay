@@ -13,6 +13,8 @@ class TransactionUpdater
         $transaction->update([
             'status' => $this->determineInitiationStatus($response),
             'error_code' => $response['errorCode'] ?? null,
+            'form_url' => $response['formUrl'],
+            'order_id' => $response['orderId'],
         ]);
     }
 
