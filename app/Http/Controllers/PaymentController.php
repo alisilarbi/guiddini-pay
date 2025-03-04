@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Traits\HandlesApiExceptions;
@@ -68,5 +69,24 @@ class PaymentController extends Controller
     private function getGatewayErrorCode(array $response): string
     {
         return (string)($response['ErrorCode'] ?? $response['errorCode'] ?? 'UNKNOWN');
+    }
+
+    public function getTransaction(Request $request)
+    {
+        try {
+            // $transaction = Transaction::findOrFail($request->input('transaction_id'));
+
+            $transaction = Transaction::findOrFail('order_id', $request->transaction_id);
+
+            return new ApiResponseResource([
+                'success' => true,
+                'code' => 'TRANSACTION_FOUND',
+                'message' => 'Transaction retrieved successfully',
+                'data' => $transaction,
+                'http_code' => 200
+            ]);
+        } catch (\Throwable $e) {
+            return $this->handleApiException($e);
+        }
     }
 }
