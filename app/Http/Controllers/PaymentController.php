@@ -71,6 +71,7 @@ class PaymentController extends Controller
 
     public function getTransaction(Request $request)
     {
+        dd($request->all());
         try {
             $transaction = Transaction::where('order_number', $request->order_number)->findOrFail();
 
