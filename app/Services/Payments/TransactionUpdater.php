@@ -49,39 +49,36 @@ class TransactionUpdater
         $updateData['status'] = $isSuccess ? 'paid' : ($errorType ?? 'failed');
         $updateData['confirmation_status'] = $isSuccess ? 'confirmed' : 'failed';
 
+        $transaction->update([
+            'deposit_amount' => $updateData['deposit_amount'],
+            'auth_code' => $updateData['auth_code'],
+            'action_code' => $updateData['action_code'],
+            'action_code_description' => $updateData['action_code_description'],
+            'status' => $updateData['status'],
+            'svfe_response' => $updateData['svfe_response'],
+            'pan' => $updateData['pan'],
+            'ip_address' => $updateData['ip_address'],
+            'confirmation_status' => $updateData['confirmation_status'],
+        ]);
 
-        // $transaction->update($updateData);
+        // try {
+        //     $transaction->update([
+        //         'deposit_amount' => $updateData['deposit_amount'],
+        //         'auth_code' => $updateData['auth_code'],
+        //         'action_code' => $updateData['action_code'],
+        //         'action_code_description' => $updateData['action_code_description'],
+        //         'status' => $updateData['status'],
+        //         'svfe_response' => $updateData['svfe_response'],
+        //         'pan' => $updateData['pan'],
+        //         'ip_address' => $updateData['ip_address'],
+        //         'confirmation_status' => $updateData['confirmation_status'],
+        //     ]);
+        //     dd($transaction);
+        // } catch (\Exception $e) {
+        //     dd($e->getMessage(), $e->getTraceAsString());
+        // }
 
-        // $transaction->update([
-        //     'deposit_amount' => $updateData['deposit_amount'],
-        //     'auth_code' => $updateData['auth_code'],
-        //     'action_code' => $updateData['action_code'],
-        //     'action_code_description' => $updateData['action_code_description'],
-        //     'status' => $updateData['status'],
-        //     'svfe_response' => $updateData['svfe_response'],
-        //     'pan' => $updateData['pan'],
-        //     'ip_address' => $updateData['ip_address'],
-        //     'confirmation_status' => $updateData['confirmation_status'],
-        // ]);
-
-        try {
-            $transaction->update([
-                'deposit_amount' => $updateData['deposit_amount'],
-                'auth_code' => $updateData['auth_code'],
-                'action_code' => $updateData['action_code'],
-                'action_code_description' => $updateData['action_code_description'],
-                'status' => $updateData['status'],
-                'svfe_response' => $updateData['svfe_response'],
-                'pan' => $updateData['pan'],
-                'ip_address' => $updateData['ip_address'],
-                'confirmation_status' => $updateData['confirmation_status'],
-            ]);
-            dd($transaction);
-        } catch (\Exception $e) {
-            dd($e->getMessage(), $e->getTraceAsString());
-        }
-
-        dd($transaction);
+        // dd($transaction);
     }
 
     public function handleRequestError(Transaction $transaction, RequestException $e): void
