@@ -43,7 +43,6 @@ class PaymentController extends Controller
     {
         try {
             $result = $this->paymentService->confirmPayment($orderNumber);
-            dd('hehe');
 
             $transaction = $result['transaction'];
             $gatewayResponse = $result['gateway_response'];
@@ -51,8 +50,6 @@ class PaymentController extends Controller
             $redirectUrl = $transaction->status === 'paid'
                 ? $transaction->application->success_redirect_url
                 : $transaction->application->fail_redirect_url;
-
-            dd('hehe');
 
             $queryParams = http_build_query([
                 'status' => $transaction->status,
