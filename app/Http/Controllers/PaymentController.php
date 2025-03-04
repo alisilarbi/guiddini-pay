@@ -73,6 +73,16 @@ class PaymentController extends Controller
 
     public function getTransaction(Request $request)
     {
+
+        return new ApiResponseResource([
+            'success' => true,
+            'code' => 'TRANSACTION_FOUND',
+            'message' => 'Transaction retrieved successfully',
+            'data' => $transaction,
+            'http_code' => 200
+        ]);
+
+
         try {
             // $transaction = Transaction::findOrFail($request->input('transaction_id'));
 
