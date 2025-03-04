@@ -35,6 +35,7 @@ class Transaction extends Model
 
         'environment_type',
 
+        'form_url',
     ];
 
     protected static function boot()

@@ -12,10 +12,7 @@ class TransactionUpdater
     {
         $transaction->update([
             'status' => $this->determineInitiationStatus($response),
-            'error_code' => $response['ErrorCode'] ?? null,
-            'error_message' => $response['ErrorMessage'] ?? null,
-            'action_code' => $response['actionCode'] ?? null,
-            'gateway_response' => json_encode($response)
+            'error_code' => $response['errorCode'] ?? null,
         ]);
     }
 
