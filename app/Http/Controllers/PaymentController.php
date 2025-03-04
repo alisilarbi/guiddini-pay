@@ -71,6 +71,8 @@ class PaymentController extends Controller
 
     public function getTransaction(Request $request)
     {
+        $transaction = Transaction::where('order_number', $request->order_number)->findOrFail();
+dd($transaction);
         dd($request->all());
         try {
             $transaction = Transaction::where('order_number', $request->order_number)->findOrFail();
@@ -83,6 +85,7 @@ class PaymentController extends Controller
                 'http_code' => 200
             ]);
         } catch (\Throwable $e) {
+            dd($e->getMessage());
             return $this->handleApiException($e);
         }
     }
