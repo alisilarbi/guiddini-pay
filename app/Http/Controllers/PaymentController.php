@@ -52,12 +52,11 @@ class PaymentController extends Controller
                 : $transaction->application->fail_redirect_url;
 
             $queryParams = http_build_query([
-                'status' => $transaction->status,
-                'confirmation_status' => $transaction->confirmation_status,
                 'order_number' => $orderNumber,
-                'gateway_code' => $this->getGatewayErrorCode($gatewayResponse)
+                // 'status' => $transaction->status,
+                // 'confirmation_status' => $transaction->confirmation_status,
+                // 'gateway_code' => $this->getGatewayErrorCode($gatewayResponse)
             ]);
-            dd("$redirectUrl?$queryParams");
 
             return redirect()->to("$redirectUrl?$queryParams");
         } catch (\Throwable $e) {
@@ -73,7 +72,7 @@ class PaymentController extends Controller
     public function getTransaction(Request $request)
     {
         try {
-            $transaction = Transaction::findOrFail($request->input('transaction_id'));
+            $transaction = Transaction::where('order_number', $request->order_number)->findOrFail();
 
             return new ApiResponseResource([
                 'success' => true,
