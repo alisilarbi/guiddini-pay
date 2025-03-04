@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use App\Exceptions\PaymentException;
 use App\Http\Resources\ApiResponseResource;
 use Illuminate\Validation\ValidationException;
+use App\Http\Resources\PaymentResponseResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 trait HandlesApiExceptions
@@ -55,7 +56,7 @@ trait HandlesApiExceptions
             'http_code' => $statusCode
         ];
 
-        return (new ApiResponseResource($response))
+        return (new PaymentResponseResource($response))
             ->response()
             ->setStatusCode($statusCode);
     }
