@@ -41,7 +41,6 @@ class InitiateGatewayService
                 ->throw()
                 ->json();
 
-            dd($response);
 
             $this->updater->handleInitiationResponse($transaction, $response);
 
