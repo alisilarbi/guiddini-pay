@@ -28,11 +28,6 @@ class ConfirmGatewayService
                 'language' => 'FR',
             ];
 
-            dd([
-                'params' => $params,
-                'transaction' => $transaction,
-            ]);
-
             $response = Http::timeout(30)
                 ->get($this->baseUrl($transaction) . 'confirmOrder.do', $params)
                 ->throw()
