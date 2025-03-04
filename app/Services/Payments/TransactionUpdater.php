@@ -26,7 +26,7 @@ class TransactionUpdater
             'auth_code' => $response['authCode'] ?? null,
             'action_code' => $response['actionCode'] ?? null,
             'action_code_description' => $response['actionCodeDescription'] ?? null,
-            'order_status' => $response['OrderStatus'] ?? null,
+            'status' => $response['OrderStatus'] ?? null,
             'svfe_response' => $response['SvfeResponse'] ?? null,
             'pan' => $response['Pan'] ?? null,
             'ip_address' => $response['Ip'] ?? null,
@@ -46,12 +46,26 @@ class TransactionUpdater
         $updateData['status'] = $isSuccess ? 'paid' : ($errorType ?? 'failed');
         $updateData['confirmation_status'] = $isSuccess ? 'confirmed' : 'failed';
 
-        dd([
-            'data' => $updateData,
-            'transaction' => $transaction
-        ]);
+        // dd([
+        //     'data' => $updateData,
+        //     'transaction' => $transaction
+        // ]);
 
-        // $transaction->update($updateData);
+        $transaction->update($updateData);
+
+        dd($transaction);
+
+        // $transaction->update([
+        //     'deposit_amount' => isset($response['depositAmount']) ? $response['depositAmount'] / 100 : null,
+        //     'auth_code' => $response['authCode'] ?? null,
+        //     'action_code' => $response['actionCode'] ?? null,
+        //     'action_code_description' => $response['actionCodeDescription'] ?? null,
+        //     'status' => $response['OrderStatus'] ?? null,
+        //     'svfe_response' => $response['SvfeResponse'] ?? null,
+        //     'pan' => $response['Pan'] ?? null,
+        //     'ip_address' => $response['Ip'] ?? null,
+
+        // ]);
 
     }
 
