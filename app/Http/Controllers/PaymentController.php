@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use App\Traits\HandlesApiExceptions;
 use App\Services\Payments\PaymentService;
 use App\Http\Resources\ApiResponseResource;
+use App\Http\Resources\PaymentResponseResource;
 
 class PaymentController extends Controller
 {
@@ -27,7 +28,7 @@ class PaymentController extends Controller
                 $request->header('X-App-Key')
             );
 
-            return new ApiResponseResource([
+            return new PaymentResponseResource([
                 'success' => true,
                 'code' => 'PAYMENT_INITIATED',
                 'message' => 'Payment initiated successfully',
@@ -79,7 +80,10 @@ class PaymentController extends Controller
                 'success' => true,
                 'code' => 'TRANSACTION_FOUND',
                 'message' => 'Transaction retrieved successfully',
-                'data' => $transaction->toArray(),
+                'data' => [
+                    'transaction' => $transaction->toArray(),
+                    'formUrl' => null,
+                ],
                 'http_code' => 200
             ]);
         } catch (\Throwable $e) {
