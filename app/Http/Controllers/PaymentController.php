@@ -73,6 +73,7 @@ class PaymentController extends Controller
 
     public function getTransaction(Request $request)
     {
+        $transaction = Transaction::findOrFail('order_id', $request->transaction_id);
 
         return new ApiResponseResource([
             'success' => true,
