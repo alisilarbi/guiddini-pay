@@ -5,16 +5,14 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ApiResponseResource extends JsonResource
+class TransactionResponseResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
      *
      * @return array<string, mixed>
      */
-    public static $wrap = null;
-
-    public function toArray($request): array
+    public function toArray(Request $request): array
     {
         if ($this->resource['success'] ?? false) {
             return $this->formatSuccessResponse();
@@ -22,6 +20,7 @@ class ApiResponseResource extends JsonResource
 
         return $this->formatErrorResponse();
     }
+
 
     private function formatSuccessResponse(): array
     {
@@ -33,19 +32,24 @@ class ApiResponseResource extends JsonResource
                 'id' => $data['transaction']['order_number'],
                 'attributes' => [
                     'amount' => $data['transaction']['amount'],
+                    'order_number' => $data['transaction']['order_number'],
+                    'order_id' => $data['transaction']['order_id'],
                     'status' => $data['transaction']['status'],
-                    // 'confirmation_status' => $data['transaction']['confirmation_status'],
-                    'form_url' => $data['formUrl']
+                    'deposit_amount' => $data['transaction']['deposit_amount'],
+                    'auth_code' => $data['transaction']['auth_code'],
+                    'action_code' => $data['transaction']['action_code'],
+                    'action_code_description' => $data['transaction']['action_code_description'],
+                    'error_code' => $data['transaction']['error_code'],
+                    'error_message' => $data['transaction']['error_message'],
+                    'confirmation_status' => $data['transaction']['confirmation_status'],
+                    'environment_type' => $data['transaction']['environment_type'],
+                    'form_url' => $data['transaction']['form_url'],
+                    'svfe_response' => $data['transaction']['svfe_response'],
+                    'pan' => $data['transaction']['pan'],
+                    'ip_address' => $data['transaction']['ip_address'],
                 ],
-                // 'links' => [
-                //     'self' => route('payment.status', $data['transaction']['order_number']),
-                //     'confirm' => route('payment.confirm', $data['transaction']['order_number'])
-                // ]
+
             ],
-            // 'meta' => [
-            //     'code' => $this->resource['code'],
-            //     'message' => $this->resource['message']
-            // ]
         ];
     }
 

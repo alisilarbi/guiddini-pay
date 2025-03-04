@@ -9,6 +9,7 @@ use App\Traits\HandlesApiExceptions;
 use App\Services\Payments\PaymentService;
 use App\Http\Resources\ApiResponseResource;
 use App\Http\Resources\PaymentResponseResource;
+use App\Http\Resources\TransactionResponseResource;
 
 class PaymentController extends Controller
 {
@@ -76,7 +77,7 @@ class PaymentController extends Controller
         try {
             $transaction = Transaction::where('order_number', $request->order_number)->firstOrFail();
 
-            return new ApiResponseResource([
+            return new TransactionResponseResource([
                 'success' => true,
                 'code' => 'TRANSACTION_FOUND',
                 'message' => 'Transaction retrieved successfully',
