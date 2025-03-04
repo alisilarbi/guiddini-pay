@@ -32,7 +32,6 @@ class TransactionUpdater
         //     'gateway_response' => json_encode($response)
         // ]);
 
-        dd('hehe');
 
         $updateData = [
             'deposit_amount' => isset($response['depositAmount']) ? $response['depositAmount'] / 100 : null,
@@ -44,6 +43,8 @@ class TransactionUpdater
             'pan' => $response['Pan'] ?? null,
             'ip_address' => $response['Ip'] ?? null,
         ];
+
+        dd($updateData);
 
         $isSuccess = ($response['ErrorCode'] ?? '1') === '0'
             && ($response['actionCode'] ?? 1) === 0;
