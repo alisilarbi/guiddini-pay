@@ -45,6 +45,7 @@ class PaymentService
                 ->firstOrFail();
 
             $response = $this->confirmer->execute($transaction);
+            dd($response);
 
             return [
                 'transaction' => $transaction,
