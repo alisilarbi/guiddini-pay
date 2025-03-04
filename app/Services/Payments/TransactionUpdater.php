@@ -44,7 +44,7 @@ class TransactionUpdater
             'ip_address' => $response['Ip'] ?? null,
         ];
 
-        dd($updateData);
+        // dd($updateData);
 
         $isSuccess = ($response['ErrorCode'] ?? '1') === '0'
             && ($response['actionCode'] ?? 1) === 0;
@@ -59,6 +59,8 @@ class TransactionUpdater
 
         $updateData['status'] = $isSuccess ? 'paid' : ($errorType ?? 'failed');
         $updateData['confirmation_status'] = $isSuccess ? 'confirmed' : 'failed';
+
+        dd($updateData);
 
         $transaction->update($updateData);
     }
