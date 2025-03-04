@@ -36,6 +36,9 @@ class Transaction extends Model
         'environment_type',
 
         'form_url',
+        'svfe_response',
+        'pan',
+        'ip_address',
     ];
 
     protected static function boot()

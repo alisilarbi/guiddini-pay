@@ -30,6 +30,10 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->text('form_url')->nullable();
 
+            $table->string('svfe_response')->nullable();
+            $table->string('pan')->nullable()->comment('Masked card number');
+            $table->string('ip_address')->nullable();
+
             $table->string('environment_type');
 
             $table->uuid('application_id');
