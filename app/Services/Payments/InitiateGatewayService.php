@@ -68,7 +68,7 @@ class InitiateGatewayService
     {
         return $transaction->environment_type === 'production'
             ? 'https://cib.satim.dz/payment/rest/'
-            : 'https://test.satim.dz/payment/restss/';
+            : 'https://test.satim.dz/payment/rest/';
     }
 
     private function isErrorResponse(array $response): bool
