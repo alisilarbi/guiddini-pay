@@ -20,6 +20,11 @@ class TransactionUpdater
 
     public function handleConfirmationResponse(Transaction $transaction, array $response): void
     {
+        dd([
+            'transaction' => $transaction,
+            'response' => $response
+        ]);
+
         $transaction->update([
             'status' => $response['Amount'] ? 'paid' : 'failed',
             'confirmation_status' => ($response['ErrorCode'] ?? '1') === '0' ? 'confirmed' : 'failed',
