@@ -88,7 +88,7 @@ class PaymentController extends Controller
                 'http_code' => 200
             ]);
         } catch (\Throwable $e) {
-            dd($e->getMessage());
+            // dd($e->getMessage());
             return $this->handleApiException($e);
         }
     }
