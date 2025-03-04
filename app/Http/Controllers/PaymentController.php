@@ -51,6 +51,8 @@ class PaymentController extends Controller
                 ? $transaction->application->success_redirect_url
                 : $transaction->application->fail_redirect_url;
 
+            dd('hehe');
+
             $queryParams = http_build_query([
                 'status' => $transaction->status,
                 'confirmation_status' => $transaction->confirmation_status,
