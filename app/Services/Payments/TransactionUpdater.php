@@ -63,6 +63,8 @@ class TransactionUpdater
         dd($updateData);
 
         $transaction->update($updateData);
+
+        dd($transaction);
     }
 
     public function handleRequestError(Transaction $transaction, RequestException $e): void
