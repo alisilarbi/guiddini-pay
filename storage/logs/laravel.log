@@ -7420,3 +7420,19 @@
 [stacktrace]
 #0 {main}
 "} 
+[2025-03-05 11:28:00] local.ERROR: syntax error, unexpected token "}", expecting ";" {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): syntax error, unexpected token \"}\", expecting \";\" at C:\\Users\\appfi\\OneDrive\\Desktop\\Guiddini\\Filament\\eDrahmi\\app\\Models\\User.php:61)
+[stacktrace]
+#0 {main}
+"} 
+[2025-03-05 11:28:00] local.ERROR: syntax error, unexpected token "}", expecting ";" {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): syntax error, unexpected token \"}\", expecting \";\" at C:\\Users\\appfi\\OneDrive\\Desktop\\Guiddini\\Filament\\eDrahmi\\app\\Models\\User.php:61)
+[stacktrace]
+#0 {main}
+"} 
+[2025-03-05 11:28:37] local.ERROR: syntax error, unexpected token "}", expecting ";" {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): syntax error, unexpected token \"}\", expecting \";\" at C:\\Users\\appfi\\OneDrive\\Desktop\\Guiddini\\Filament\\eDrahmi\\app\\Models\\User.php:61)
+[stacktrace]
+#0 {main}
+"} 
+[2025-03-05 11:29:37] local.ERROR: syntax error, unexpected token "}", expecting ";" {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): syntax error, unexpected token \"}\", expecting \";\" at C:\\Users\\appfi\\OneDrive\\Desktop\\Guiddini\\Filament\\eDrahmi\\app\\Models\\User.php:61)
+[stacktrace]
+#0 {main}
+"} 
