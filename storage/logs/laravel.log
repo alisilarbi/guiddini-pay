@@ -7408,3 +7408,15 @@
 #51 C:\\Users\\appfi\\OneDrive\\Desktop\\Guiddini\\Filament\\eDrahmi\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(23): require_once('C:\\\\Users\\\\appfi\\\\...')
 #52 {main}
 "} 
+[2025-03-05 11:27:38] local.ERROR: syntax error, unexpected token "}", expecting ";" {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): syntax error, unexpected token \"}\", expecting \";\" at C:\\Users\\appfi\\OneDrive\\Desktop\\Guiddini\\Filament\\eDrahmi\\app\\Models\\User.php:61)
+[stacktrace]
+#0 {main}
+"} 
+[2025-03-05 11:27:43] local.ERROR: syntax error, unexpected token "}", expecting ";" {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): syntax error, unexpected token \"}\", expecting \";\" at C:\\Users\\appfi\\OneDrive\\Desktop\\Guiddini\\Filament\\eDrahmi\\app\\Models\\User.php:61)
+[stacktrace]
+#0 {main}
+"} 
+[2025-03-05 11:27:43] local.ERROR: syntax error, unexpected token "}", expecting ";" {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): syntax error, unexpected token \"}\", expecting \";\" at C:\\Users\\appfi\\OneDrive\\Desktop\\Guiddini\\Filament\\eDrahmi\\app\\Models\\User.php:61)
+[stacktrace]
+#0 {main}
+"} 
