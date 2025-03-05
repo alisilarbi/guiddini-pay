@@ -32,7 +32,6 @@ use Filament\Tables\Concerns\InteractsWithTable;
 
 class Applications extends Page implements HasForms, HasTable
 {
-
     use InteractsWithTable;
     use InteractsWithForms;
 
