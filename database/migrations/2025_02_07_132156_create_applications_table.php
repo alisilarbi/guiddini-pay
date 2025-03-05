@@ -28,10 +28,10 @@ return new class extends Migration
             $table->uuid('user_id');
             $table->foreign('user_id')->references('id')->on('users');
 
-            $table->uuid('environment_id')->nullable();
-            $table->foreign('environment_id')->references('id')->on('environments');
+            $table->uuid('license_id')->nullable();
+            $table->foreign('license_id')->references('id')->on('licenses');
 
-            $table->string('environment_type')->default('development');
+            $table->string('license_env')->default('development');
 
             $table->timestamps();
         });

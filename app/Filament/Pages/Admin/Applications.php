@@ -2,11 +2,11 @@
 
 namespace App\Filament\Pages\Admin;
 
+use App\Models\License;
 use Filament\Forms\Get;
 use Filament\Pages\Page;
 use Filament\Tables\Table;
 use App\Models\Application;
-use App\Models\Environment;
 use Illuminate\Support\Str;
 use Filament\Forms\Components\Grid;
 use Filament\Tables\Actions\Action;
@@ -40,11 +40,10 @@ class Applications extends Page implements HasForms, HasTable
 
     protected static string $view = 'filament.pages.admin.applications';
 
-
     public function table(Table $table): Table
     {
         return $table
-            ->query(Application::query()->with(['environment', 'user']))
+            ->query(Application::query()->with(['license', 'user']))
             ->columns([
                 TextColumn::make('name')
                     ->label('App name'),
@@ -53,16 +52,17 @@ class Applications extends Page implements HasForms, HasTable
                     ->label('Owner'),
 
 
-                SelectColumn::make('environment_id')
-                    ->options(Environment::all()->pluck('name', 'id')),
+                SelectColumn::make('license_id')
+                    ->label('License')
+                    ->options(License::all()->pluck('name', 'id')),
 
-                SelectColumn::make('environment_type')
+                SelectColumn::make('license_env')
                     // ->options([
                     //     'development' => 'Development',
                     //     'production' => 'Production',
                     // ])
                     ->options(function ($record) {
-                        $env = $record->environment;
+                        $env = $record->license;
 
                         if (!$env) {
                             return [
@@ -138,26 +138,26 @@ class Applications extends Page implements HasForms, HasTable
                             Fieldset::make('SATIM TEST')
                                 ->schema([
 
-                                    TextEntry::make('environment.satim_development_username')
+                                    TextEntry::make('license.satim_development_username')
                                         ->label('Username'),
 
-                                    TextEntry::make('environment.satim_development_password')
+                                    TextEntry::make('license.satim_development_password')
                                         ->label('Password'),
 
-                                    TextEntry::make('environment.satim_development_terminal')
+                                    TextEntry::make('license.satim_development_terminal')
                                         ->label('Terminal ID'),
                                 ]),
 
                             Fieldset::make('SATIM PROD')
                                 ->schema([
 
-                                    TextEntry::make('environment.satim_production_username')
+                                    TextEntry::make('license.satim_production_username')
                                         ->label('Username'),
 
-                                    TextEntry::make('environment.satim_production_password')
+                                    TextEntry::make('license.satim_production_password')
                                         ->label('Password'),
 
-                                    TextEntry::make('environment.satim_production_terminal')
+                                    TextEntry::make('license.satim_production_terminal')
                                         ->label('Terminal ID'),
                                 ]),
                         ]),
@@ -205,9 +205,9 @@ class Applications extends Page implements HasForms, HasTable
                                 Select::make('environment')
                                     ->live()
                                     ->required()
-                                    ->options(Environment::all()->pluck('name', 'id')),
+                                    ->options(License::all()->pluck('name', 'id')),
 
-                                Select::make('environment_type')
+                                Select::make('license')
                                     ->live()
                                     ->required()
                                     ->options(function (Get $get) {
@@ -216,7 +216,7 @@ class Applications extends Page implements HasForms, HasTable
                                             return [];
                                         }
 
-                                        $env = Environment::where('id', $get('environment'))->first();
+                                        $env = License::where('id', $get('environment'))->first();
                                         if (!$env || $env->satim_production_username || $env->satim_production_password || $env->satim_production_terminal) {
                                             return collect([
                                                 ['id' => 'development', 'name' => 'Development'],
@@ -256,7 +256,7 @@ class Applications extends Page implements HasForms, HasTable
                         //     ]);
                         // }
 
-                        $env = Environment::where('id', $data['environment'])->first();
+                        $env = License::where('id', $data['environment'])->first();
 
                         $application->update([
                             'environment_type' => $data['environment_type'],

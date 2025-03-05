@@ -15,17 +15,6 @@ Route::prefix('payment')->group(function () {
     Route::get('/failed/{order_number}', [PaymentController::class, 'failed'])->name('payment.failed');
 });
 
-
-// Route::get('/private-files/{path}', function ($path) {
-//     $file = Storage::disk('private')->path($path);
-
-//     if (!Storage::disk('private')->exists($path)) {
-//         abort(404);
-//     }
-
-//     return Response::file($file);
-// })->where('path', '.*')->name('private.file');
-
 Route::get('/private-files/{path}', function ($path) {
     $filePath = "private/{$path}";
 

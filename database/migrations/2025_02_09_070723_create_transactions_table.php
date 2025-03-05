@@ -34,13 +34,13 @@ return new class extends Migration
             $table->string('pan')->nullable()->comment('Masked card number');
             $table->string('ip_address')->nullable();
 
-            $table->string('environment_type');
+            $table->string('license_env');
 
             $table->uuid('application_id');
             $table->foreign('application_id')->references('id')->on('applications');
 
-            $table->uuid('environment_id');
-            $table->foreign('environment_id')->references('id')->on('environments');
+            $table->uuid('license_id');
+            $table->foreign('license_id')->references('id')->on('licenses');
 
             $table->timestamps();
         });

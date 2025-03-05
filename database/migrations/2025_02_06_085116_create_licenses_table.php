@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('environments', function (Blueprint $table) {
-            $table->uuid('id');
+        Schema::create('licenses', function (Blueprint $table) {
+            $table->uuid('id')->primary();
 
             $table->string('name');
 
@@ -29,6 +29,7 @@ return new class extends Migration
 
             $table->timestamps();
         });
+
     }
 
     /**
@@ -36,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('environments');
+        Schema::dropIfExists('licenses');
     }
 };

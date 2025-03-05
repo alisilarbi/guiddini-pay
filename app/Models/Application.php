@@ -28,8 +28,8 @@ class Application extends Model
         'logo',
         'user_id',
 
-        'environment_id',
-        'environment_type',
+        'license_id',
+        'license_env',
     ];
 
     public static function generateAppKey(): string
@@ -47,9 +47,14 @@ class Application extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function environment()
+    // public function environment()
+    // {
+    //     return $this->belongsTo(Environment::class, 'environment_id', 'id');
+    // }
+
+    public function license()
     {
-        return $this->belongsTo(Environment::class, 'environment_id', 'id');
+        return $this->belongsTo(License::class, 'license_id', 'id');
     }
 
     protected static function boot()

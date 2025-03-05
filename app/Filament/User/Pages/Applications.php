@@ -57,8 +57,8 @@ class Applications extends Page implements HasForms, HasTable
                 TextColumn::make('user.name')
                     ->label('Username'),
 
-                TextColumn::make('environment')
-                    ->badge(),
+                // TextColumn::make('environment')
+                //     ->badge(),
 
                 TextColumn::make('updated_at')
                     ->dateTime(),

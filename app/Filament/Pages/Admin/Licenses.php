@@ -2,40 +2,34 @@
 
 namespace App\Filament\Pages\Admin;
 
-use Filament\Forms\Get;
-
+use App\Models\License;
 use Filament\Pages\Page;
 use Filament\Tables\Table;
-use App\Models\Environment;
 use Filament\Tables\Actions\Action;
 use Illuminate\Support\Facades\Auth;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Enums\FontWeight;
 use Filament\Forms\Components\Fieldset;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
-class Environments extends Page implements HasForms, HasTable
+class Licenses extends Page
 {
-
     use InteractsWithTable;
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.pages.admin.environments';
+    protected static string $view = 'filament.pages.admin.licenses';
 
     public function table(Table $table): Table
     {
         return $table
-            ->query(Environment::query()->with(['user']))
+            ->query(License::query()->with(['user']))
             ->columns([
 
                 Split::make([
@@ -138,7 +132,7 @@ class Environments extends Page implements HasForms, HasTable
                             ])
                     ])
                     ->action(function ($data) {
-                        Environment::create([
+                        License::create([
                             'user_id' => Auth::user()->id,
 
                             'name' => $data['name'],
