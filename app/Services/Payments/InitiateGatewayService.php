@@ -66,7 +66,7 @@ class InitiateGatewayService
 
     private function baseUrl(Transaction $transaction): string
     {
-        return $transaction->environment_type === 'production'
+        return $transaction->license_env === 'production'
             ? 'https://cib.satim.dz/payment/rest/'
             : 'https://test.satim.dz/payment/rest/';
     }

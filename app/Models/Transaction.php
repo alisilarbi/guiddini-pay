@@ -33,7 +33,7 @@ class Transaction extends Model
         'confirmation_status',
         'description',
 
-        'environment_type',
+        'license_env',
 
         'form_url',
         'svfe_response',

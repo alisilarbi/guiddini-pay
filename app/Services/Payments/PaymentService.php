@@ -62,22 +62,22 @@ class PaymentService
             'order_number' => $this->generateOrderNumber($application),
             'status' => 'initiated',
             'application_id' => $application->id,
-            'environment_id' => $application->environment->id,
-            'environment_type' => $application->environment_type,
+            'license_id' => $application->license->id,
+            'license_env' => $application->license_env,
             'currency' => '012'
         ]);
     }
 
     private function generateOrderNumber(Application $application): string
     {
-        $environmentId = $application->environment->id;
+        $licenseId = $application->license->id;
 
         do {
             $unique = uniqid(mt_rand(), true);
             $orderNumber = strtoupper(substr(base_convert($unique, 16, 36), 0, 20));
         } while (
             Transaction::where('order_number', $orderNumber)
-            ->where('environment_id', $environmentId)
+            ->where('license_id', $licenseId)
             ->exists()
         );
 
