@@ -27,6 +27,7 @@ class Transactions extends Page implements HasForms, HasTable
             ->query(Transaction::query())
             ->columns([
 
+                TextColumn::make('license_env'),
                 TextColumn::make('amount'),
                 TextColumn::make('order_id'),
                 TextColumn::make('order_number'),
