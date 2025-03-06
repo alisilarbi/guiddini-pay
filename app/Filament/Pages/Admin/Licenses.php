@@ -145,7 +145,7 @@ class Licenses extends Page implements HasForms, HasTable
 
                             'satim_production_username' => $data['satim_production_username'],
                             'satim_production_password' => $data['satim_production_password'],
-                            'satim_prodution_terminal' => $data['satim_production_terminal'],
+                            'satim_production_terminal' => $data['satim_production_terminal'],
                         ]);
                     })
             ]);

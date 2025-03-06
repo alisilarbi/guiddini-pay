@@ -2,12 +2,14 @@
 
 namespace App\Filament\Pages\Admin;
 
+use Closure;
 use App\Models\License;
 use Filament\Forms\Get;
 use Filament\Pages\Page;
 use Filament\Tables\Table;
 use App\Models\Application;
 use Illuminate\Support\Str;
+use Livewire\Attributes\Url;
 use Filament\Forms\Components\Grid;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -39,6 +41,10 @@ class Applications extends Page implements HasForms, HasTable
 
     protected static string $view = 'filament.pages.admin.applications';
 
+    public function mount(): void{
+        $license = License::first();
+    }
+
     public function table(Table $table): Table
     {
         return $table
@@ -60,15 +66,15 @@ class Applications extends Page implements HasForms, HasTable
                     //     'production' => 'Production',
                     // ])
                     ->options(function ($record) {
-                        $env = $record->license;
+                        $license = $record->license;
 
-                        if (!$env) {
+                        if (!$license) {
                             return [
-                                'development' => 'Development',
+                                // 'development' => 'Development',
                             ];
                         }
 
-                        if ($env->satim_production_username && $env->satim_production_password && $env->satim_production_terminal) {
+                        if ($license->satim_production_username && $license->satim_production_password && $license->satim_production_terminal) {
                             return [
                                 'development' => 'Development',
                                 'production' => 'Production',
@@ -183,6 +189,7 @@ class Applications extends Page implements HasForms, HasTable
                             ]),
                         Step::make('Fonctionnement')
                             ->schema([
+
                                 TextInput::make('website_url')
                                     ->label('Lien du site web')
                                     ->required(),
@@ -190,28 +197,27 @@ class Applications extends Page implements HasForms, HasTable
                                 TextInput::make('redirect_url')
                                     ->label('Lien de redirection')
                                     ->required(),
-
                             ]),
 
                         Step::make('env')
-                            ->label('Environment')
+                            ->label('License')
                             ->schema([
-                                Select::make('environment')
+                                Select::make('license')
                                     ->live()
                                     ->required()
                                     ->options(License::all()->pluck('name', 'id')),
 
-                                Select::make('license')
+                                Select::make('license_env')
                                     ->live()
                                     ->required()
                                     ->options(function (Get $get) {
 
-                                        if (!$get('environment')) {
+                                        if (!$get('license')) {
                                             return [];
                                         }
 
-                                        $env = License::where('id', $get('environment'))->first();
-                                        if (!$env || $env->satim_production_username || $env->satim_production_password || $env->satim_production_terminal) {
+                                        $license = License::where('id', $get('license'))->first();
+                                        if (!$license || $license->satim_production_username || $license->satim_production_password || $license->satim_production_terminal) {
                                             return collect([
                                                 ['id' => 'development', 'name' => 'Development'],
                                                 ['id' => 'production', 'name' => 'Production'],
@@ -232,8 +238,7 @@ class Applications extends Page implements HasForms, HasTable
                         $application = Application::create([
                             'name' => $data['name'],
                             'website_url' => $data['website_url'],
-                            'success_redirect_url' => $data['success_redirect_url'],
-                            'fail_redirect_url' => $data['fail_redirect_url'],
+                            'redirect_url' => $data['redirect_url'],
                         ]);
 
                         if ($data['logo']) {
@@ -245,15 +250,15 @@ class Applications extends Page implements HasForms, HasTable
                             Storage::disk('public')->delete($tempPath);
 
                             $path = $destination . '/' . $newFileName;
-                            $application->info->update([
+                            $application->update([
                                 'logo' => $path,
                             ]);
                         }
 
-                        $env = License::where('id', $data['environment'])->first();
+                        $env = License::where('id', $data['license'])->first();
                         $application->update([
-                            'environment_type' => $data['environment_type'],
-                            'environment_id' => $env->id,
+                            'license_env' => $data['license_env'],
+                            'license_id' => $env->id,
                         ]);
                     }),
 

@@ -7,6 +7,7 @@ use App\Models\Application;
 use Illuminate\Http\Request;
 use App\Http\Resources\ApiResponseResource;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\PaymentResponseResource;
 
 class ValidateApiKeys
 {
@@ -21,7 +22,7 @@ class ValidateApiKeys
         $secretKey = $request->header('x-secret-key');
 
         if (!$appKey || !$secretKey) {
-            return (new ApiResponseResource(['success' => false, 'code' => 'INVALID_API_KEYS', 'message' => 'Invalid API keys']))->response()->setStatusCode(401);
+            return (new PaymentResponseResource(['success' => false, 'code' => 'INVALID_API_KEYS', 'message' => 'Invalid API keys']))->response()->setStatusCode(401);
         }
 
         $application = Application::where('app_key', $appKey)
@@ -29,13 +30,13 @@ class ValidateApiKeys
             ->first();
 
         if (!$application) {
-            return (new ApiResponseResource(['success' => false, 'code' => 'INVALID_API_KEYS', 'message' => 'Invalid API keys']))->response()->setStatusCode(401);
+            return (new PaymentResponseResource(['success' => false, 'code' => 'INVALID_API_KEYS', 'message' => 'Invalid API keys']))->response()->setStatusCode(401);
         }
 
         $origin = $request->header('Origin') ?? $request->header('Referer');
 
         if ($origin && rtrim($origin, '/') !== rtrim($application->website_url, '/')) {
-            return (new ApiResponseResource(['success' => false, 'code' => 'UNAUTHORIZED_ORIGIN', 'message' => 'Unauthorized origin']))->response()->setStatusCode(403);
+            return (new PaymentResponseResource(['success' => false, 'code' => 'UNAUTHORIZED_ORIGIN', 'message' => 'Unauthorized origin']))->response()->setStatusCode(403);
         }
 
         return $next($request);
