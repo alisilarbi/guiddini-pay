@@ -33,7 +33,7 @@ class Transactions extends Page implements HasForms, HasTable
                 TextColumn::make('order_number'),
                 TextColumn::make('action_code_description'),
                 TextColumn::make('action_code'),
-                TextColumn::make('status'),
+                // TextColumn::make('status'),
                 TextColumn::make('form_url'),
                 TextColumn::make('ip_address'),
                 TextColumn::make('updated_at'),
