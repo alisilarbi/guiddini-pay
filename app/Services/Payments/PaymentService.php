@@ -29,7 +29,6 @@ class PaymentService
 
             $response = $this->initiator->execute($transaction);
 
-
             return [
                 'formUrl' => $response['formUrl'],
                 'transaction' => $transaction->only(['order_number', 'status', 'amount'])
@@ -59,6 +58,7 @@ class PaymentService
 
     private function createTransaction(array $data, Application $application): Transaction
     {
+        // dd($application->license);
         return Transaction::create([
             'amount' => $data['amount'],
             'order_number' => $this->generateOrderNumber($application),

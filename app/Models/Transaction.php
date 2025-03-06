@@ -34,6 +34,7 @@ class Transaction extends Model
         'description',
 
         'license_env',
+        'license_id',
 
         'form_url',
         'svfe_response',
