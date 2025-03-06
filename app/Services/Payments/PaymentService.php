@@ -22,11 +22,24 @@ class PaymentService
 
     public function initiatePayment(array $data, string $appKey): array
     {
+
+        $application = Application::where('app_key', $appKey)->firstOrFail();
+        $transaction = $this->createTransaction($data, $application);
+
+        $response = $this->initiator->execute($transaction);
+
+
+        return [
+            'formUrl' => $response['formUrl'],
+            'transaction' => $transaction->only(['order_number', 'status', 'amount'])
+        ];
+
         try {
             $application = Application::where('app_key', $appKey)->firstOrFail();
             $transaction = $this->createTransaction($data, $application);
 
             $response = $this->initiator->execute($transaction);
+
 
             return [
                 'formUrl' => $response['formUrl'],
