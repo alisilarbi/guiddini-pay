@@ -20,8 +20,7 @@ return new class extends Migration
             $table->text('app_secret');
 
             $table->text('website_url');
-            $table->text('success_redirect_url');
-            $table->text('fail_redirect_url');
+            $table->text('redirect_url');
 
             $table->string('logo')->nullable();
 

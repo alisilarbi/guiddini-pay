@@ -22,8 +22,7 @@ class Application extends Model
         'app_secret',
 
         'website_url',
-        'success_redirect_url',
-        'fail_redirect_url',
+        'redirect_url',
 
         'logo',
         'user_id',

@@ -50,7 +50,6 @@ class Applications extends Page implements HasForms, HasTable
                 TextColumn::make('user.name')
                     ->label('Owner'),
 
-
                 SelectColumn::make('license_id')
                     ->label('License')
                     ->options(License::all()->pluck('name', 'id')),
@@ -185,16 +184,12 @@ class Applications extends Page implements HasForms, HasTable
                         Step::make('Fonctionnement')
                             ->schema([
                                 TextInput::make('website_url')
+                                    ->label('Lien du site web')
                                     ->required(),
 
-                                Grid::make(2)
-                                    ->schema([
-                                        TextInput::make('success_redirect_url')
-                                            ->required(),
-
-                                        TextInput::make('fail_redirect_url')
-                                            ->required(),
-                                    ])
+                                TextInput::make('redirect_url')
+                                    ->label('Lien de redirection')
+                                    ->required(),
 
                             ]),
 
@@ -241,22 +236,21 @@ class Applications extends Page implements HasForms, HasTable
                             'fail_redirect_url' => $data['fail_redirect_url'],
                         ]);
 
-                        // if ($data['logo']) {
-                        //     $tempPath = Storage::disk('public')->path($data['logo']);
-                        //     $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
-                        //     $destination = 'applications/' . $application->id;
+                        if ($data['logo']) {
+                            $tempPath = Storage::disk('public')->path($data['logo']);
+                            $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
+                            $destination = 'applications/' . $application->id;
 
-                        //     Storage::disk('private')->putFileAs($destination, $tempPath, $newFileName);
-                        //     Storage::disk('public')->delete($tempPath);
+                            Storage::disk('private')->putFileAs($destination, $tempPath, $newFileName);
+                            Storage::disk('public')->delete($tempPath);
 
-                        //     $path = $destination . '/' . $newFileName;
-                        //     $application->info->update([
-                        //         'logo' => $path,
-                        //     ]);
-                        // }
+                            $path = $destination . '/' . $newFileName;
+                            $application->info->update([
+                                'logo' => $path,
+                            ]);
+                        }
 
                         $env = License::where('id', $data['environment'])->first();
-
                         $application->update([
                             'environment_type' => $data['environment_type'],
                             'environment_id' => $env->id,
