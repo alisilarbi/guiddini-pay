@@ -150,8 +150,8 @@ class Applications extends Page implements HasForms, HasTable
                                 // 'logo' => $record->
                                 'website_url' => $record->website_url,
                                 'redirect_url' => $record->redirect_url,
-                                'license' => $record->license_id
-                                // 'license_env' => $
+                                'license' => $record->license_id,
+                                'license_env' => $record->license_env,
                             ];
                         })
                         ->form([
