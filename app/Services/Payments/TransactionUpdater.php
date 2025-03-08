@@ -26,6 +26,8 @@ class TransactionUpdater
             'auth_code' => $response['authCode'] ?? null,
             'action_code' => $response['actionCode'] ?? null,
             'action_code_description' => $response['actionCodeDescription'] ?? null,
+            'ErrorCode' => $response['ErrorCode'] ?? null,
+            'ErrorMessage' => $response['ErrorMessage'] ?? null,
             'svfe_response' => $response['svfe_response'] ?? null,
             'pan' => $response['Pan'] ?? null,
             'ip_address' => $response['Ip'] ?? null,
@@ -37,6 +39,8 @@ class TransactionUpdater
 
         if (($response['ErrorCode'] ?? 1) === 0 && ($response['actionCode'] ?? 1) === 0)
             $isSuccess = true;
+
+        dd($isSuccess);
 
         $errorType = match ((int)($response['actionCode'] ?? -1)) {
             0 => null, // Success
