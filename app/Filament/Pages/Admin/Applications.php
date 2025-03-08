@@ -144,6 +144,11 @@ class Applications extends Page implements HasForms, HasTable
                     Action::make('edit')
                         ->label('Edit')
                         ->icon('heroicon-o-pencil-square')
+                        ->fill(function($record){
+                            return [
+                                'name' => $record->name,
+                            ];
+                        })
                         ->form([
                             TextInput::make('name')
                                 ->required(),
