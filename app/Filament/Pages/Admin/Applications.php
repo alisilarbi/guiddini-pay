@@ -180,7 +180,7 @@ class Applications extends Page implements HasForms, HasTable
                                     ->label('Lien de redirection')
                                     ->required()
                                     ->url()
-                                    ->rule(fn($get) => new RedirectUrlRule($get('website_url')))
+                                    ->rule(fn ($get) => $get('website_url') ? new RedirectUrlRule($get('website_url')) : 'nullable')
                                     ->live()
                             ]),
 
