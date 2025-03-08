@@ -147,6 +147,11 @@ class Applications extends Page implements HasForms, HasTable
                         ->fillForm(function($record){
                             return [
                                 'name' => $record->name,
+                                // 'logo' => $record->
+                                'website_url' => $record->website_url,
+                                'redirect_url' => $record->redirect_url,
+                                'license' => $record->license_id
+                                // 'license_env' => $
                             ];
                         })
                         ->form([
