@@ -86,7 +86,7 @@ class Transactions extends Page implements HasForms, HasTable
                     ->url(fn($record) => $record->form_url)
                     ->openUrlInNewTab()
                     ->icon('heroicon-o-link')
-                    ->iconSize('sm')
+                    // ->iconSize('sm')
                     ->color('gray')
                     ->tooltip('Payment Link'),
 
