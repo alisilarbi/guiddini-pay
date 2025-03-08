@@ -81,11 +81,21 @@ class Transactions extends Page implements HasForms, HasTable
                     ->color('gray'),
 
                 TextColumn::make('form_url')
-                    ->label('Payment Link')
+                    ->label('')
+                    ->formatStateUsing(fn() => '')
                     ->url(fn($record) => $record->form_url)
                     ->openUrlInNewTab()
                     ->icon('heroicon-o-link')
-                    ->color('primary'),
+                    ->iconSize('sm')
+                    ->color('gray')
+                    ->tooltip('Payment Link'),
+
+                // TextColumn::make('form_url')
+                //     ->label('Payment Link')
+                //     ->url(fn($record) => $record->form_url)
+                //     ->openUrlInNewTab()
+                //     ->icon('heroicon-o-link')
+                //     ->color('primary'),
             ])
             ->filters([
                 // Add filters if needed
