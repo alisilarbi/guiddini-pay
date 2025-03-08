@@ -37,8 +37,8 @@ class TransactionUpdater
 
         $isSuccess = false;
 
-        $errorCode = $response['ErrorCode'] ?? 1;
-        $actionCode = $response['actionCode'] ?? 1;
+        $errorCode = (int)$response['ErrorCode'] ?? 1;
+        $actionCode = (int)$response['actionCode'] ?? 1;
 
         $isSuccess = in_array($errorCode, [0, 2]) && $actionCode === 0;
 
