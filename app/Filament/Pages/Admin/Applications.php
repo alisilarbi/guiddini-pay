@@ -8,8 +8,10 @@ use Filament\Forms\Get;
 use Filament\Pages\Page;
 use Filament\Tables\Table;
 use App\Models\Application;
+use App\Rules\ValidUrlRule;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Url;
+use App\Rules\RedirectUrlRule;
 use Filament\Forms\Components\Grid;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -41,7 +43,8 @@ class Applications extends Page implements HasForms, HasTable
 
     protected static string $view = 'filament.pages.admin.applications';
 
-    public function mount(): void{
+    public function mount(): void
+    {
         $license = License::first();
     }
 
@@ -61,17 +64,11 @@ class Applications extends Page implements HasForms, HasTable
                     ->options(License::all()->pluck('name', 'id')),
 
                 SelectColumn::make('license_env')
-                    // ->options([
-                    //     'development' => 'Development',
-                    //     'production' => 'Production',
-                    // ])
                     ->options(function ($record) {
                         $license = $record->license;
 
                         if (!$license) {
-                            return [
-                                // 'development' => 'Development',
-                            ];
+                            return [];
                         }
 
                         if ($license->satim_production_username && $license->satim_production_password && $license->satim_production_terminal) {
@@ -87,28 +84,6 @@ class Applications extends Page implements HasForms, HasTable
                     })
                     ->rules(['required'])
                     ->selectablePlaceholder(false)
-
-                // ->options(function (Get $get) {
-
-                //     if (!$get('environment')) {
-                //         return [];
-                //     }
-
-                //     $env = Environment::where('id', $get('environment'))->first();
-                //     if (!$env || $env->satim_production_username || $env->satim_production_password || $env->satim_production_terminal) {
-                //         return collect([
-                //             ['id' => 'development', 'name' => 'Development'],
-                //             ['id' => 'production', 'name' => 'Production'],
-                //         ])->pluck('name', 'id')->toArray();
-                //     }
-
-                //     return collect([
-                //         ['id' => 'development', 'name' => 'Development'],
-                //     ])->pluck('name', 'id')->toArray();
-                // }),
-
-                // TextColumn::make('updated_at')
-                //     ->dateTime(),
 
             ])
             ->actions([
@@ -166,6 +141,10 @@ class Applications extends Page implements HasForms, HasTable
                                 ]),
                         ]),
 
+                    // Action::make('edit')
+                    //     ->label('Edit')
+                    //     ->
+
                     Action::make('delete')
                         ->label('Delete')
                         ->color('danger')
@@ -192,11 +171,17 @@ class Applications extends Page implements HasForms, HasTable
 
                                 TextInput::make('website_url')
                                     ->label('Lien du site web')
-                                    ->required(),
+                                    ->required()
+                                    ->url()
+                                    ->rule(new ValidUrlRule())
+                                    ->live(),
 
                                 TextInput::make('redirect_url')
                                     ->label('Lien de redirection')
-                                    ->required(),
+                                    ->required()
+                                    ->url()
+                                    ->rule(fn($get) => new RedirectUrlRule($get('website_url')))
+                                    ->live()
                             ]),
 
                         Step::make('env')
