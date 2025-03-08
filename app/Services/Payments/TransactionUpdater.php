@@ -33,6 +33,7 @@ class TransactionUpdater
             'ip_address' => $response['Ip'] ?? null,
             'status' => $response['status'] ?? null,
             'confirmation_status' => $response['confirmation_status'] ?? null,
+            'approval_code' => $response['approvalCode'] ?? null,
         ];
 
         $isSuccess = false;
@@ -64,6 +65,7 @@ class TransactionUpdater
             'pan' => $updateData['pan'],
             'ip_address' => $updateData['ip_address'],
             'confirmation_status' => $updateData['confirmation_status'],
+            'approval_code' => $updateData['approval_code'],
         ]);
     }
 

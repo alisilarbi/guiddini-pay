@@ -33,6 +33,7 @@ return new class extends Migration
             $table->string('svfe_response')->nullable();
             $table->string('pan')->nullable()->comment('Masked card number');
             $table->string('ip_address')->nullable();
+            $table->string('approval_code')->nullable();
 
             $table->string('license_env');
 
