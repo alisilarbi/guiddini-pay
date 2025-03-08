@@ -32,7 +32,7 @@ class Transactions extends Page implements HasForms, HasTable
                     ->sortable()
                     ->since()
                     ->color('gray')
-                    ->description(fn($record) => $record->updated_at->diffForHumans()),
+                    ->description(fn($record) => $record->updated_at),
 
                 TextColumn::make('amount')
                     // ->money('DZD')
