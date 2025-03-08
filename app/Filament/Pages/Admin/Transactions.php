@@ -35,7 +35,8 @@ class Transactions extends Page implements HasForms, HasTable
                     ->description(fn($record) => $record->updated_at->diffForHumans()),
 
                 TextColumn::make('amount')
-                    ->money('USD')
+                    // ->money('DZD')
+                    ->suffix('DZD')
                     ->color(fn($record) => $record->amount > 0 ? 'success' : 'danger')
                     ->weight('bold')
                     ->alignRight(),
