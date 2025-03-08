@@ -143,7 +143,7 @@ class Applications extends Page implements HasForms, HasTable
 
                     Action::make('edit')
                         ->label('Edit')
-                        ->icon('heroicon-m-pencil-square')
+                        ->icon('heroicon-o-pencil-square')
                         ->form([
                             TextInput::make('name')
                                 ->required(),
