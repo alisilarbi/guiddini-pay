@@ -50,9 +50,7 @@ class PaymentController extends Controller
             $transaction = $result['transaction'];
             $gatewayResponse = $result['gateway_response'];
 
-            $redirectUrl = $transaction->status === 'paid'
-                ? $transaction->application->success_redirect_url
-                : $transaction->application->fail_redirect_url;
+            $redirectUrl = $transaction->application->redirect_url;
 
             $queryParams = http_build_query([
                 'order_number' => $orderNumber,
