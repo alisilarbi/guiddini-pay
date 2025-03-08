@@ -64,7 +64,7 @@ class ValidUrlRule implements ValidationRule
         }
     }
 
-    private function isInternalIP(string $host): bool
+    private function isInternalIP(string $ip): bool
     {
         if (!filter_var($ip, FILTER_VALIDATE_IP)) {
             return false; // Only check IP addresses, ignore domain names
