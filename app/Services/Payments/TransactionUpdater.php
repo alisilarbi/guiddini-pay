@@ -35,9 +35,7 @@ class TransactionUpdater
 
         $isSuccess = false;
 
-        dd($response);
-
-        if (($response['ErrorCode'] ?? '1') === '0' && ($response['actionCode'] ?? '1') === '0')
+        if (($response['ErrorCode'] ?? 1) === 0 && ($response['actionCode'] ?? 1) === 0)
             $isSuccess = true;
 
         $errorType = match ((int)($response['actionCode'] ?? -1)) {
