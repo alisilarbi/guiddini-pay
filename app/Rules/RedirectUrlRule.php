@@ -21,17 +21,14 @@ class RedirectUrlRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        // Ensure website URL is properly set
         if (empty($this->websiteUrl)) {
             $fail('The website URL must be set before validating the redirect URL.');
             return;
         }
 
-        // Parse both URLs safely
         $websiteParts = parse_url($this->websiteUrl);
         $redirectParts = parse_url($value);
 
-        // Ensure both URLs are valid
         if (!$websiteParts || !isset($websiteParts['host'])) {
             $fail('The website URL is invalid.');
             return;
@@ -42,11 +39,9 @@ class RedirectUrlRule implements ValidationRule
             return;
         }
 
-        // Normalize hosts to lowercase
         $websiteHost = strtolower($websiteParts['host']);
         $redirectHost = strtolower($redirectParts['host']);
 
-        // Ensure redirect URL belongs to the same domain (or explicitly includes subdomains)
         if ($websiteHost !== $redirectHost) {
             if (!str_ends_with($redirectHost, '.' . $websiteHost)) {
                 $fail('The redirect URL must belong to the same domain as the website URL.');
@@ -54,18 +49,15 @@ class RedirectUrlRule implements ValidationRule
             }
         }
 
-        // Ensure path validity
         $path = $redirectParts['path'] ?? '/';
         $path = rtrim($path, '/');
 
-        // Block sensitive paths
         $blockedPaths = ['/admin', '/logout'];
         if (in_array($path, $blockedPaths)) {
             $fail('The redirect URL contains a restricted path.');
             return;
         }
 
-        // Optional: Block query parameters that could manipulate behavior
         if (!empty($redirectParts['query'])) {
             $fail('The redirect URL must not contain query parameters.');
             return;
