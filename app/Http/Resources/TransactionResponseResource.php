@@ -42,7 +42,7 @@ class TransactionResponseResource extends JsonResource
                     'error_code' => $data['transaction']['error_code'],
                     'error_message' => $data['transaction']['error_message'],
                     'confirmation_status' => $data['transaction']['confirmation_status'],
-                    'environment_type' => $data['transaction']['environment_type'],
+                    'license_env' => $data['transaction']['environment_type'],
                     'form_url' => $data['transaction']['form_url'],
                     'svfe_response' => $data['transaction']['svfe_response'],
                     'pan' => $data['transaction']['pan'],
