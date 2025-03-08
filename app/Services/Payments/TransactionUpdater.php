@@ -37,13 +37,6 @@ class TransactionUpdater
 
         $isSuccess = false;
 
-
-        dd([
-            'response' => $response,
-            'updateData' => $updateData,
-        ]);
-
-
         $errorCode = $response['ErrorCode'] ?? 1;
         $actionCode = $response['actionCode'] ?? 1;
 
