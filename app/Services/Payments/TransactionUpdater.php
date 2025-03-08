@@ -29,8 +29,8 @@ class TransactionUpdater
             'svfe_response' => $response['svfe_response'] ?? null,
             'pan' => $response['Pan'] ?? null,
             'ip_address' => $response['Ip'] ?? null,
-            // 'status' => $response['status'] ?? null,
-            // 'confirmation_status' => $response['confirmation_status'] ?? null,
+            'status' => $response['status'] ?? null,
+            'confirmation_status' => $response['confirmation_status'] ?? null,
         ];
 
         $isSuccess = false;
