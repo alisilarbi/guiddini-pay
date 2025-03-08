@@ -40,6 +40,7 @@ class Transaction extends Model
         'svfe_response',
         'pan',
         'ip_address',
+        'approval_code'
     ];
 
     protected static function boot()
@@ -56,8 +57,8 @@ class Transaction extends Model
         return $this->belongsTo(Application::class);
     }
 
-    public function environment()
-    {
-        return $this->belongsTo(Environment::class);
-    }
+    // public function environment()
+    // {
+    //     return $this->belongsTo(Environment::class);
+    // }
 }
