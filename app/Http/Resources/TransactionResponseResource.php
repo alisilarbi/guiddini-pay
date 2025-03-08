@@ -47,7 +47,7 @@ class TransactionResponseResource extends JsonResource
                     'svfe_response' => $data['transaction']['svfe_response'],
                     'pan' => $data['transaction']['pan'],
                     'ip_address' => $data['transaction']['ip_address'],
-                    'approva_code' => $data['transaction']['approval_code'],
+                    'approval_code' => $data['transaction']['approval_code'],
                 ],
 
             ],
