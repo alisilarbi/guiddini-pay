@@ -33,8 +33,6 @@ class ConfirmGatewayService
                 ->throw()
                 ->json();
 
-            dd($response);
-
             $this->updater->handleConfirmationResponse($transaction, $response);
 
             // if ($this->isErrorResponse($response)) {
