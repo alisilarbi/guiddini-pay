@@ -40,8 +40,12 @@ class ValidUrlRule implements ValidationRule
         }
 
         $blockedHosts = ['localhost', '127.0.0.1', '::1'];
-        if (in_array($host, $blockedHosts)) {
-            $fail('The :attribute must not be a reserved host.');
+        if (filter_var($host, FILTER_VALIDATE_IP)) {
+            if ($this->isInternalIP($host)) {
+                $fail('The :attribute must not be an internal network IP.');
+                return;
+            }
+            $fail('The :attribute must not be an IP address.');
             return;
         }
 
@@ -62,7 +66,10 @@ class ValidUrlRule implements ValidationRule
 
     private function isInternalIP(string $host): bool
     {
-        return filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE | FILTER_FLAG_NO_PRIV_RANGE) === false;
-    }
+        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+            return false; // Only check IP addresses, ignore domain names
+        }
 
+        return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE | FILTER_FLAG_NO_PRIV_RANGE) === false;
+    }
 }
