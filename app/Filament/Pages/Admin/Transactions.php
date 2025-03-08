@@ -81,22 +81,11 @@ class Transactions extends Page implements HasForms, HasTable
                     ->color('gray'),
 
                 TextColumn::make('form_url')
-                    ->label('')
-                    ->formatStateUsing(fn() => '🌐') // Using a globe emoji or icon
+                    ->label('Payment Link')
                     ->url(fn($record) => $record->form_url)
                     ->openUrlInNewTab()
-                    ->tooltip('Open payment link')
-                    ->icon('heroicon-o-arrow-top-right-on-square')
-                    ->iconPosition('after')
-                    ->color('primary')
-                    ->alignCenter(),
-
-                // TextColumn::make('form_url')
-                //     ->label('Payment Link')
-                //     ->url(fn($record) => $record->form_url)
-                //     ->openUrlInNewTab()
-                //     ->icon('heroicon-o-link')
-                //     ->color('primary'),
+                    ->icon('heroicon-o-link')
+                    ->color('primary'),
             ])
             ->filters([
                 // Add filters if needed
