@@ -36,7 +36,7 @@ class Transactions extends Page implements HasForms, HasTable
 
                 TextColumn::make('amount')
                     // ->money('DZD')
-                    ->suffix('DZD')
+                    ->suffix(' DZD')
                     ->color(fn($record) => $record->amount > 0 ? 'success' : 'danger')
                     ->weight('bold')
                     ->alignRight(),
