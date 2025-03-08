@@ -141,9 +141,70 @@ class Applications extends Page implements HasForms, HasTable
                                 ]),
                         ]),
 
-                    // Action::make('edit')
-                    //     ->label('Edit')
-                    //     ->
+                    Action::make('edit')
+                        ->label('Edit')
+                        ->steps([
+                            Step::make('Information Général')
+                                ->schema([
+                                    TextInput::make('name')
+                                        ->required(),
+
+                                    FileUpload::make('logo')
+                                        ->image(),
+                                ]),
+                            Step::make('Fonctionnement')
+                                ->schema([
+
+                                    TextInput::make('website_url')
+                                        ->label('Lien du site web')
+                                        ->required()
+                                        ->url()
+                                        ->rule(new ValidUrlRule())
+                                        ->live(),
+
+                                    TextInput::make('redirect_url')
+                                        ->label('Lien de redirection')
+                                        ->required()
+                                        ->url()
+                                        ->rule(fn($get) => $get('website_url') ? new RedirectUrlRule($get('website_url')) : 'nullable')
+                                        ->live()
+                                ]),
+
+                            Step::make('env')
+                                ->label('License')
+                                ->schema([
+                                    Select::make('license')
+                                        ->live()
+                                        ->required()
+                                        ->options(License::all()->pluck('name', 'id')),
+
+                                    Select::make('license_env')
+                                        ->live()
+                                        ->required()
+                                        ->options(function (Get $get) {
+
+                                            if (!$get('license')) {
+                                                return [];
+                                            }
+
+                                            $license = License::where('id', $get('license'))->first();
+                                            if (!$license || $license->satim_production_username || $license->satim_production_password || $license->satim_production_terminal) {
+                                                return collect([
+                                                    ['id' => 'development', 'name' => 'Development'],
+                                                    ['id' => 'production', 'name' => 'Production'],
+                                                ])->pluck('name', 'id')->toArray();
+                                            }
+
+                                            return collect([
+                                                ['id' => 'development', 'name' => 'Development'],
+                                            ])->pluck('name', 'id')->toArray();
+                                        })
+
+                                ]),
+                        ])
+                        ->action(function($data) {
+                            dd($data);
+                        }),
 
                     Action::make('delete')
                         ->label('Delete')
@@ -180,7 +241,7 @@ class Applications extends Page implements HasForms, HasTable
                                     ->label('Lien de redirection')
                                     ->required()
                                     ->url()
-                                    ->rule(fn ($get) => $get('website_url') ? new RedirectUrlRule($get('website_url')) : 'nullable')
+                                    ->rule(fn($get) => $get('website_url') ? new RedirectUrlRule($get('website_url')) : 'nullable')
                                     ->live()
                             ]),
 
