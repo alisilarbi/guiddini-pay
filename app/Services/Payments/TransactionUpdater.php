@@ -42,13 +42,6 @@ class TransactionUpdater
 
         $isSuccess = in_array($errorCode, [0, 2]) && $actionCode === 0;
 
-        dd([
-            'response' => $response,
-            'updateData' => $updateData,
-            'errorCode' => $errorCode,
-            'actionCode' => $actionCode,
-            'isSuccess' => $isSuccess,
-        ]);
 
         $errorType = match ((int)($response['actionCode'] ?? -1)) {
             0 => null, // Success
@@ -60,6 +53,8 @@ class TransactionUpdater
 
         $updateData['status'] = $isSuccess ? 'paid' : ($errorType ?? 'failed');
         $updateData['confirmation_status'] = $isSuccess ? 'confirmed' : 'failed';
+
+        dd($updateData);
 
         $transaction->update([
             'deposit_amount' => $updateData['deposit_amount'],
