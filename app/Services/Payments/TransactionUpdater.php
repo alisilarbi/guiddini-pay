@@ -49,6 +49,8 @@ class TransactionUpdater
         $updateData['status'] = $isSuccess ? 'paid' : ($errorType ?? 'failed');
         $updateData['confirmation_status'] = $isSuccess ? 'confirmed' : 'failed';
 
+        dd($updateData);
+
         $transaction->update([
             'deposit_amount' => $updateData['deposit_amount'],
             'auth_code' => $updateData['auth_code'],
