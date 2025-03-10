@@ -87,7 +87,7 @@ class Transactions extends Page implements HasForms, HasTable
                     ->icon('heroicon-o-link')
                     ->color('primary'),
             ])
-            ->filters([
+        ->filters([
                 // Add filters if needed
             ])
             ->actions([

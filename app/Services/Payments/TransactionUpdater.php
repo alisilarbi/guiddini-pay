@@ -43,7 +43,7 @@ class TransactionUpdater
 
         $isSuccess = in_array($errorCode, [0, 2]) && $actionCode === 0;
 
-
+        dd($response);
         $errorType = match ((int)($response['actionCode'] ?? -1)) {
             0 => null, // Success
             10 => 'user_cancelled',
