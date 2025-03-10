@@ -40,8 +40,22 @@ class ProspectContoller extends Controller
 
         try {
 
-            $prospect = Prospect::create($request->all());
+            $prospect = Prospect::create([
+                'name' => $request->name,
+                'company_name' => $request->company_name,
+                'phone' => $request->phone,
+                'email' => $request->phone,
+                'legal_status' => $request->legal_status,
+                'has_bank_account' => $request->has_bank_account,
+                'bank_name' => $request->bank_name,
+                'website_integration' => $request->website_integration,
+                'mobile_integration' => $request->mobile_integration,
+                'website_link' => $request->website_link,
+                'programming_languages' => $request->programming_languages,
+            ]);
+
             dd($prospect);
+
             return new StandardResponse([
                 'success' => true,
                 'code' => 'PROSPECT_CREATED',
