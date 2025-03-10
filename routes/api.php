@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Services\OnlinePaymentService;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProspectContoller;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
