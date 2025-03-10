@@ -16,3 +16,7 @@ Route::prefix('payment')->group(function () {
 Route::prefix('fetch')->group(function(){
     Route::post('/transaction', [PaymentController::class, 'getTransaction'])->name('get.transaction')->middleware('validate_api_keys');
 });
+
+Route::prefix('prospect')->group(function(){
+    Route::post('create', [ProspectContoller::class, 'store'])->name('prospect.create')->middleware('validate_api_keys');
+});
