@@ -37,7 +37,6 @@ class ProspectContoller extends Controller
             'website_link' => 'nullable|string',
             'programming_languages' => 'nullable|json',
         ]);
-        dd($request->all());
         $prospect = Prospect::create([
             'name' => $request->name,
             'company_name' => $request->company_name,
