@@ -40,8 +40,8 @@ class ProspectContoller extends Controller
 
         try {
 
-            Prospect::create($request->all());
-
+            $prospect = Prospect::create($request->all());
+            dd($prospect);
             return new StandardResponse([
                 'success' => true,
                 'code' => 'PROSPECT_CREATED',
