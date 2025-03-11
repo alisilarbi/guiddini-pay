@@ -45,7 +45,7 @@ trait HandlesApiExceptions
         );
     }
 
-    private function jsonApiErrorResponse(string $message, string $code, int $statusCode, array $errors = []): JsonResponse
+    private function jsonApiErrorResponse(string $message, string $code, int $statusCode, array $errors = [], ?string $detail = ''): JsonResponse
     {
         $response = [
             'success' => false,
