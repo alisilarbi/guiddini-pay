@@ -45,6 +45,17 @@ class InitiateGatewayService
             $this->updater->handleInitiationResponse($transaction, $response);
 
             if ($this->isErrorResponse($response)) {
+                $errorCode = $response['ErrorCode'] ?? $response['errorCode'] ?? 'UNKNOWN';
+
+                if ($errorCode === '5') {
+                    throw new PaymentException(
+                        'Access denied by the gateway',
+                        'ACCESS_DENIED',
+                        403,
+                        ['gateway_response' => $response]
+                    );
+                }
+
                 throw new PaymentException(
                     $response['ErrorMessage'] ?? 'Payment gateway error',
                     'GATEWAY_ERROR',
@@ -52,6 +63,7 @@ class InitiateGatewayService
                     ['gateway_response' => $response]
                 );
             }
+
 
             return $response;
 
