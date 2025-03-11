@@ -51,8 +51,10 @@ class InitiateGatewayService
                         'Access denied by the gateway',
                         'ACCESS_DENIED',
                         403,
-                        [],
-                        'Acces denied by SATIM'
+                        [
+                            'hehe'
+                        ],
+                        'License'
                     );
                 }
 
