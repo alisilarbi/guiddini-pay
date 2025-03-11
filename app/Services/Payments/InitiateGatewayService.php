@@ -38,7 +38,7 @@ class InitiateGatewayService
 
             $response = Http::timeout(30)
                 ->get($this->baseUrl($transaction) . 'register.do', $params)
-                // ->throw()
+                ->throw()
                 ->json();
 
 

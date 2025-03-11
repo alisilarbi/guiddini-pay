@@ -10,13 +10,13 @@ class TransactionUpdater
 {
     public function handleInitiationResponse(Transaction $transaction, array $response): void
     {
+        dd($response);
         $transaction->update([
             'status' => $this->determineInitiationStatus($response),
             'error_code' => $response['errorCode'] ?? null,
             'form_url' => $response['formUrl'],
             'order_id' => $response['orderId'],
         ]);
-        dd('hehe updater');
     }
 
     public function handleConfirmationResponse(Transaction $transaction, array $response): void
