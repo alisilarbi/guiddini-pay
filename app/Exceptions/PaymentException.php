@@ -9,7 +9,6 @@ class PaymentException extends Exception
     protected $statusCode;
     protected $errorCode;
     protected $errors;
-    protected $detail;
 
     public function __construct(
         string $message = '',
@@ -22,26 +21,20 @@ class PaymentException extends Exception
         $this->errorCode = $errorCode;
         $this->statusCode = $statusCode;
         $this->errors = $errors;
-        $this->detail = $errors['gateway_response']['errorMessage'] ?? null;
     }
 
+    // Add getters
     public function getStatusCode(): int
     {
         return $this->statusCode;
     }
-
     public function getErrorCode(): string
     {
         return $this->errorCode;
     }
-
     public function getErrors(): array
     {
         return $this->errors;
     }
 
-    public function getDetail(): ?string
-    {
-        return $this->detail;
-    }
 }
