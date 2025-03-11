@@ -85,7 +85,10 @@ class TransactionUpdater
 
     private function determineInitiationStatus(array $response): string
     {
-        dd(($response['errorCode'] ?? '1') === '0' ? 'processing' : 'gateway_error');
+        if (($response['errorCode'] ?? '1') === '5') {
+            return 'License Access Denied';
+        }
+
         return ($response['errorCode'] ?? '1') === '0' ? 'processing' : 'gateway_error';
     }
 }
