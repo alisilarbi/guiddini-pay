@@ -16,8 +16,6 @@ class TransactionUpdater
             'form_url' => $response['formUrl'] ?? null,
             'order_id' => $response['orderId'] ?? null,
         ]);
-
-        dd($transaction);
     }
 
     public function handleConfirmationResponse(Transaction $transaction, array $response): void
