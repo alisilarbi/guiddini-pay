@@ -58,7 +58,7 @@ class ProspectContoller extends Controller
                 'success' => true,
                 'code' => 'PROSPECT_CREATED',
                 'message' => 'Inquiry sent successfully',
-                'data' => null,
+                'data' => $prospect,
                 'http_code' => 201,
             ]);
 
