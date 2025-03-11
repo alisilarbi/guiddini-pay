@@ -11,6 +11,7 @@ class TransactionUpdater
     public function handleInitiationResponse(Transaction $transaction, array $response): void
     {
         // dd($response);
+        dd($this->determineInitiationStatus($response));
         $transaction->update([
             'status' => $this->determineInitiationStatus($response),
             'error_code' => $response['errorCode'] ?? null,
