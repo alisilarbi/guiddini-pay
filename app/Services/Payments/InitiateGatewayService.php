@@ -51,11 +51,11 @@ class InitiateGatewayService
                         'Access denied by the gateway',
                         'ACCESS_DENIED',
                         403,
-                        '',
                         [
                             'current_environment' => $transaction->license_env,
                             'satim_response' => $response,
                         ],
+                        '',
                     );
                 }
 
