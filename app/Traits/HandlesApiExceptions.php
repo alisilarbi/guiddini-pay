@@ -17,6 +17,7 @@ trait HandlesApiExceptions
         $errorCode = 'INTERNAL_ERROR';
         $errors = [];
         $message = 'Internal server error';
+        $detail = '';
 
         if ($exception instanceof PaymentException) {
             $statusCode = $exception->getStatusCode();
