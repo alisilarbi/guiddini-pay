@@ -24,6 +24,7 @@ trait HandlesApiExceptions
             $errorCode = $exception->getErrorCode();
             $message = $exception->getMessage();
             $errors = $exception->getErrors();
+            $detail = $exception->getDetail();
         } elseif ($exception instanceof ModelNotFoundException) {
             $statusCode = 404;
             $errorCode = 'NOT_FOUND';
@@ -51,7 +52,8 @@ trait HandlesApiExceptions
             'code' => $code,
             'message' => $message,
             'errors' => $errors,
-            'http_code' => $statusCode
+            'http_code' => $statusCode,
+            'detail' => $detail
         ];
 
         return (new PaymentResponseResource($response))
