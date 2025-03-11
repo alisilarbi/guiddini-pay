@@ -38,7 +38,8 @@ trait HandlesApiExceptions
             $message,
             $errorCode,
             $statusCode,
-            $errors
+            $errors,
+            $detail
         );
     }
 
