@@ -55,7 +55,7 @@ class InitiateGatewayService
                             'current_environment' => $transaction->license_env,
                             'satim_response' => $response,
                         ],
-                        'License'
+                        // 'License'
                     );
                 }
 
