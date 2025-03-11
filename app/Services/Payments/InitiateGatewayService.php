@@ -46,7 +46,7 @@ class InitiateGatewayService
 
             if ($this->isErrorResponse($response)) {
                 $errorCode = $response['ErrorCode'] ?? $response['errorCode'] ?? 'UNKNOWN';
-
+                dd($errorCode);
                 if ($errorCode === '5') {
                     throw new PaymentException(
                         'Access denied by the gateway',
