@@ -28,7 +28,19 @@ class StandardResponse extends JsonResource
             'data' => [
                 'type' => $data['type'],
                 'id' => $data['id'],
-                'attributes' => [],
+                'attributes' => [
+                    'name' => $data['name'] ?? null,
+                    'company_name' => $data['company_name'] ?? null,
+                    'phone' => $data['phone'] ?? null,
+                    'email' => $data['email'] ?? null,
+                    'legal_status' => $data['legal_status'] ?? null,
+                    'has_bank_account' => $data['has_bank_account'] ?? null,
+                    'bank_name' => $data['bank_name'] ?? null,
+                    'website_integration' => $data['website_integration'] ?? null,
+                    'mobile_integration' => $data['mobile_integration'] ?? null,
+                    'website_link' => $data['website_link'] ?? null,
+                    'programming_languages' => $data['programming_languages'] ?? null,
+                ],
                 'meta' => [
                     'message' => $this->resource['message'],
                 ]
