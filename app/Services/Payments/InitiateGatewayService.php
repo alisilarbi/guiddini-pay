@@ -52,7 +52,8 @@ class InitiateGatewayService
                         'ACCESS_DENIED',
                         403,
                         [
-                            'hehe'
+                            'current_environment' => $transaction->license_env,
+                            'satim_response' => $response,
                         ],
                         'License'
                     );
