@@ -52,6 +52,7 @@ class InitiateGatewayService
                         'Access denied by the gateway',
                         'ACCESS_DENIED',
                         403,
+                        'hehe',
                         ['gateway_response' => $response]
                     );
                 }
