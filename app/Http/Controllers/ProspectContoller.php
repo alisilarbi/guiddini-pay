@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Prospect;
 use Illuminate\Http\Request;
 use App\Traits\HandlesApiExceptions;
-use App\Http\Resources\StandardResponse;
 use App\Http\Resources\ProspectApiResource;
 
 class ProspectContoller extends Controller
