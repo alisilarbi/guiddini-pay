@@ -10,7 +10,7 @@ class TransactionUpdater
 {
     public function handleInitiationResponse(Transaction $transaction, array $response): void
     {
-        dd($response);
+        // dd($response);
         $transaction->update([
             'status' => $this->determineInitiationStatus($response),
             'error_code' => $response['errorCode'] ?? null,
@@ -85,6 +85,7 @@ class TransactionUpdater
 
     private function determineInitiationStatus(array $response): string
     {
+        dd(($response['errorCode'] ?? '1') === '0' ? 'processing' : 'gateway_error');
         return ($response['errorCode'] ?? '1') === '0' ? 'processing' : 'gateway_error';
     }
 }
