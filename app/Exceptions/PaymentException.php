@@ -22,8 +22,8 @@ class PaymentException extends Exception
         parent::__construct($message, 0, $previous);
         $this->errorCode = $errorCode;
         $this->statusCode = $statusCode;
-        $this->errors = $errors;
         $this->detail = $detail;
+        $this->errors = $errors;
     }
 
     public function getStatusCode(): int
