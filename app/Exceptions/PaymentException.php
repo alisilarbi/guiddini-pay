@@ -16,7 +16,7 @@ class PaymentException extends Exception
         string $errorCode = 'GENERAL_ERROR',
         int $statusCode = 500,
         array $errors = [],
-        ?string $detail = null,
+        ?string $detail = '',
         ?Exception $previous = null
     ) {
         parent::__construct($message, 0, $previous);
