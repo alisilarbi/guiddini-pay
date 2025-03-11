@@ -46,8 +46,6 @@ class InitiateGatewayService
 
             $this->updater->handleInitiationResponse($transaction, $response);
 
-            dd($this->isErrorResponse($response));
-
             if ($this->isErrorResponse($response)) {
                 throw new PaymentException(
                     $response['ErrorMessage'] ?? 'Payment gateway error',
