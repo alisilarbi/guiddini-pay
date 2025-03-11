@@ -54,7 +54,7 @@ class ProspectContoller extends Controller
                 'programming_languages' => $request->programming_languages,
             ]);
 
-            return new StandardResponse([
+            return new ProspectApiResource([
                 'success' => true,
                 'code' => 'PROSPECT_CREATED',
                 'message' => 'Inquiry sent successfully',
