@@ -42,7 +42,7 @@ class InitiateGatewayService
                 ->json();
 
 
-            // $this->updater->handleInitiationResponse($transaction, $response);
+            $this->updater->handleInitiationResponse($transaction, $response);
 
             if ($this->isErrorResponse($response)) {
                 throw new PaymentException(
