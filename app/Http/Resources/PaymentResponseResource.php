@@ -57,7 +57,7 @@ class PaymentResponseResource extends JsonResource
                     'status' => (string)($this->resource['http_code'] ?? 500),
                     'code' => $this->resource['code'] ?? 'INTERNAL_ERROR',
                     'title' => $this->resource['message'] ?? 'Unexpected error occurred',
-                    'detail' => $this->resource['detail'] ?? null,
+                    'detail' => $this->resource['detail'] ?? 'sdsd',
                     'meta' => $this->resource['errors'] ?? []
                 ]
             ]
