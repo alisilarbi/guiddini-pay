@@ -75,6 +75,7 @@ class InitiateGatewayService
 
     private function isErrorResponse(array $response): bool
     {
+        dd($response);
         return ($response['ErrorCode'] ?? $response['errorCode'] ?? '1') !== '0';
     }
 
