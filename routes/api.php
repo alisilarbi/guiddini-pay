@@ -19,5 +19,5 @@ Route::prefix('fetch')->group(function(){
 });
 
 Route::prefix('prospect')->group(function(){
-    Route::post('create', [ProspectContoller::class, 'store'])->name('prospect.create')->middleware('validate_api_keys');
+    Route::post('create', [ProspectContoller::class, 'store'])->name('prospect.create');
 });
