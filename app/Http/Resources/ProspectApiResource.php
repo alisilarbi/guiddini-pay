@@ -65,6 +65,6 @@ class ProspectApiResource extends JsonResource
 
     public function withResponse($request, $response)
     {
-        $response->setStatusCode($this->resoruce['http_code'] ?? 500);
+        $response->setStatusCode($this->resource['http_code'] ?? 500);
     }
 }
