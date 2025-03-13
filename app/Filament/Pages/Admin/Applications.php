@@ -144,7 +144,7 @@ class Applications extends Page implements HasForms, HasTable
                     Action::make('edit')
                         ->label('Edit')
                         ->icon('heroicon-o-pencil-square')
-                        ->fillForm(function($record){
+                        ->fillForm(function ($record) {
                             return [
                                 'name' => $record->name,
                                 'logo' => $record->logo,
@@ -204,7 +204,15 @@ class Applications extends Page implements HasForms, HasTable
 
                         ])
                         ->action(function ($data, $record) {
-                            dd($record);
+
+                            $env = License::where('id', $data['license'])->first();
+                            $record->update([
+                                'name' => $data['name'],
+                                'website_url' => $data['website_url'],
+                                'redirect_url' => $data['redirect_url'],
+                                'license_env' => $data['license_env'],
+                                'license_id' => $env->id,
+                            ]);
 
                             // $application = Application::create([
                             //     'name' => $data['name'],
