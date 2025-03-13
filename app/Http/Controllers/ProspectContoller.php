@@ -39,7 +39,6 @@ class ProspectContoller extends Controller
         ]);
 
         try {
-
             $prospect = Prospect::create([
                 'name' => $request->name,
                 'company_name' => $request->company_name,

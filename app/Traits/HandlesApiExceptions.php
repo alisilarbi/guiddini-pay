@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use Illuminate\Http\JsonResponse;
 use App\Exceptions\PaymentException;
+use GuzzleHttp\Exception\RequestException;
 use App\Http\Resources\ApiResponseResource;
 use Illuminate\Validation\ValidationException;
 use App\Http\Resources\PaymentResponseResource;
@@ -50,7 +51,8 @@ trait HandlesApiExceptions
         string $code,
         int $statusCode,
         array $errors = [],
-        ?string $detail = null
+        ?string $detail = null,
+
     ): JsonResponse {
         $response = [
             'success' => false,

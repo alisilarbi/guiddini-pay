@@ -203,8 +203,34 @@ class Applications extends Page implements HasForms, HasTable
                                 })
 
                         ])
-                        ->action(function ($data) {
-                            dd($data);
+                        ->action(function ($data, $record) {
+                            dd($record);
+
+                            // $application = Application::create([
+                            //     'name' => $data['name'],
+                            //     'website_url' => $data['website_url'],
+                            //     'redirect_url' => $data['redirect_url'],
+                            // ]);
+
+                            // if ($data['logo']) {
+                            //     $tempPath = Storage::disk('public')->path($data['logo']);
+                            //     $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
+                            //     $destination = 'applications/' . $application->id;
+
+                            //     Storage::disk('private')->putFileAs($destination, $tempPath, $newFileName);
+                            //     Storage::disk('public')->delete($tempPath);
+
+                            //     $path = $destination . '/' . $newFileName;
+                            //     $application->update([
+                            //         'logo' => $path,
+                            //     ]);
+                            // }
+
+                            // $env = License::where('id', $data['license'])->first();
+                            // $application->update([
+                            //     'license_env' => $data['license_env'],
+                            //     'license_id' => $env->id,
+                            // ]);
                         }),
 
                     Action::make('delete')

@@ -41,7 +41,6 @@ class InitiateGatewayService
                 ->throw()
                 ->json();
 
-
             $this->updater->handleInitiationResponse($transaction, $response);
 
             if ($this->isErrorResponse($response)) {
@@ -69,7 +68,6 @@ class InitiateGatewayService
 
 
             return $response;
-
         } catch (RequestException $e) {
             $this->updater->handleRequestError($transaction, $e);
             throw $this->mapRequestException($e);
@@ -93,6 +91,23 @@ class InitiateGatewayService
 
     private function mapRequestException(RequestException $e): PaymentException
     {
+        $errorCode = $e->getHandlerContext()['errno'] ?? 0;
+
+        dd($errorCode);
+
+        if ($errorCode === 60) {
+            return new PaymentException(
+                'SSL certificate validation failed',
+                'SSL_CERTIFICATE_ERROR',
+                503,
+                [
+                    'gateway_response' => 'SSL/TLS handshake failed',
+                    'system_message' => $e->getMessage()
+                ],
+                'The payment gateway\'s SSL certificate could not be verified'
+            );
+        }
+
         return new PaymentException(
             'Gateway request failed',
             'GATEWAY_ERROR',
