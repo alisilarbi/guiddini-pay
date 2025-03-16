@@ -19,24 +19,6 @@ class PaymentController extends Controller
 
     public function initiate(Request $request)
     {
-
-        $validated = $request->validate([
-            'amount' => 'required|numeric|min:50|decimal:0,2',
-        ]);
-
-        $result = $this->paymentService->initiatePayment(
-            $validated,
-            $request->header('X-App-Key')
-        );
-
-        return new PaymentResponseResource([
-            'success' => true,
-            'code' => 'PAYMENT_INITIATED',
-            'message' => 'Payment initiated successfully',
-            'data' => $result,
-            'http_code' => 201
-        ]);
-
         try {
             $validated = $request->validate([
                 'amount' => 'required|numeric|min:50|decimal:0,2',
@@ -54,7 +36,6 @@ class PaymentController extends Controller
                 'data' => $result,
                 'http_code' => 201
             ]);
-
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
         }

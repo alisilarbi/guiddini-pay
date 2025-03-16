@@ -14,6 +14,7 @@ trait HandlesApiExceptions
 {
     protected function handleApiException(\Throwable $exception): JsonResponse
     {
+        // dd(get_class($exception));
         $statusCode = 500;
         $errorCode = 'INTERNAL_ERROR';
         $errors = [];
@@ -35,6 +36,13 @@ trait HandlesApiExceptions
             $errorCode = 'VALIDATION_ERROR';
             $message = 'Validation failed';
             $errors = $exception->errors();
+        }
+        elseif ($exception instanceof RequestException && strpos($exception->getMessage(), 'SSL') !== false) {
+            $statusCode = 502;
+            $errorCode = 'SSL_ERROR';
+            $message = 'SSL verification failed';
+            $detail = '';
+            $errors = [];
         }
 
         return $this->jsonApiErrorResponse(
