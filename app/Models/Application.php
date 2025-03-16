@@ -46,21 +46,21 @@ class Application extends Model
         return $this->belongsTo(User::class);
     }
 
-    // public function environment()
-    // {
-    //     return $this->belongsTo(Environment::class, 'environment_id', 'id');
-    // }
-
     public function license()
     {
         return $this->belongsTo(License::class, 'license_id', 'id');
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'application_id');
     }
 
     protected static function boot()
     {
         parent::boot();
 
-        static::creating(function($application){
+        static::creating(function ($application) {
             $application->app_key = self::generateAppKey();
             $application->app_secret = self::generateSecretKey();
             $application->user_id = Auth::user()->id;

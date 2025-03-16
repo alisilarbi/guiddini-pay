@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('legal_status')->nullable();
             $table->boolean('has_bank_account')->default(false);
             $table->string('bank_name')->nullable();
+            $table->boolean('converted')->default(false);
 
             $table->boolean('website_integration')->default(false);
             $table->boolean('mobile_integration')->default(false);
@@ -30,6 +31,9 @@ return new class extends Migration
 
             $table->uuid('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
+
+            $table->uuid('application_id')->nullable();
+            $table->foreign('application_id')->references('id')->on('applications');
 
             $table->timestamps();
         });

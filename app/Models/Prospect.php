@@ -18,16 +18,23 @@ class Prospect extends Model
         'legal_status',
         'has_bank_account',
         'bank_name',
+        'converted',
         'website_integration',
         'mobile_integration',
         'website_link',
         'programming_languages',
         'user_id',
+        'application_id',
     ];
 
     protected $casts = [
         'programming_languages' => 'array',
     ];
+
+    public function application()
+    {
+        return $this->belongsTo(Application::class);
+    }
 
     public function user()
     {
