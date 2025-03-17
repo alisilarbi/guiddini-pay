@@ -245,6 +245,7 @@ class Applications extends Page implements HasForms, HasTable
                         ->label('Delete')
                         ->color('danger')
                         ->icon('heroicon-o-x-circle')
+                        ->requiresConfirmation()
                         ->action(function ($record) {
                             $record->delete();
                         })

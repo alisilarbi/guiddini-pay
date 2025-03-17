@@ -54,40 +54,14 @@ class Prospects extends Page implements HasForms, HasTable
                     ->label('Phone Number')
                     ->sortable()
                     ->searchable()
-                    ->icon('heroicon-m-phone')
+                    ->icon('heroicon-o-phone')
                     ->copyable(),
 
-                // IconColumn::make('has_bank_account')
-                //     ->label('Bank Account')
-                //     ->boolean()
-                //     ->sortable()
-                //     ->trueIcon('heroicon-o-check-circle')
-                //     ->falseIcon('heroicon-o-x-circle')
-                //     ->trueColor('success')
-                //     ->falseColor('danger'),
-
-
-                // IconColumn::make('website_integration')
-                //     ->label('Website Int.')
-                //     ->boolean()
-                //     ->sortable()
-                //     ->trueIcon('heroicon-o-globe-alt')
-                //     ->falseIcon('heroicon-o-x-circle')
-                //     ->trueColor('success')
-                //     ->falseColor('gray'),
-
-                // IconColumn::make('mobile_integration')
-                //     ->label('Mobile Int.')
-                //     ->boolean()
-                //     ->sortable()
-                //     ->trueIcon('heroicon-o-device-phone-mobile')
-                //     ->falseIcon('heroicon-o-x-circle')
-                //     ->trueColor('success')
-                //     ->falseColor('gray'),
-
-                // TextColumn::make('integrations')
-                //     ->label('Integrations')
-                //     ->formatStateUsing(fn($record) => view('components.tables.columns.integrations', ['record' => $record])),
+                TextColumn::make('email')
+                    ->label('email')
+                    ->sortable()
+                    ->searchable()
+                    ->icon('heroicon-o-envelope'),
 
                 ViewColumn::make('integrations')->view('components.tables.columns.integrations'),
 
@@ -170,6 +144,7 @@ class Prospects extends Page implements HasForms, HasTable
                     })
 
             ])
-            ->headerActions([]);
+            ->headerActions([])
+            ->paginated([25, 50, 75, 100, 'all']);;
     }
 }

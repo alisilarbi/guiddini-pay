@@ -1,13 +1,13 @@
 <div class="flex justify-center items-center space-x-2">
     @if ($getRecord()->website_integration)
-        <x-heroicon-o-globe-alt class="w-6 h-6 text-emerald-500" />
-    {{-- @else
-        <x-heroicon-o-x-circle class="w-6 h-6 text-rose-500" /> --}}
+        <x-heroicon-o-globe-alt class="w-6 h-6" color="#10B981"/>
+    @else
+        <x-heroicon-o-x-circle class="w-6 h-6" color="#F43F5E"/>
     @endif
 
     @if ($getRecord()->mobile_integration)
-        <x-heroicon-o-device-phone-mobile class="w-6 h-6 text-sky-500" />
-    {{-- @else
-        <x-heroicon-o-x-circle class="w-6 h-6 text-gray-400" /> --}}
+        <x-heroicon-o-device-phone-mobile class="w-6 h-6" color="#0EA5E9"/>
+    @else
+        <x-heroicon-o-x-circle class="w-6 h-6" color="#F43F5E"/>
     @endif
 </div>

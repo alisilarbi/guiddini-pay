@@ -13,6 +13,7 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\CheckboxColumn;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -35,49 +36,63 @@ class Users extends Page implements HasForms, HasTable
                 TextColumn::make('name'),
                 TextColumn::make('email'),
                 TextColumn::make('is_admin'),
-                TextColumn::make('user.applications')
-                    ->formatStateUsing(function($record){
-
+                TextColumn::make('applications_count')
+                    ->state(function ($record) {
+                        return $record->applications()->count();
                     })
             ])
             ->filters([
                 // ...
             ])
             ->actions([
-                Action::make('update')
-                    ->label('Update')
-                    ->form([
-                        TextInput::make('name')
-                            ->required()
-                            ->formatStateUsing(fn($record) => $record->name),
 
-                        TextInput::make('email')
-                            ->required()
-                            ->formatStateUsing(fn($record) => $record->email),
+                ActionGroup::make([
+                    Action::make('update')
+                        ->label('Update')
+                        ->icon('heroicon-o-pencil-square')
+                        ->form([
+                            TextInput::make('name')
+                                ->required()
+                                ->formatStateUsing(fn($record) => $record->name),
 
-                        CheckBox::make('is_admin')
-                            ->required()
-                            ->formatStateUsing(function($record){
-                                if($record->is_admin)
-                                    return true;
-                                else
-                                    return false;
-                            }),
-                    ])
-                    ->action(function($data, $record){
-                        $record->update([
-                            'name' => $data['name'],
-                            'email' => $data['email'],
-                            'is_admin' => $data['is_admin'],
-                        ]);
-                    }),
+                            TextInput::make('email')
+                                ->required()
+                                ->formatStateUsing(fn($record) => $record->email),
 
-                // Action::make('delete')
-                //     ->label('Delete')
-                //     ->requiresConfirmation()
-                //     ->action(function($record){
-                //         dd($record->transactions);
-                //     })
+                            CheckBox::make('is_admin')
+                                ->required()
+                                ->formatStateUsing(function ($record) {
+                                    if ($record->is_admin)
+                                        return true;
+                                    else
+                                        return false;
+                                }),
+                        ])
+                        ->action(function ($data, $record) {
+                            $record->update([
+                                'name' => $data['name'],
+                                'email' => $data['email'],
+                                'is_admin' => $data['is_admin'],
+                            ]);
+                        }),
+
+                    Action::make('delete')
+                        ->label('Delete')
+                        ->color('danger')
+                        ->icon('heroicon-o-x-circle')
+                        ->requiresConfirmation()
+                        ->disabled(function($record){
+                            if($record->is_admin)
+                                return true;
+
+                            return false;
+                        })
+                        ->action(function ($record) {
+                            $record->delete();
+                        })
+                ]),
+
+
 
             ])
             ->headerActions([

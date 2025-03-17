@@ -46,7 +46,6 @@ class InitiateGatewayService
             $this->updater->handleInitiationResponse($transaction, $response);
 
             if ($this->isErrorResponse($response)) {
-                dd($response);
                 $errorCode = $response['ErrorCode'] ?? $response['errorCode'] ?? 'UNKNOWN';
                 if ($errorCode === '5') {
                     throw new PaymentException(
