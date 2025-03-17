@@ -59,7 +59,6 @@ class InitiateGatewayService
                         '',
                     );
                 }
-                dd('hehe');
 
                 throw new PaymentException(
                     $response['ErrorMessage'] ?? 'Payment gateway error',
