@@ -7,6 +7,7 @@ use App\Models\User;
 use Filament\Pages\Page;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\Action;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Components\Checkbox;
@@ -14,30 +15,32 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Columns\CheckboxColumn;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
-class Users extends Page implements HasForms, HasTable
+class Clients extends Page implements HasForms, HasTable
 {
     use InteractsWithTable;
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.pages.admin.users';
-
+    protected static string $view = 'filament.pages.admin.clients';
 
     public function table(Table $table): Table
     {
         return $table
-            ->query(User::query()->with(['applications']))
+            ->query(User::query()->with(['applications', 'createdBy'])->where('created_by', Auth::user()->id))
             ->columns([
                 TextColumn::make('name'),
                 TextColumn::make('email'),
-                TextColumn::make('is_admin'),
+                TextColumn::make('createdBy.name')
+                    ->state(function(User $record){
+                        $user = User::where('id', $record->created_by)->first();
+                        return $user->name;
+                    }),
                 TextColumn::make('applications_count')
-                    ->state(function ($record) {
+                    ->state(function (User $record) {
                         return $record->applications()->count();
                     })
             ])
@@ -91,8 +94,6 @@ class Users extends Page implements HasForms, HasTable
                             $record->delete();
                         })
                 ]),
-
-
 
             ])
             ->headerActions([

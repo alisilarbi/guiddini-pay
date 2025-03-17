@@ -11,12 +11,14 @@ use App\Models\Application;
 use Illuminate\Support\Str;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TernaryFilter;
@@ -63,6 +65,8 @@ class Prospects extends Page implements HasForms, HasTable
                     ->searchable()
                     ->icon('heroicon-o-envelope'),
 
+                ViewColumn::make('bank_account')->view('components.tables.columns.bank_account'),
+
                 ViewColumn::make('integrations')->view('components.tables.columns.integrations'),
 
                 TextColumn::make('website_link')
@@ -76,7 +80,6 @@ class Prospects extends Page implements HasForms, HasTable
                     ->formatStateUsing(fn($state) => implode(', ', json_decode($state ?? '[]')))
                     ->badge()
                     ->color('warning'),
-
 
             ])
             ->filters([
@@ -111,37 +114,60 @@ class Prospects extends Page implements HasForms, HasTable
                     ),
             ])
             ->actions([
-                Action::make('convert')
-                    ->label('Convertir')
-                    // ->requiresConfirmation()
-                    ->action(function (Prospect $prospect) {
 
-                        $application = Application::create([
-                            'name' => $prospect->company_name,
-                            'website_url' => $prospect->website_link,
-                            'redirect_url' => $prospect->website_link,
-                        ]);
+                ActionGroup::make([
+                    Action::make('convert')
+                        ->label('Convertir')
+                        ->requiresConfirmation()
+                        ->icon('heroicon-o-arrow-path')
+                        ->action(function (Prospect $prospect) {
 
-                        $license = License::firstWhere('name', 'GD01NI');
+                            $application = Application::create([
+                                'name' => $prospect->company_name,
+                                'website_url' => $prospect->website_link,
+                                'redirect_url' => $prospect->website_link,
+                            ]);
 
-                        $application->update([
-                            'license_env' => 'development',
-                            'license_id' => $license->id ?? null,
-                        ]);
+                            $license = License::firstWhere('name', 'GD01NI');
 
-                        $user = User::create([
-                            'name' => $prospect->name,
-                            // 'email' => $prospect->email,
-                            'email' => 'fake_' . Str::random(8) . '@example.com',
-                            'password' => Hash::make(Str::random(12)),
-                        ]);
+                            $application->update([
+                                'license_env' => 'development',
+                                'license_id' => $license->id ?? null,
+                            ]);
 
-                        $prospect->update([
-                            'application_id' => $application->id,
-                            'user_id' => $user->id,
-                            'converted' => true,
-                        ]);
-                    })
+                            $user = User::where('email', $prospect->email)->first();
+                            if (!$user) {
+                                $user = User::create([
+                                    'name' => $prospect->name,
+                                    'email' => $prospect->email,
+                                    'password' => Hash::make(Str::random(12)),
+                                    'created_by' => Auth::user()->id,
+                                ]);
+                            }
+
+                            $application->update([
+                                'user_id' => $user->id,
+                            ]);
+
+                            $prospect->update([
+                                'application_id' => $application->id,
+                                'user_id' => $user->id,
+                                'converted' => true,
+                            ]);
+                        }),
+
+                    Action::make('delete')
+                        ->label('Delete')
+                        ->color('danger')
+                        ->icon('heroicon-o-x-circle')
+                        ->requiresConfirmation()
+                        ->action(function (Prospect $prospect) {
+                            $prospect->delete();
+                        }),
+
+                ])
+
+
 
             ])
             ->headerActions([])

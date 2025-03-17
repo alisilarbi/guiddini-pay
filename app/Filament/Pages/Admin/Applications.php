@@ -344,11 +344,6 @@ class Applications extends Page implements HasForms, HasTable
                         ]);
                     }),
 
-                Action::make('delete')
-                    ->requiresConfirmation()
-                    ->action(function(Application $record){
-                        $record->delete();
-                    })
 
 
 

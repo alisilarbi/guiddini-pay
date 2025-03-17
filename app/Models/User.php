@@ -24,8 +24,10 @@ class User extends Authenticatable implements FilamentUser
     protected $fillable = [
         'name',
         'email',
+        'created_at',
         'password',
         'is_admin',
+        'created_by',
     ];
 
     /**
@@ -59,6 +61,11 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         return true;
+    }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class);
     }
 
 }

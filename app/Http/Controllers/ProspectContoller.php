@@ -43,7 +43,7 @@ class ProspectContoller extends Controller
                 'name' => $request->name,
                 'company_name' => $request->company_name,
                 'phone' => $request->phone,
-                'email' => $request->phone,
+                'email' => $request->email,
                 'legal_status' => $request->legal_status,
                 'has_bank_account' => $request->has_bank_account,
                 'bank_name' => $request->bank_name,

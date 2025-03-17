@@ -1,4 +1,4 @@
-<div class="flex justify-center items-center space-x-2">
+<div class="flex justify-center items-center space-x-2 px-3">
     @if ($getRecord()->website_integration)
         <x-heroicon-o-globe-alt class="w-6 h-6" color="#10B981"/>
     @else
