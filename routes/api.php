@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Services\OnlinePaymentService;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProspectContoller;
+use App\Http\Controllers\ApplicationController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -20,4 +21,8 @@ Route::prefix('fetch')->group(function(){
 
 Route::prefix('prospect')->group(function(){
     Route::post('create', [ProspectContoller::class, 'store'])->name('prospect.create');
+});
+
+Route::prefix('application')->group(function(){
+    Route::post('create', [ApplicationController::class, 'store'])->name('application.create');
 });

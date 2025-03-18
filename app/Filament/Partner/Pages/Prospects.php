@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Pages\Admin;
+namespace App\Filament\Partner\Pages;
 
 use App\Models\User;
 use App\Models\License;
@@ -32,12 +32,12 @@ class Prospects extends Page implements HasForms, HasTable
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.pages.admin.prospects';
+    protected static string $view = 'filament.partner.pages.prospects';
 
     public function table(Table $table): Table
     {
         return $table
-            ->query(Prospect::query())
+            ->query(Prospect::where('user_id', Auth::user()->id))
             ->columns([
 
                 TextColumn::make('name')
@@ -115,58 +115,58 @@ class Prospects extends Page implements HasForms, HasTable
             ])
             ->actions([
 
-                // ActionGroup::make([
-                //     Action::make('convert')
-                //         ->label('Convertir')
-                //         ->requiresConfirmation()
-                //         ->icon('heroicon-o-arrow-path')
-                //         ->disabled(fn(Prospect $prospect) => $prospect->converted)
-                //         ->action(function (Prospect $prospect) {
+                ActionGroup::make([
+                    Action::make('convert')
+                        ->label('Convertir')
+                        ->requiresConfirmation()
+                        ->icon('heroicon-o-arrow-path')
+                        ->disabled(fn(Prospect $prospect) => $prospect->converted)
+                        ->action(function (Prospect $prospect) {
 
-                //             $application = Application::create([
-                //                 'name' => $prospect->company_name,
-                //                 'website_url' => $prospect->website_link,
-                //                 'redirect_url' => $prospect->website_link,
-                //             ]);
+                            $application = Application::create([
+                                'name' => $prospect->company_name,
+                                'website_url' => $prospect->website_link,
+                                'redirect_url' => $prospect->website_link,
+                            ]);
 
-                //             $license = License::firstWhere('name', 'GD01NI');
+                            $license = License::firstWhere('name', 'GD01NI');
 
-                //             $application->update([
-                //                 'license_env' => 'development',
-                //                 'license_id' => $license->id ?? null,
-                //             ]);
+                            $application->update([
+                                'license_env' => 'development',
+                                'license_id' => $license->id ?? null,
+                            ]);
 
-                //             $user = User::where('email', $prospect->email)->first();
-                //             if (!$user) {
-                //                 $user = User::create([
-                //                     'name' => $prospect->name,
-                //                     'email' => $prospect->email,
-                //                     'password' => Hash::make(Str::random(12)),
-                //                     'created_by' => Auth::user()->id,
-                //                 ]);
-                //             }
+                            $user = User::where('email', $prospect->email)->first();
+                            if (!$user) {
+                                $user = User::create([
+                                    'name' => $prospect->name,
+                                    'email' => $prospect->email,
+                                    'password' => Hash::make(Str::random(12)),
+                                    'created_by' => Auth::user()->id,
+                                ]);
+                            }
 
-                //             $application->update([
-                //                 'user_id' => $user->id,
-                //             ]);
+                            $application->update([
+                                'user_id' => $user->id,
+                            ]);
 
-                //             $prospect->update([
-                //                 'application_id' => $application->id,
-                //                 'user_id' => $user->id,
-                //                 'converted' => true,
-                //             ]);
-                //         }),
+                            $prospect->update([
+                                'application_id' => $application->id,
+                                'user_id' => $user->id,
+                                'converted' => true,
+                            ]);
+                        }),
 
-                //     Action::make('delete')
-                //         ->label('Delete')
-                //         ->color('danger')
-                //         ->icon('heroicon-o-x-circle')
-                //         ->requiresConfirmation()
-                //         ->action(function (Prospect $prospect) {
-                //             $prospect->delete();
-                //         }),
+                    Action::make('delete')
+                        ->label('Delete')
+                        ->color('danger')
+                        ->icon('heroicon-o-x-circle')
+                        ->requiresConfirmation()
+                        ->action(function (Prospect $prospect) {
+                            $prospect->delete();
+                        }),
 
-                // ])
+                ])
 
 
 
@@ -174,4 +174,5 @@ class Prospects extends Page implements HasForms, HasTable
             ->headerActions([])
             ->paginated([25, 50, 75, 100, 'all']);;
     }
+
 }

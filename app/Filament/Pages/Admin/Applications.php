@@ -16,6 +16,7 @@ use Filament\Forms\Components\Grid;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Support\Enums\FontFamily;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
@@ -42,11 +43,6 @@ class Applications extends Page implements HasForms, HasTable
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static string $view = 'filament.pages.admin.applications';
-
-    public function mount(): void
-    {
-        $license = License::first();
-    }
 
     public function table(Table $table): Table
     {
@@ -87,266 +83,291 @@ class Applications extends Page implements HasForms, HasTable
 
             ])
             ->actions([
-                ActionGroup::make([
-                    ViewAction::make('view')
-                        ->icon('heroicon-o-eye')
-                        ->infolist([
+                // ActionGroup::make([
+                //     ViewAction::make('view')
+                //         ->icon('heroicon-o-eye')
+                //         ->infolist([
 
-                            Fieldset::make('General Information')
-                                ->schema([
+                //             Fieldset::make('General Information')
+                //                 ->schema([
 
-                                    TextEntry::make('name')
-                                        ->label('Name'),
+                //                     TextEntry::make('name')
+                //                         ->label('Name'),
 
-                                    TextEntry::make('app_key')
-                                        ->label('App Key'),
+                //                     TextEntry::make('app_key')
+                //                         ->label('App Key'),
 
-                                    TextEntry::make('app_secret')
-                                        ->label('App Secret'),
+                //                     TextEntry::make('app_secret')
+                //                         ->label('App Secret'),
 
-                                    TextEntry::make('website_url')
-                                        ->label('Website URL'),
+                //                     TextEntry::make('website_url')
+                //                         ->label('Website URL'),
 
-                                    TextEntry::make('success_redirect_url')
-                                        ->label('Success Redirect URL'),
+                //                     TextEntry::make('redirect_url')
+                //                         ->label('Redirect URL'),
 
-                                    TextEntry::make('fail_redirect_url')
-                                        ->label('Fail Redirect URL'),
-                                ]),
 
-                            Fieldset::make('SATIM TEST')
-                                ->schema([
+                //                 ]),
 
-                                    TextEntry::make('license.satim_development_username')
-                                        ->label('Username'),
+                //             Fieldset::make('SATIM TEST')
+                //                 ->schema([
 
-                                    TextEntry::make('license.satim_development_password')
-                                        ->label('Password'),
+                //                     TextEntry::make('license.satim_development_username')
+                //                         ->label('Username'),
 
-                                    TextEntry::make('license.satim_development_terminal')
-                                        ->label('Terminal ID'),
-                                ]),
+                //                     TextEntry::make('license.satim_development_password')
+                //                         ->label('Password'),
 
-                            Fieldset::make('SATIM PROD')
-                                ->schema([
+                //                     TextEntry::make('license.satim_development_terminal')
+                //                         ->label('Terminal ID'),
+                //                 ]),
 
-                                    TextEntry::make('license.satim_production_username')
-                                        ->label('Username'),
+                //             Fieldset::make('SATIM PROD')
+                //                 ->schema([
 
-                                    TextEntry::make('license.satim_production_password')
-                                        ->label('Password'),
+                //                     TextEntry::make('license.satim_production_username')
+                //                         ->label('Username'),
 
-                                    TextEntry::make('license.satim_production_terminal')
-                                        ->label('Terminal ID'),
-                                ]),
-                        ]),
+                //                     TextEntry::make('license.satim_production_password')
+                //                         ->label('Password'),
 
-                    Action::make('edit')
-                        ->label('Edit')
-                        ->icon('heroicon-o-pencil-square')
-                        ->fillForm(function ($record) {
-                            return [
-                                'name' => $record->name,
-                                'logo' => $record->logo,
-                                'website_url' => $record->website_url,
-                                'redirect_url' => $record->redirect_url,
-                                'license' => $record->license_id,
-                                'license_env' => $record->license_env,
-                            ];
-                        })
-                        ->form([
-                            TextInput::make('name')
-                                ->required(),
+                //                     TextEntry::make('license.satim_production_terminal')
+                //                         ->label('Terminal ID'),
+                //                 ]),
+                //         ]),
 
-                            FileUpload::make('logo')
-                                ->image(),
+                //     ViewAction::make('view_keys')
+                //         ->label('Keys')
+                //         ->icon('heroicon-o-key')
+                //         ->form([
 
-                            TextInput::make('website_url')
-                                ->label('Lien du site web')
-                                ->required()
-                                ->url()
-                                ->rule(new ValidUrlRule())
-                                ->live(),
+                //             Grid::make(2)
+                //                 ->schema([
+                //                     TextInput::make('app_key')
+                //                         ->label('Application Key')
+                //                         ->formatStateUsing(fn($record) => $record->app_key),
 
-                            TextInput::make('redirect_url')
-                                ->label('Lien de redirection')
-                                ->required()
-                                ->url()
-                                ->rule(fn($get) => $get('website_url') ? new RedirectUrlRule($get('website_url')) : 'nullable')
-                                ->live(),
+                //                     TextInput::make('app_secret')
+                //                         ->label('Application Secret')
+                //                         ->formatStateUsing(fn($record) => $record->app_secret)
+                //                         ->password()
+                //                         ->revealable(),
+                //                 ]),
 
-                            Select::make('license')
-                                ->live()
-                                ->required()
-                                ->options(License::all()->pluck('name', 'id')),
+                //         ]),
 
-                            Select::make('license_env')
-                                ->live()
-                                ->required()
-                                ->options(function (Get $get) {
+                //     Action::make('view_transactions')
+                //         ->label('Transactions')
+                //         ->icon('heroicon-o-credit-card')
+                //         ->action(function () {
+                //             Notification::make()
+                //                 ->title('Coming Soon')
+                //                 ->success()
+                //                 ->send();
+                //         }),
 
-                                    if (!$get('license')) {
-                                        return [];
-                                    }
+                //     Action::make('edit')
+                //         ->label('Edit')
+                //         ->icon('heroicon-o-pencil-square')
+                //         ->fillForm(function ($record) {
+                //             return [
+                //                 'name' => $record->name,
+                //                 'logo' => $record->logo,
+                //                 'website_url' => $record->website_url,
+                //                 'redirect_url' => $record->redirect_url,
+                //                 'license' => $record->license_id,
+                //                 'license_env' => $record->license_env,
+                //             ];
+                //         })
+                //         ->form([
+                //             TextInput::make('name')
+                //                 ->required(),
 
-                                    $license = License::where('id', $get('license'))->first();
-                                    if (!$license || $license->satim_production_username || $license->satim_production_password || $license->satim_production_terminal) {
-                                        return collect([
-                                            ['id' => 'development', 'name' => 'Development'],
-                                            ['id' => 'production', 'name' => 'Production'],
-                                        ])->pluck('name', 'id')->toArray();
-                                    }
+                //             FileUpload::make('logo')
+                //                 ->image(),
 
-                                    return collect([
-                                        ['id' => 'development', 'name' => 'Development'],
-                                    ])->pluck('name', 'id')->toArray();
-                                })
+                //             TextInput::make('website_url')
+                //                 ->label('Lien du site web')
+                //                 ->required()
+                //                 ->url()
+                //                 ->rule(new ValidUrlRule())
+                //                 ->live(),
 
-                        ])
-                        ->action(function ($data, $record) {
+                //             TextInput::make('redirect_url')
+                //                 ->label('Lien de redirection')
+                //                 ->required()
+                //                 ->url()
+                //                 ->rule(fn($get) => $get('website_url') ? new RedirectUrlRule($get('website_url')) : 'nullable')
+                //                 ->live(),
 
-                            $env = License::where('id', $data['license'])->first();
-                            $record->update([
-                                'name' => $data['name'],
-                                'website_url' => $data['website_url'],
-                                'redirect_url' => $data['redirect_url'],
-                                'license_env' => $data['license_env'],
-                                'license_id' => $env->id,
-                            ]);
+                //             Select::make('license')
+                //                 ->live()
+                //                 ->required()
+                //                 ->options(License::all()->pluck('name', 'id')),
 
-                            // $application = Application::create([
-                            //     'name' => $data['name'],
-                            //     'website_url' => $data['website_url'],
-                            //     'redirect_url' => $data['redirect_url'],
-                            // ]);
+                //             Select::make('license_env')
+                //                 ->live()
+                //                 ->required()
+                //                 ->options(function (Get $get) {
 
-                            // if ($data['logo']) {
-                            //     $tempPath = Storage::disk('public')->path($data['logo']);
-                            //     $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
-                            //     $destination = 'applications/' . $application->id;
+                //                     if (!$get('license')) {
+                //                         return [];
+                //                     }
 
-                            //     Storage::disk('private')->putFileAs($destination, $tempPath, $newFileName);
-                            //     Storage::disk('public')->delete($tempPath);
+                //                     $license = License::where('id', $get('license'))->first();
+                //                     if (!$license || $license->satim_production_username || $license->satim_production_password || $license->satim_production_terminal) {
+                //                         return collect([
+                //                             ['id' => 'development', 'name' => 'Development'],
+                //                             ['id' => 'production', 'name' => 'Production'],
+                //                         ])->pluck('name', 'id')->toArray();
+                //                     }
 
-                            //     $path = $destination . '/' . $newFileName;
-                            //     $application->update([
-                            //         'logo' => $path,
-                            //     ]);
-                            // }
+                //                     return collect([
+                //                         ['id' => 'development', 'name' => 'Development'],
+                //                     ])->pluck('name', 'id')->toArray();
+                //                 })
 
-                            // $env = License::where('id', $data['license'])->first();
-                            // $application->update([
-                            //     'license_env' => $data['license_env'],
-                            //     'license_id' => $env->id,
-                            // ]);
-                        }),
+                //         ])
+                //         ->action(function ($data, $record) {
 
-                    Action::make('delete')
-                        ->label('Delete')
-                        ->color('danger')
-                        ->icon('heroicon-o-x-circle')
-                        ->requiresConfirmation()
-                        ->action(function ($record) {
-                            $record->delete();
-                        })
+                //             $env = License::where('id', $data['license'])->first();
+                //             $record->update([
+                //                 'name' => $data['name'],
+                //                 'website_url' => $data['website_url'],
+                //                 'redirect_url' => $data['redirect_url'],
+                //                 'license_env' => $data['license_env'],
+                //                 'license_id' => $env->id,
+                //             ]);
 
-                ])->tooltip('Actions'),
+                //             // $application = Application::create([
+                //             //     'name' => $data['name'],
+                //             //     'website_url' => $data['website_url'],
+                //             //     'redirect_url' => $data['redirect_url'],
+                //             // ]);
+
+                //             // if ($data['logo']) {
+                //             //     $tempPath = Storage::disk('public')->path($data['logo']);
+                //             //     $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
+                //             //     $destination = 'applications/' . $application->id;
+
+                //             //     Storage::disk('private')->putFileAs($destination, $tempPath, $newFileName);
+                //             //     Storage::disk('public')->delete($tempPath);
+
+                //             //     $path = $destination . '/' . $newFileName;
+                //             //     $application->update([
+                //             //         'logo' => $path,
+                //             //     ]);
+                //             // }
+
+                //             // $env = License::where('id', $data['license'])->first();
+                //             // $application->update([
+                //             //     'license_env' => $data['license_env'],
+                //             //     'license_id' => $env->id,
+                //             // ]);
+                //         }),
+
+                //     Action::make('delete')
+                //         ->label('Delete')
+                //         ->color('danger')
+                //         ->icon('heroicon-o-x-circle')
+                //         ->requiresConfirmation()
+                //         ->action(function ($record) {
+                //             $record->delete();
+                //         })
+
+                // ])->tooltip('Actions'),
             ])
             ->headerActions([
-                Action::make('create')
-                    ->steps([
-                        Step::make('Information Général')
-                            ->schema([
-                                TextInput::make('name')
-                                    ->required(),
+                // Action::make('create')
+                //     ->steps([
+                //         Step::make('Information Général')
+                //             ->schema([
+                //                 TextInput::make('name')
+                //                     ->required(),
 
-                                FileUpload::make('logo')
-                                    ->image(),
-                            ]),
-                        Step::make('Fonctionnement')
-                            ->schema([
+                //                 FileUpload::make('logo')
+                //                     ->image(),
+                //             ]),
+                //         Step::make('Fonctionnement')
+                //             ->schema([
 
-                                TextInput::make('website_url')
-                                    ->label('Lien du site web')
-                                    ->required()
-                                    ->url()
-                                    ->rule(new ValidUrlRule())
-                                    ->live(),
+                //                 TextInput::make('website_url')
+                //                     ->label('Lien du site web')
+                //                     ->required()
+                //                     ->url()
+                //                     ->rule(new ValidUrlRule())
+                //                     ->live(),
 
-                                TextInput::make('redirect_url')
-                                    ->label('Lien de redirection')
-                                    ->required()
-                                    ->url()
-                                    ->rule(fn($get) => $get('website_url') ? new RedirectUrlRule($get('website_url')) : 'nullable')
-                                    ->live()
-                            ]),
+                //                 TextInput::make('redirect_url')
+                //                     ->label('Lien de redirection')
+                //                     ->required()
+                //                     ->url()
+                //                     ->rule(fn($get) => $get('website_url') ? new RedirectUrlRule($get('website_url')) : 'nullable')
+                //                     ->live()
+                //             ]),
 
-                        Step::make('env')
-                            ->label('License')
-                            ->schema([
-                                Select::make('license')
-                                    ->live()
-                                    ->required()
-                                    ->options(License::all()->pluck('name', 'id')),
+                //         Step::make('env')
+                //             ->label('License')
+                //             ->schema([
+                //                 Select::make('license')
+                //                     ->live()
+                //                     ->required()
+                //                     ->options(License::all()->pluck('name', 'id')),
 
-                                Select::make('license_env')
-                                    ->live()
-                                    ->required()
-                                    ->options(function (Get $get) {
+                //                 Select::make('license_env')
+                //                     ->live()
+                //                     ->required()
+                //                     ->options(function (Get $get) {
 
-                                        if (!$get('license')) {
-                                            return [];
-                                        }
+                //                         if (!$get('license')) {
+                //                             return [];
+                //                         }
 
-                                        $license = License::where('id', $get('license'))->first();
-                                        if (!$license || $license->satim_production_username || $license->satim_production_password || $license->satim_production_terminal) {
-                                            return collect([
-                                                ['id' => 'development', 'name' => 'Development'],
-                                                ['id' => 'production', 'name' => 'Production'],
-                                            ])->pluck('name', 'id')->toArray();
-                                        }
+                //                         $license = License::where('id', $get('license'))->first();
+                //                         if (!$license || $license->satim_production_username || $license->satim_production_password || $license->satim_production_terminal) {
+                //                             return collect([
+                //                                 ['id' => 'development', 'name' => 'Development'],
+                //                                 ['id' => 'production', 'name' => 'Production'],
+                //                             ])->pluck('name', 'id')->toArray();
+                //                         }
 
-                                        return collect([
-                                            ['id' => 'development', 'name' => 'Development'],
-                                        ])->pluck('name', 'id')->toArray();
-                                    })
+                //                         return collect([
+                //                             ['id' => 'development', 'name' => 'Development'],
+                //                         ])->pluck('name', 'id')->toArray();
+                //                     })
 
-                            ]),
-
-
-                    ])
-                    ->action(function (array $data) {
-
-                        $application = Application::create([
-                            'name' => $data['name'],
-                            'website_url' => $data['website_url'],
-                            'redirect_url' => $data['redirect_url'],
-                        ]);
-
-                        if ($data['logo']) {
-                            $tempPath = Storage::disk('public')->path($data['logo']);
-                            $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
-                            $destination = 'applications/' . $application->id;
-
-                            Storage::disk('private')->putFileAs($destination, $tempPath, $newFileName);
-                            Storage::disk('public')->delete($tempPath);
-
-                            $path = $destination . '/' . $newFileName;
-                            $application->update([
-                                'logo' => $path,
-                            ]);
-                        }
-
-                        $env = License::where('id', $data['license'])->first();
-                        $application->update([
-                            'license_env' => $data['license_env'],
-                            'license_id' => $env->id,
-                        ]);
-                    }),
+                //             ]),
 
 
+                //     ])
+                //     ->action(function (array $data) {
 
+                //         $application = Application::create([
+                //             'name' => $data['name'],
+                //             'website_url' => $data['website_url'],
+                //             'redirect_url' => $data['redirect_url'],
+                //         ]);
 
+                //         if ($data['logo']) {
+                //             $tempPath = Storage::disk('public')->path($data['logo']);
+                //             $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
+                //             $destination = 'applications/' . $application->id;
+
+                //             Storage::disk('private')->putFileAs($destination, $tempPath, $newFileName);
+                //             Storage::disk('public')->delete($tempPath);
+
+                //             $path = $destination . '/' . $newFileName;
+                //             $application->update([
+                //                 'logo' => $path,
+                //             ]);
+                //         }
+
+                //         $env = License::where('id', $data['license'])->first();
+                //         $application->update([
+                //             'license_env' => $data['license_env'],
+                //             'license_id' => $env->id,
+                //         ]);
+                //     }),
             ]);
     }
 }

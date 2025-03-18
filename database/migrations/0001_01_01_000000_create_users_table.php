@@ -18,6 +18,12 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->boolean('is_admin')->default(false);
+            $table->boolean('is_partner')->default(false);
+            $table->boolean('reset_password_flag')->default(false);
+
+            $table->uuid('partner_id')->nullable();
+            $table->foreign('id')->references('id')->on('users');
+
             $table->rememberToken();
             $table->timestamps();
         });
