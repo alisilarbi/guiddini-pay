@@ -40,9 +40,11 @@ class Applications extends Page implements HasForms, HasTable
     use InteractsWithTable;
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-cube';
 
     protected static string $view = 'filament.partner.pages.applications';
+
+    protected static ?string $navigationGroup = 'Integrations';
 
     public function table(Table $table): Table
     {
@@ -56,9 +58,12 @@ class Applications extends Page implements HasForms, HasTable
                 TextColumn::make('user.name')
                     ->label('Owner'),
 
+                TextColumn::make('license.name')
+                    ->label('License'),
+
                 SelectColumn::make('license_id')
                     ->label('License')
-                    ->options(License::all()->pluck('name', 'id')),
+                    ->options(License::where('user_id', Auth::user()->id)->pluck('name', 'id')),
 
                 SelectColumn::make('license_env')
                     ->options(function ($record) {
@@ -109,32 +114,6 @@ class Applications extends Page implements HasForms, HasTable
 
 
                                 ]),
-
-                            // Fieldset::make('SATIM TEST')
-                            //     ->schema([
-
-                            //         TextEntry::make('license.satim_development_username')
-                            //             ->label('Username'),
-
-                            //         TextEntry::make('license.satim_development_password')
-                            //             ->label('Password'),
-
-                            //         TextEntry::make('license.satim_development_terminal')
-                            //             ->label('Terminal ID'),
-                            //     ]),
-
-                            // Fieldset::make('SATIM PROD')
-                            //     ->schema([
-
-                            //         TextEntry::make('license.satim_production_username')
-                            //             ->label('Username'),
-
-                            //         TextEntry::make('license.satim_production_password')
-                            //             ->label('Password'),
-
-                            //         TextEntry::make('license.satim_production_terminal')
-                            //             ->label('Terminal ID'),
-                            //     ]),
                         ]),
 
                     ViewAction::make('view_keys')
@@ -313,7 +292,7 @@ class Applications extends Page implements HasForms, HasTable
                                 Select::make('license')
                                     ->live()
                                     ->required()
-                                    ->options(License::all()->pluck('name', 'id')),
+                                    ->options(License::where('user_id', Auth::user()->id)->pluck('name', 'id')),
 
                                 Select::make('license_env')
                                     ->live()

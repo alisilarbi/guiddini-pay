@@ -67,22 +67,14 @@ class Partners extends Page implements HasForms, HasTable
 
                             TextInput::make('email')
                                 ->required()
+                                // ->unique(User::class, 'email')
                                 ->formatStateUsing(fn($record) => $record->email),
 
-                            CheckBox::make('is_admin')
-                                ->required()
-                                ->formatStateUsing(function ($record) {
-                                    if ($record->is_admin)
-                                        return true;
-                                    else
-                                        return false;
-                                }),
                         ])
                         ->action(function ($data, $record) {
                             $record->update([
                                 'name' => $data['name'],
                                 'email' => $data['email'],
-                                'is_admin' => $data['is_admin'],
                             ]);
                         }),
 
@@ -150,6 +142,7 @@ class Partners extends Page implements HasForms, HasTable
 
                         TextInput::make('email')
                             ->email()
+                            ->unique('users')
                             ->required(),
 
                         TextInput::make('password')

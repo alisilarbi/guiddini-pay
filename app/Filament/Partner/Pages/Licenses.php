@@ -25,9 +25,11 @@ class Licenses extends Page implements HasForms, HasTable
     use InteractsWithTable;
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-key';
 
     protected static string $view = 'filament.partner.pages.licenses';
+
+    protected static ?string $navigationGroup = 'Integrations';
 
     public function table(Table $table): Table
     {
@@ -35,69 +37,19 @@ class Licenses extends Page implements HasForms, HasTable
             ->query(License::where('user_id', Auth::user()->id)->with(['user']))
             ->columns([
 
-                Split::make([
-
-                    Stack::make([
-                        TextColumn::make('name')
-                            ->weight(FontWeight::Bold),
-                    ]),
-
-                    Stack::make([
-                        TextColumn::make('satim_development_username'),
-                        // TextColumn::make('satim_development_password'),
-                        // TextColumn::make('satim_development_terminal'),
-                    ]),
-
-                    Stack::make([
-                        TextColumn::make('satim_production_username'),
-                        // TextColumn::make('satim_production_password'),
-                        // TextColumn::make('satim_production_terminal'),
-                    ]),
-                ])
+                TextColumn::make('name')
+                    ->weight(FontWeight::Bold),
+                TextColumn::make('satim_development_terminal')
+                    ->label('Development Terminal'),
+                TextColumn::make('satim_production_terminal')
+                    ->label('Production Terminal'),
 
             ])
             ->actions([
-                // EditAction::make('update')
-                //     ->form([
-                //         Fieldset::make('Information')
-                //             ->columns(2)
-                //             ->schema([
-                //                 TextInput::make('name')
-                //                     ->required(),
-                //             ]),
 
-                //         Fieldset::make('Development')
-                //             ->columns(3)
-                //             ->schema([
-                //                 TextInput::make('satim_development_username')
-                //                     ->live()
-                //                     ->required(),
-                //                 TextInput::make('satim_development_password')
-                //                     ->live()
-                //                     ->required(),
-                //                 TextInput::make('satim_development_terminal')
-                //                     ->live()
-                //                     ->required(),
-                //             ]),
-
-                //         Fieldset::make('Production')
-                //             ->columns(3)
-                //             ->schema([
-                //                 TextInput::make('satim_production_username')
-                //                     ->live()
-                //                     ->required(fn($get) => $get('satim_production_password') || $get('satim_production_terminal')),
-
-                //                 TextInput::make('satim_production_password')
-                //                     ->live()
-                //                     ->required(fn($get) => $get('satim_production_username') || $get('satim_production_terminal')),
-
-                //                 TextInput::make('satim_production_terminal')
-                //                     ->live()
-                //                     ->required(fn($get) => $get('satim_production_username') || $get('satim_production_password')),
-                //             ])
-                //     ])
             ])
             ->headerActions([
+                // Action::make('')
                 // Action::make('create')
                 //     ->label('Create')
                 //     ->form([
