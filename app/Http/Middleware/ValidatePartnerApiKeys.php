@@ -8,7 +8,7 @@ use App\Http\Resources\API\ErrorResource;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\User;
 
-class ValidatePaymentApiKeys
+class ValidatePartnerApiKeys
 {
     /**
      * Handle an incoming request.
