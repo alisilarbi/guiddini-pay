@@ -17,9 +17,11 @@ class Transactions extends Page implements HasForms, HasTable
     use InteractsWithTable;
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
 
     protected static string $view = 'filament.pages.admin.transactions';
+
+    protected static ?string $navigationGroup = 'Follow-ups';
 
     public function table(Table $table): Table
     {

@@ -4,7 +4,10 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Panel;
+use App\Models\License;
 use App\Models\Application;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -28,6 +31,8 @@ class User extends Authenticatable implements FilamentUser
         'password',
         'is_admin',
         'is_partner',
+        'app_key',
+        'app_secret',
         'created_by',
     ];
 
@@ -67,6 +72,35 @@ class User extends Authenticatable implements FilamentUser
     public function createdBy()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public static function generateAppKey(): string
+    {
+        return 'APP-' . strtoupper(Str::random(18));
+    }
+
+    public static function generateSecretKey(): string
+    {
+        return 'SEC-' . Str::random(32);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+            $user->app_key = self::generateAppKey();
+            $user->app_secret = self::generateSecretKey();
+        });
+
+        // static::deleting(function ($application) {
+        //     $application->info()->delete();
+        // });
+    }
+
+    public function licenses()
+    {
+        return $this->hasMany(License::class);
     }
 
 }

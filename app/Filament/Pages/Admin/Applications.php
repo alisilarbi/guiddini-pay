@@ -40,9 +40,11 @@ class Applications extends Page implements HasForms, HasTable
     use InteractsWithTable;
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-cube';
 
     protected static string $view = 'filament.pages.admin.applications';
+
+    protected static ?string $navigationGroup = 'Integrations';
 
     public function table(Table $table): Table
     {

@@ -63,7 +63,11 @@ class Application extends Model
         static::creating(function ($application) {
             $application->app_key = self::generateAppKey();
             $application->app_secret = self::generateSecretKey();
-            $application->user_id = Auth::user()->id;
+
+            if (auth()->check()) {
+                $application->user_id = Auth::user()->id;
+            }
+
         });
 
         // static::deleting(function ($application) {

@@ -30,9 +30,11 @@ class Partners extends Page implements HasForms, HasTable
     use InteractsWithTable;
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     protected static string $view = 'filament.pages.admin.partners';
+
+    protected static ?string $navigationGroup = 'Follow-ups';
 
     public function table(Table $table): Table
     {

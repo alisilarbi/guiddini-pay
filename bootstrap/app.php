@@ -13,7 +13,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'validate_api_keys' => \App\Http\Middleware\ValidateApiKeys::class,
+            'validate_application_api_keys' => \App\Http\Middleware\ValidateApplicationApiKeys::class,
+            'validate_payment_api_keys' => \App\Http\Middleware\ValidateApplicationApiKeys::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

@@ -24,6 +24,9 @@ return new class extends Migration
             $table->uuid('partner_id')->nullable();
             $table->foreign('id')->references('id')->on('users');
 
+            $table->text('app_key')->nullable();
+            $table->text('app_secret')->nullable();
+
             $table->rememberToken();
             $table->timestamps();
         });

@@ -27,9 +27,11 @@ class Licenses extends Page implements HasForms, HasTable
     use InteractsWithTable;
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-key';
 
     protected static string $view = 'filament.pages.admin.licenses';
+
+    protected static ?string $navigationGroup = 'Integrations';
 
     public function table(Table $table): Table
     {

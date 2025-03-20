@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\API;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProspectApiResource extends JsonResource
+class ProspectResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,19 +14,10 @@ class ProspectApiResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        if ($this->resource['success'] ?? false)
-            return $this->formatSuccessResponse();
-
-        return $this->formatErrorResponse();
-    }
-
-    private function formatSuccessResponse()
-    {
         $data = $this->resource['data'];
-
         return [
             'data' => [
-                'type' => $data['type'],
+                'type' => 'prospect',
                 'id' => $data['id'],
                 'attributes' => [
                     'name' => $data['name'] ?? null,
@@ -39,32 +30,18 @@ class ProspectApiResource extends JsonResource
                     'website_integration' => $data['website_integration'] ?? null,
                     'mobile_integration' => $data['mobile_integration'] ?? null,
                     'website_link' => $data['website_link'] ?? null,
-                    'programming_languages' => $data['programming_languages'] ?? null,
-                ],
-                'meta' => [
-                    'message' => $this->resource['message'],
+                    'programming_languages' => $data['programming_languages'] ?? null
                 ]
-            ]
-        ];
-    }
-
-    public function formatErrorResponse()
-    {
-        return [
-            'errors' => [
-                [
-                    'status' => (string)($this->resource['http_code'] ?? 500),
-                    'code' => $this->resource['code'] ?? 'INTERNAL_ERROR',
-                    'title' => $this->resource['message'] ?? 'Unexpected error occurred',
-                    'detail' => $this->resource['errors']['system'] ?? null,
-                    'meta' => $this->resource['errors'] ?? []
-                ]
+            ],
+            'meta' => [
+                'code' => $this->resource['code'],
+                'message' => $this->resource['message']
             ]
         ];
     }
 
     public function withResponse($request, $response)
     {
-        $response->setStatusCode($this->resource['http_code'] ?? 500);
+        $response->setStatusCode($this->resource['http_code'] ?? 200);
     }
 }

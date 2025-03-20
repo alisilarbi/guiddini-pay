@@ -37,70 +37,88 @@ class Licenses extends Page implements HasForms, HasTable
             ->query(License::where('user_id', Auth::user()->id)->with(['user']))
             ->columns([
 
-                TextColumn::make('name')
-                    ->weight(FontWeight::Bold),
-                TextColumn::make('satim_development_terminal')
-                    ->label('Development Terminal'),
-                TextColumn::make('satim_production_terminal')
-                    ->label('Production Terminal'),
+
+
+                Split::make([
+
+                    Stack::make([
+                        TextColumn::make('name')
+                            ->weight(FontWeight::Bold),
+                    ]),
+
+                    Stack::make([
+                        TextColumn::make('satim_development_username'),
+                        TextColumn::make('satim_development_password'),
+                        TextColumn::make('satim_development_terminal'),
+                    ]),
+
+                    Stack::make([
+                        TextColumn::make('satim_production_username'),
+                        TextColumn::make('satim_production_password'),
+                        TextColumn::make('satim_production_terminal'),
+                    ]),
+
+                    Stack::make([
+                        TextColumn::make('user.name'),
+                        TextColumn::make('user.email'),
+                    ])
+                ])
 
             ])
-            ->actions([
-
-            ])
+            ->actions([])
             ->headerActions([
-                // Action::make('')
-                // Action::make('create')
-                //     ->label('Create')
-                //     ->form([
+                Action::make('create')
+                    ->label('Create')
+                    ->form([
 
-                //         Fieldset::make('Information')
-                //             ->columns(2)
-                //             ->schema([
-                //                 TextInput::make('name')
-                //                     ->required(),
-                //             ]),
+                        Fieldset::make('Information')
+                            ->columns(2)
+                            ->schema([
+                                TextInput::make('name')
+                                    ->required(),
+                            ]),
 
-                //         Fieldset::make('Development')
-                //             ->columns(3)
-                //             ->schema([
-                //                 TextInput::make('satim_development_username')
-                //                     ->live()
-                //                     ->required(),
-                //                 TextInput::make('satim_development_password')
-                //                     ->live()
-                //                     ->required(),
-                //                 TextInput::make('satim_development_terminal')
-                //                     ->live()
-                //                     ->required(),
-                //             ]),
+                        Fieldset::make('Development')
+                            ->columns(3)
+                            ->schema([
+                                TextInput::make('satim_development_username')
+                                    ->live()
+                                    ->required(),
+                                TextInput::make('satim_development_password')
+                                    ->live()
+                                    ->required(),
+                                TextInput::make('satim_development_terminal')
+                                    ->live()
+                                    ->required(),
+                            ]),
 
-                //         Fieldset::make('Production')
-                //             ->columns(3)
-                //             ->schema([
-                //                 TextInput::make('satim_production_username')
-                //                     ->live(),
-                //                 TextInput::make('satim_production_password')
-                //                     ->live(),
-                //                 TextInput::make('satim_production_terminal')
-                //                     ->live(),
-                //             ])
-                //     ])
-                //     ->action(function ($data) {
-                //         License::create([
-                //             'user_id' => Auth::user()->id,
+                        Fieldset::make('Production')
+                            ->columns(3)
+                            ->schema([
+                                TextInput::make('satim_production_username')
+                                    ->live(),
+                                TextInput::make('satim_production_password')
+                                    ->live(),
+                                TextInput::make('satim_production_terminal')
+                                    ->live(),
+                            ])
+                    ])
+                    ->action(function ($data) {
+                        License::create([
+                            'user_id' => Auth::user()->id,
 
-                //             'name' => $data['name'],
+                            'name' => $data['name'],
 
-                //             'satim_development_username' => $data['satim_development_username'],
-                //             'satim_development_password' => $data['satim_development_password'],
-                //             'satim_development_terminal' => $data['satim_development_terminal'],
+                            'satim_development_username' => $data['satim_development_username'],
+                            'satim_development_password' => $data['satim_development_password'],
+                            'satim_development_terminal' => $data['satim_development_terminal'],
 
-                //             'satim_production_username' => $data['satim_production_username'],
-                //             'satim_production_password' => $data['satim_production_password'],
-                //             'satim_production_terminal' => $data['satim_production_terminal'],
-                //         ]);
-                //     })
+                            'satim_production_username' => $data['satim_production_username'],
+                            'satim_production_password' => $data['satim_production_password'],
+                            'satim_production_terminal' => $data['satim_production_terminal'],
+                        ]);
+                    })
+
             ]);
     }
 }

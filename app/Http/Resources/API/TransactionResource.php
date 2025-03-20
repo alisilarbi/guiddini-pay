@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\API;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TransactionResponseResource extends JsonResource
+class TransactionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,18 +14,7 @@ class TransactionResponseResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        if ($this->resource['success'] ?? false) {
-            return $this->formatSuccessResponse();
-        }
-
-        return $this->formatErrorResponse();
-    }
-
-
-    private function formatSuccessResponse(): array
-    {
         $data = $this->resource['data'];
-
         return [
             'data' => [
                 'type' => 'transaction',
@@ -47,30 +36,18 @@ class TransactionResponseResource extends JsonResource
                     'svfe_response' => $data['transaction']['svfe_response'],
                     'pan' => $data['transaction']['pan'],
                     'ip_address' => $data['transaction']['ip_address'],
-                    'approval_code' => $data['transaction']['approval_code'],
-                ],
-
-            ],
-        ];
-    }
-
-    private function formatErrorResponse(): array
-    {
-        return [
-            'errors' => [
-                [
-                    'status' => (string)($this->resource['http_code'] ?? 500),
-                    'code' => $this->resource['code'] ?? 'INTERNAL_ERROR',
-                    'title' => $this->resource['message'] ?? 'Unexpected error occurred',
-                    'detail' => $this->resource['errors']['system'] ?? null,
-                    'meta' => $this->resource['errors'] ?? []
+                    'approval_code' => $data['transaction']['approval_code']
                 ]
+            ],
+            'meta' => [
+                'code' => $this->resource['code'],
+                'message' => $this->resource['message']
             ]
         ];
     }
 
     public function withResponse($request, $response)
     {
-        $response->setStatusCode($this->resource['http_code'] ?? 500);
+        $response->setStatusCode($this->resource['http_code'] ?? 200);
     }
 }

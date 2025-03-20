@@ -6,6 +6,7 @@ use App\Models\Prospect;
 use Illuminate\Http\Request;
 use App\Traits\HandlesApiExceptions;
 use App\Http\Resources\ProspectApiResource;
+use App\Http\Resources\API\ProspectResource;
 
 class ProspectContoller extends Controller
 {
@@ -24,21 +25,22 @@ class ProspectContoller extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'nullable|string',
-            'company_name' => 'nullable|string',
-            'phone' => 'nullable|string',
-            'email' => 'nullable|email',
-            'legal_status' => 'nullable|string',
-            'has_bank_account' => 'boolean',
-            'bank_name' => 'nullable|string',
-            'website_integration' => 'boolean',
-            'mobile_integration' => 'boolean',
-            'website_link' => 'nullable|string',
-            'programming_languages' => 'nullable|json',
-        ]);
-
         try {
+
+            $request->validate([
+                'name' => 'required|string',
+                'company_name' => 'nullable|string',
+                'phone' => 'nullable|string',
+                'email' => 'nullable|email',
+                'legal_status' => 'nullable|string',
+                'has_bank_account' => 'boolean',
+                'bank_name' => 'nullable|string',
+                'website_integration' => 'boolean',
+                'mobile_integration' => 'boolean',
+                'website_link' => 'nullable|string',
+                'programming_languages' => 'nullable|json',
+            ]);
+
             $prospect = Prospect::create([
                 'name' => $request->name,
                 'company_name' => $request->company_name,
@@ -53,7 +55,7 @@ class ProspectContoller extends Controller
                 'programming_languages' => $request->programming_languages,
             ]);
 
-            return new ProspectApiResource([
+            return new ProspectResource([
                 'success' => true,
                 'code' => 'PROSPECT_CREATED',
                 'message' => 'Inquiry sent successfully',

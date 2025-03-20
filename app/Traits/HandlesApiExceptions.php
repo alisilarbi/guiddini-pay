@@ -4,22 +4,20 @@ namespace App\Traits;
 
 use Illuminate\Http\JsonResponse;
 use App\Exceptions\PaymentException;
+use App\Http\Resources\API\ErrorResource;
 use GuzzleHttp\Exception\RequestException;
-use App\Http\Resources\ApiResponseResource;
 use Illuminate\Validation\ValidationException;
-use App\Http\Resources\PaymentResponseResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 trait HandlesApiExceptions
 {
     protected function handleApiException(\Throwable $exception): JsonResponse
     {
-        // dd(get_class($exception));
         $statusCode = 500;
         $errorCode = 'INTERNAL_ERROR';
         $errors = [];
         $message = 'Internal server error';
-        $detail = '';
+        $detail = null;
 
         if ($exception instanceof PaymentException) {
             $statusCode = $exception->getStatusCode();
@@ -36,13 +34,10 @@ trait HandlesApiExceptions
             $errorCode = 'VALIDATION_ERROR';
             $message = 'Validation failed';
             $errors = $exception->errors();
-        }
-        elseif ($exception instanceof RequestException && strpos($exception->getMessage(), 'SSL') !== false) {
+        } elseif ($exception instanceof RequestException && strpos($exception->getMessage(), 'SSL') !== false) {
             $statusCode = 502;
             $errorCode = 'SSL_ERROR';
             $message = 'SSL verification failed';
-            $detail = '';
-            $errors = [];
         }
 
         return $this->jsonApiErrorResponse(
@@ -59,20 +54,18 @@ trait HandlesApiExceptions
         string $code,
         int $statusCode,
         array $errors = [],
-        ?string $detail = null,
-
+        ?string $detail = null
     ): JsonResponse {
-        $response = [
-            'success' => false,
-            'code' => $code,
-            'message' => $message,
-            'errors' => $errors,
-            'http_code' => $statusCode,
-            'detail' => $detail
-        ];
-
-        return (new PaymentResponseResource($response))
-            ->response()
-            ->setStatusCode($statusCode);
+        return response()->json([
+            'errors' => [
+                [
+                    'status' => (string)$statusCode,
+                    'code' => $code,
+                    'title' => $message,
+                    'detail' => $detail,
+                    'meta' => $errors
+                ]
+            ]
+        ], $statusCode);
     }
 }

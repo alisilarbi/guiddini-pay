@@ -347,6 +347,8 @@ class Applications extends Page implements HasForms, HasTable
                             'license_env' => $data['license_env'],
                             'license_id' => $env->id,
                         ]);
+
+
                     }),
 
 

@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Traits\HandlesApiExceptions;
 use App\Services\Payments\PaymentService;
+use App\Http\Resources\API\PaymentResource;
 use App\Http\Resources\ApiResponseResource;
+use App\Http\Resources\API\TransactionResource;
 use App\Http\Resources\PaymentResponseResource;
 use App\Http\Resources\TransactionResponseResource;
 
@@ -29,7 +31,7 @@ class PaymentController extends Controller
                 $request->header('X-App-Key')
             );
 
-            return new PaymentResponseResource([
+            return new PaymentResource([
                 'success' => true,
                 'code' => 'PAYMENT_INITIATED',
                 'message' => 'Payment initiated successfully',
@@ -75,7 +77,7 @@ class PaymentController extends Controller
         try {
             $transaction = Transaction::where('order_number', $request->order_number)->firstOrFail();
 
-            return new TransactionResponseResource([
+            return new TransactionResource([
                 'success' => true,
                 'code' => 'TRANSACTION_FOUND',
                 'message' => 'Transaction retrieved successfully',
