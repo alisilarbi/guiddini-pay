@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Models\User;
 use App\Models\Application;
 use Illuminate\Http\Request;
 use App\Http\Resources\API\ErrorResource;
@@ -17,6 +18,7 @@ class ValidateApplicationApiKeys
      */
     public function handle(Request $request, Closure $next): Response
     {
+
         $appKey = $request->header('x-app-key');
         $secretKey = $request->header('x-secret-key');
 
@@ -30,12 +32,11 @@ class ValidateApplicationApiKeys
             ]))->response();
         }
 
-
-        $application = Application::where('app_key', $appKey)
+        $user = User::where('app_key', $appKey)
             ->where('app_secret', $secretKey)
             ->first();
 
-        if (!$application) {
+        if (!$user) {
             return (new ErrorResource([
                 'status' => 401,
                 'code' => 'INVALID_API_KEYS',
@@ -47,7 +48,7 @@ class ValidateApplicationApiKeys
 
         $origin = $request->header('Origin') ?? $request->header('Referer');
 
-        if ($origin && rtrim($origin, '/') !== rtrim($application->website_url, '/')) {
+        if ($origin && rtrim($origin, '/') !== rtrim($user->website_url, '/')) {
             return (new ErrorResource([
                 'status' => 403,
                 'code' => 'UNAUTHORIZED_ORIGIN',
