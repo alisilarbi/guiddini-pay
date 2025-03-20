@@ -12,11 +12,11 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::prefix('payment')->group(function () {
-    Route::post('/initiate', [PaymentController::class, 'initiate'])->name('payment.initiate')->middleware('validate_payment_api_keys');
+    Route::post('/initiate', [PaymentController::class, 'initiate'])->name('payment.initiate')->middleware('validate_application_api_keys');
 });
 
 Route::prefix('fetch')->group(function(){
-    Route::post('/transaction', [PaymentController::class, 'getTransaction'])->name('get.transaction')->middleware('validate_payment_api_keys');
+    Route::post('/transaction', [PaymentController::class, 'getTransaction'])->name('get.transaction')->middleware('validate_application_api_keys');
 });
 
 Route::prefix('prospect')->group(function(){
@@ -24,5 +24,5 @@ Route::prefix('prospect')->group(function(){
 });
 
 Route::prefix('application')->group(function(){
-    Route::post('create', [ApplicationController::class, 'store'])->name('application.create')->middleware('validate_application_api_keys');
+    Route::post('create', [ApplicationController::class, 'store'])->name('application.create')->middleware('validate_partner_api_keys');
 });
