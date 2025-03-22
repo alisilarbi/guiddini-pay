@@ -94,7 +94,6 @@ class ProspectController extends Controller
             }
 
             $prospect = Prospect::where('id', $request->id)
-                ->where('user_id', $user->id)
                 ->firstOrFail();
 
             return new ProspectResource([
@@ -145,7 +144,6 @@ class ProspectController extends Controller
             }
 
             $prospect = Prospect::where('id', $request->id)
-                ->where('user_id', $user->id)
                 ->firstOrFail();
 
             $prospect->update($request->only([
