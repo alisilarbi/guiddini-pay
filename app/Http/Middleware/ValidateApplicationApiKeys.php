@@ -22,7 +22,7 @@ class ValidateApplicationApiKeys
 
         if (!$appKey || !$secretKey) {
             return (new ErrorResource([
-                'status' => 401,
+                'http_code' => 401,
                 'code' => 'INVALID_API_KEYS',
                 'message' => 'Invalid API keys',
                 'detail' => null,
@@ -37,7 +37,7 @@ class ValidateApplicationApiKeys
 
         if (!$application) {
             return (new ErrorResource([
-                'status' => 401,
+                'http_code' => 401,
                 'code' => 'INVALID_API_KEYS',
                 'message' => 'Invalid API keys',
                 'detail' => null,
@@ -49,7 +49,7 @@ class ValidateApplicationApiKeys
 
         if ($origin && rtrim($origin, '/') !== rtrim($application->website_url, '/')) {
             return (new ErrorResource([
-                'status' => 403,
+                'http_code' => 403,
                 'code' => 'UNAUTHORIZED_ORIGIN',
                 'message' => 'Unauthorized origin',
                 'detail' => null,
