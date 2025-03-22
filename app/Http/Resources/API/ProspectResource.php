@@ -30,7 +30,9 @@ class ProspectResource extends JsonResource
                     'website_integration' => $data['website_integration'] ?? null,
                     'mobile_integration' => $data['mobile_integration'] ?? null,
                     'website_link' => $data['website_link'] ?? null,
-                    'programming_languages' => $data['programming_languages'] ?? null
+                    'programming_languages' => $data['programming_languages'] ?? null,
+                    'reference' => $data['reference'],
+                    'needs_help' => $data['needs_help'],
                 ]
             ],
             'meta' => [

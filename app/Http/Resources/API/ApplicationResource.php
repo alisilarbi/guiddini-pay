@@ -15,7 +15,6 @@ class ApplicationResource extends JsonResource
     public function toArray(Request $request): array
     {
         $data = $this->resource['data'];
-
         return [
             'data' => [
                 'type' => 'application',
@@ -31,7 +30,6 @@ class ApplicationResource extends JsonResource
                 ]
             ],
             'meta' => [
-                'http_code' => $this->resource['http_code'] ?? 200,
                 'code' => $this->resource['code'],
                 'message' => $this->resource['message']
             ]

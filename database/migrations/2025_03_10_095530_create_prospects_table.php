@@ -26,6 +26,9 @@ return new class extends Migration
             $table->boolean('website_integration')->default(false);
             $table->boolean('mobile_integration')->default(false);
 
+            $table->string('needs_help')->nullable();
+            $table->string('reference')->nullable();
+
             $table->text('website_link')->nullable();
             $table->json('programming_languages')->nullable();
 

@@ -16,16 +16,6 @@ class PaymentResource extends JsonResource
     {
         $data = $this->resource['data'];
 
-        $meta = [
-            'code' => $this->resource['code'],
-            'message' => $this->resource['message']
-        ];
-
-        if (isset($this->resource['http_code'])) {
-            // $meta['http_code'] = $this->resource['http_code'];
-        }
-
-
         return [
             'data' => [
                 'type' => 'transaction',
@@ -33,10 +23,13 @@ class PaymentResource extends JsonResource
                 'attributes' => [
                     'amount' => $data['transaction']['amount'],
                     'status' => $data['transaction']['status'],
-                    'form_url' => $data['formUrl']
+                    'form_url' => $data['formUrl'],
                 ]
             ],
-            'meta' => $meta
+            'meta' => [
+                'code' => $this->resource['code'],
+                'message' => $this->resource['message']
+            ]
         ];
     }
 

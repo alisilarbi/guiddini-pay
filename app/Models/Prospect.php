@@ -25,6 +25,9 @@ class Prospect extends Model
         'programming_languages',
         'user_id',
         'application_id',
+
+        'needs_help',
+        'reference',
     ];
 
     protected $casts = [
