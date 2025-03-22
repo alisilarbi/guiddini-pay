@@ -22,7 +22,7 @@ class PaymentResource extends JsonResource
         ];
 
         if (isset($this->resource['http_code'])) {
-            $meta['http_code'] = $this->resource['http_code'];
+            // $meta['http_code'] = $this->resource['http_code'];
         }
 
 
