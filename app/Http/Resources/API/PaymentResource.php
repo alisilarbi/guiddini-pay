@@ -15,6 +15,17 @@ class PaymentResource extends JsonResource
     public function toArray(Request $request): array
     {
         $data = $this->resource['data'];
+
+        $meta = [
+            'code' => $this->resource['code'],
+            'message' => $this->resource['message']
+        ];
+
+        if (isset($this->resource['http_code'])) {
+            $meta['http_code'] = $this->resource['http_code'];
+        }
+
+
         return [
             'data' => [
                 'type' => 'transaction',
@@ -25,10 +36,7 @@ class PaymentResource extends JsonResource
                     'form_url' => $data['formUrl']
                 ]
             ],
-            'meta' => [
-                'code' => $this->resource['code'],
-                'message' => $this->resource['message']
-            ]
+            'meta' => $meta
         ];
     }
 
