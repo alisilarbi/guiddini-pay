@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LicenseController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProspectController;
 use App\Http\Controllers\ApplicationController;
@@ -28,10 +29,18 @@ Route::prefix('application')->group(function(){
 
 
 Route::prefix('prospect')->group(function(){
-    Route::post('index', [ProspectController::class, 'index'])->name('Prospect.index')->middleware('validate_partner_api_keys');
-    Route::post('store', [ProspectController::class, 'store'])->name('Prospect.store')->middleware('validate_partner_api_keys');
-    Route::post('show', [ProspectController::class, 'show'])->name('Prospect.show')->middleware('validate_partner_api_keys');
-    Route::post('update', [ProspectController::class, 'update'])->name('Prospect.update')->middleware('validate_partner_api_keys');
-    Route::post('destroy', [ProspectController::class, 'destroy'])->name('Prospect.destroy')->middleware('validate_partner_api_keys');
+    Route::post('index', [ProspectController::class, 'index'])->name('prospect.index')->middleware('validate_partner_api_keys');
+    Route::post('store', [ProspectController::class, 'store'])->name('prospect.store')->middleware('validate_partner_api_keys');
+    Route::post('show', [ProspectController::class, 'show'])->name('prospect.show')->middleware('validate_partner_api_keys');
+    Route::post('update', [ProspectController::class, 'update'])->name('prospect.update')->middleware('validate_partner_api_keys');
+    Route::post('destroy', [ProspectController::class, 'destroy'])->name('prospect.destroy')->middleware('validate_partner_api_keys');
+});
+
+Route::prefix('license')->group(function(){
+    Route::post('index', [LicenseController::class, 'index'])->name('license.index')->middleware('validate_partner_api_keys');
+    Route::post('store', [LicenseController::class, 'store'])->name('license.store')->middleware('validate_partner_api_keys');
+    Route::post('show', [LicenseController::class, 'show'])->name('license.show')->middleware('validate_partner_api_keys');
+    Route::post('update', [LicenseController::class, 'update'])->name('license.update')->middleware('validate_partner_api_keys');
+    Route::post('destroy', [LicenseController::class, 'destroy'])
 });
 

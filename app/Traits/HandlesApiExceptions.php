@@ -38,6 +38,11 @@ trait HandlesApiExceptions
             $statusCode = 502;
             $errorCode = 'SSL_ERROR';
             $message = 'SSL verification failed';
+        } elseif ($exception->getMessage() === 'PROSPECT_CONVERTED') {
+            $statusCode = 404;
+            $errorCode = 'NOT_FOUND';
+            $message = 'Resource not found';
+            $detail = 'The prospect must not be converted';
         }
 
         return $this->jsonApiErrorResponse(

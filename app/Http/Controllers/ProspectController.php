@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Traits\HandlesApiExceptions;
 use App\Http\Resources\ProspectApiResource;
 use App\Http\Resources\API\ProspectResource;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProspectController extends Controller
 {
@@ -17,9 +18,36 @@ class ProspectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        try {
+            $appKey = $request->header('x-app-key');
+            $secretKey = $request->header('x-secret-key');
+
+            $user = User::where('app_key', $appKey)
+                ->where('app_secret', $secretKey)
+                ->first();
+
+            if (!$user) {
+                throw new \Exception('Unauthorized', 401);
+            }
+
+            $prospects = Prospect::where('user_id', $user->id)->get();
+
+            return response()->json([
+                'data' => $prospects->isEmpty() ? [] : $prospects->map(fn($prospect) => [
+                    'type' => 'prospect',
+                    'id' => $prospect->id,
+                    'attributes' => $prospect->toArray()
+                ]),
+                'meta' => [
+                    'code' => $prospects->isEmpty() ? 'NO_PROSPECTS_FOUND' : 'PROSPECTS_FOUND',
+                    'message' => $prospects->isEmpty() ? 'No prospects found' : 'Prospects retrieved successfully'
+                ]
+            ], 200);
+        } catch (\Throwable $e) {
+            return $this->handleApiException($e);
+        }
     }
 
     /**
@@ -43,6 +71,18 @@ class ProspectController extends Controller
                 'needs_help' => 'nullable|boolean',
             ]);
 
+            $appKey = $request->header('x-app-key');
+            $secretKey = $request->header('x-secret-key');
+
+            $user = User::where('app_key', $appKey)
+                ->where('app_secret', $secretKey)
+                ->first();
+
+            if (!$user) {
+                throw new \Exception('Unauthorized', 401);
+            }
+
+
             $prospect = Prospect::create([
                 'name' => $request->name,
                 'company_name' => $request->company_name,
@@ -57,6 +97,7 @@ class ProspectController extends Controller
                 'programming_languages' => $request->programming_languages,
                 'reference' => strtoupper(Str::random(2)) . rand(10, 99),
                 'needs_help' => $request->needs_help,
+                'user_id' => $user->id,
             ]);
 
             return new ProspectResource([
@@ -144,6 +185,7 @@ class ProspectController extends Controller
             }
 
             $prospect = Prospect::where('id', $request->id)
+                ->where('user_id', $user->id)
                 ->firstOrFail();
 
             $prospect->update($request->only([
@@ -180,6 +222,31 @@ class ProspectController extends Controller
      */
     public function destroy(Request $request)
     {
-        //
+        try {
+            $request->validate([
+                'id' => 'required|string',
+            ]);
+
+            $appKey = $request->header('x-app-key');
+            $secretKey = $request->header('x-secret-key');
+
+            $user = User::where('app_key', $appKey)
+                ->where('app_secret', $secretKey)
+                ->first();
+
+            if (!$user) {
+                throw new \Exception('Unauthorized', 401);
+            }
+
+            $prospect = Prospect::where('id', $request->id)
+                ->where('user_id', $user->id)
+                ->firstOrFail();
+
+            if ($prospect->converted) {
+                throw new \Exception('PROSPECT_CONVERTED');
+            }
+        } catch (\Throwable $e) {
+            return $this->handleApiException($e);
+        }
     }
 }
