@@ -33,6 +33,7 @@ class ProspectResource extends JsonResource
                     'programming_languages' => $data['programming_languages'] ?? null,
                     'reference' => $data['reference'],
                     'needs_help' => $data['needs_help'],
+                    'partner_id' => $data['partner_id'],
                 ]
             ],
             'meta' => [

@@ -23,8 +23,10 @@ class Prospect extends Model
         'mobile_integration',
         'website_link',
         'programming_languages',
+
         'user_id',
         'application_id',
+        'partner_id',
 
         'needs_help',
         'reference',
@@ -43,6 +45,13 @@ class Prospect extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function partner()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+
 
 
 

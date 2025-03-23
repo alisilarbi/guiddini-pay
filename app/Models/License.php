@@ -29,7 +29,7 @@ class License extends Model
 
     public function applications()
     {
-        return $this->hasMany(Application::class)->nullOnDelete();
+        return $this->hasMany(Application::class);
     }
 
 }

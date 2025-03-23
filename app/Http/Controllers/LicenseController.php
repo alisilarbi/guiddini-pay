@@ -310,17 +310,39 @@ class LicenseController extends Controller
                 ->where('user_id', $user->id)
                 ->firstOrFail();
 
-            dd($license->applications);
+            $apps = [];
+            if ($license->applications->isNotEmpty()) {
+                foreach ($license->applications as $app) {
+                    $app->update([
+                        'license_id' => null,
+                        'license_env' => null,
+                    ]);
 
-            // $license->delete();
+                    $apps[] = [
+                        'type' => 'application',
+                        'id' => $app->id,
+                        'attributes' => [
+                            'name' => $app->name,
+                            'license_id' => $app->license_id,
+                            'license_env' => $app->license_env,
+                        ]
+                    ];
+                }
+            }
+
+            $license->delete();
 
             return response()->json([
-                'data' => null,
+                'data' => $apps ? [
+                    'message' => 'Some applications were using this license and have been detached.',
+                    'applications' => $apps
+                ] : null,
                 'meta' => [
                     'code' => 'LICENSE_DELETED',
-                    'message' => 'License deleted successfully'
+                    'message' => $apps ? 'License deleted successfully, and applications were detached.' : 'License deleted successfully.'
                 ]
             ], 200);
+
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
         }

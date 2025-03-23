@@ -29,6 +29,8 @@ class Application extends Model
 
         'license_id',
         'license_env',
+
+        'partner_id',
     ];
 
     public static function generateAppKey(): string

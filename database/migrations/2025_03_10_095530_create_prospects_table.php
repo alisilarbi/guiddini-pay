@@ -38,6 +38,9 @@ return new class extends Migration
             $table->uuid('application_id')->nullable();
             $table->foreign('application_id')->references('id')->on('applications');
 
+            $table->uuid('partner_id')->nullable();
+            $table->foreign('partner_id')->references('id')->on('users');
+
             $table->timestamps();
         });
     }

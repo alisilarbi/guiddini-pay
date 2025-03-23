@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Prospect;
+use App\Models\Application;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Traits\HandlesApiExceptions;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\API\ClientResource;
 use App\Http\Resources\ProspectApiResource;
 use App\Http\Resources\API\ProspectResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -32,7 +36,9 @@ class ProspectController extends Controller
                 throw new \Exception('Unauthorized', 401);
             }
 
-            $prospects = Prospect::where('user_id', $user->id)->get();
+            $prospects = Prospect::where('converted', false)
+                ->where('partner_id', $user->id)
+                ->get();
 
             return response()->json([
                 'data' => $prospects->isEmpty() ? [] : $prospects->map(fn($prospect) => [
@@ -97,7 +103,8 @@ class ProspectController extends Controller
                 'programming_languages' => $request->programming_languages,
                 'reference' => strtoupper(Str::random(2)) . rand(10, 99),
                 'needs_help' => $request->needs_help,
-                'user_id' => $user->id,
+                'converted' => false,
+                'partner_id' => $user->id,
             ]);
 
             return new ProspectResource([
@@ -135,6 +142,8 @@ class ProspectController extends Controller
             }
 
             $prospect = Prospect::where('id', $request->id)
+                ->where('converted', false)
+                ->where('partner_id', $user->id)
                 ->firstOrFail();
 
             return new ProspectResource([
@@ -185,7 +194,8 @@ class ProspectController extends Controller
             }
 
             $prospect = Prospect::where('id', $request->id)
-                ->where('user_id', $user->id)
+                ->where('partner_id', $user->id)
+                ->where('converted', false)
                 ->firstOrFail();
 
             $prospect->update($request->only([
@@ -239,12 +249,81 @@ class ProspectController extends Controller
             }
 
             $prospect = Prospect::where('id', $request->id)
-                ->where('user_id', $user->id)
+                ->where('partner_id', $user->id)
+                ->where('converted', false)
                 ->firstOrFail();
 
             if ($prospect->converted) {
                 throw new \Exception('PROSPECT_CONVERTED');
             }
+
+            $prospect->delete();
+
+            return response()->json([
+                'data' => null,
+                'meta' => [
+                    'code' => 'PROSPECT_DELETED',
+                    'message' => 'Prospect deleted successfully',
+                ]
+            ], 200);
+        } catch (\Throwable $e) {
+            return $this->handleApiException($e);
+        }
+    }
+
+    public function convert(Request $request)
+    {
+
+        $request->validate([
+            'id' => 'required|string',
+        ]);
+
+        $appKey = $request->header('x-app-key');
+        $secretKey = $request->header('x-secret-key');
+
+        $partner = User::where('app_key', $appKey)
+            ->where('app_secret', $secretKey)
+            ->first();
+
+        if (!$partner) {
+            throw new \Exception('Unauthorized', 401);
+        }
+
+        $prospect = Prospect::where('id', $request->id)
+            ->where('partner_id', $partner->id)
+            ->firstOrFail();
+
+        $user = User::where('email', $prospect->email)->first();
+        if (!$user) {
+            $user = User::create([
+                'name' => $prospect->name,
+                'email' => $prospect->email,
+                'password' => Hash::make(Str::random(12)),
+                'partner_id' => $partner->id,
+            ]);
+        }
+
+        $application = Application::create([
+            'name' => $prospect->name,
+            'website_url' => $prospect->website_link,
+            'redirect_url' => $prospect->website_link,
+            'user_id' => $user->id,
+            'partner_id' => $partner->id,
+            'license_id' => $partner->licenses()->first()->id,
+            'license_env' => 'development',
+        ]);
+
+        return new ClientResource([
+            'success' => true,
+            'code' => 'PROSPECT_CONVERTED',
+            'message' => 'Converted to client successfully',
+            'data' => $user,
+            'http' => 201,
+        ]);
+
+
+        try {
+
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
         }

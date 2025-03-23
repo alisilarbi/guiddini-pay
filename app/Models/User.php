@@ -34,6 +34,8 @@ class User extends Authenticatable implements FilamentUser
         'app_key',
         'app_secret',
         'created_by',
+        'reset_password_flag',
+        'partner_id',
     ];
 
     /**
