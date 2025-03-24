@@ -27,6 +27,8 @@ Route::prefix('partner')->middleware('validate_partner_api_keys')->group(functio
         Route::get('show', [PartnerApplicationController::class, 'show']);
         Route::patch('update', [PartnerApplicationController::class, 'update']);
         Route::delete('destroy', [PartnerApplicationController::class, 'destroy']);
+        Route::patch('assign-license', [PartnerApplicationController::class, 'assignLicense']);
+        Route::patch('transfer-ownership', [PartnerApplicationController::class, 'transferOwnership']);
     });
 
     Route::prefix('prospect')->group(function () {
@@ -36,7 +38,6 @@ Route::prefix('partner')->middleware('validate_partner_api_keys')->group(functio
         Route::get('show', [PartnerProspectController::class, 'show']);
         Route::patch('update', [PartnerProspectController::class, 'update']);
         Route::delete('destroy', [PartnerProspectController::class, 'destroy']);
-        Route::patch('assign-license', [PartnerApplicationController::class, 'assignLicense']);
     });
 
     Route::prefix('license')->group(function () {
@@ -45,6 +46,7 @@ Route::prefix('partner')->middleware('validate_partner_api_keys')->group(functio
         Route::get('show', [PartnerLicenseController::class, 'show']);
         Route::patch('update', [PartnerLicenseController::class, 'update']);
         Route::delete('destroy', [PartnerLicenseController::class, 'destroy']);
+        Route::patch('transfer-ownership', [PartnerLicenseController::class, 'transferOwnership']);
     });
 
     Route::prefix('client')->group(function () {
@@ -55,5 +57,3 @@ Route::prefix('partner')->middleware('validate_partner_api_keys')->group(functio
         Route::delete('destroy', [PartnerClientController::class, 'destroy']);
     });
 });
-
-

@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Traits\HandlesApiExceptions;
 use App\Http\Resources\API\ApplicationResource;
 use App\Http\Resources\ApplicationResponseResource;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PartnerApplicationController extends Controller
 {
@@ -252,6 +253,51 @@ class PartnerApplicationController extends Controller
                 'success' => true,
                 'code' => 'LICENSE_ASSIGNED',
                 'message' => 'License assigned to application successfully',
+                'data' => $application,
+                'http' => 200,
+            ]);
+        } catch (\Throwable $e) {
+            return $this->handleApiException($e);
+        }
+    }
+
+    /**
+     * Transfer ownership to another user
+     */
+    public function transferOwnership(Request $request)
+    {
+        try {
+            $request->validate([
+                'application_id' => 'required|string|exists:applications,id',
+                'new_user_id' => 'required|string|exists:users,id',
+            ]);
+
+            $appKey = $request->header('x-app-key');
+            $secretKey = $request->header('x-secret-key');
+
+            $partner = User::where('app_key', $appKey)
+                ->where('app_secret', $secretKey)
+                ->first();
+
+            if (!$partner) {
+                throw new \Exception('Unauthorized', 401);
+            }
+
+            $application = Application::where('id', $request->application_id)
+                ->where('partner_id', $partner->id)
+                ->firstOrFail();
+
+            $newUser = User::findOrFail($request->new_user_id);
+
+            $application->update([
+                'user_id' => $newUser->id,
+                // 'partner_id' => $newUser->isPartner() ? $newUser->id : null,
+            ]);
+
+            return new ApplicationResource([
+                'success' => true,
+                'code' => 'OWNERSHIP_TRANSFERRED',
+                'message' => 'Application ownership transferred successfully',
                 'data' => $application,
                 'http' => 200,
             ]);

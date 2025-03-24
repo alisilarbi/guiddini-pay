@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('needs_help')->nullable();
             $table->string('reference')->nullable();
 
-            $table->text('website_link')->nullable();
+            $table->text('website_url')->nullable();
             $table->json('programming_languages')->nullable();
 
             $table->uuid('user_id')->nullable();

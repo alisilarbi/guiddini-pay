@@ -27,6 +27,9 @@ return new class extends Migration
             $table->uuid('user_id');
             $table->foreign('user_id')->references('id')->on('users');
 
+            $table->uuid('partner_id');
+            $table->foreign('partner_id')->references('id')->on('users');
+
             $table->timestamps();
         });
 

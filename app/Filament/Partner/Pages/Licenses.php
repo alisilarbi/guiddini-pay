@@ -34,7 +34,7 @@ class Licenses extends Page implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(License::where('user_id', Auth::user()->id)->with(['user']))
+            ->query(License::where('partner_id', Auth::user()->id)->with(['user']))
             ->columns([
 
 

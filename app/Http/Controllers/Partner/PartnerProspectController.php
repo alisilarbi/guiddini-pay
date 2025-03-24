@@ -73,7 +73,7 @@ class PartnerProspectController extends Controller
                 'bank_name' => 'nullable|string',
                 'website_integration' => 'boolean',
                 'mobile_integration' => 'boolean',
-                'website_link' => 'nullable|string',
+                'website_url' => 'nullable|string',
                 'programming_languages' => 'nullable|json',
                 'needs_help' => 'nullable|boolean',
             ]);
@@ -100,7 +100,7 @@ class PartnerProspectController extends Controller
                 'bank_name' => $request->bank_name,
                 'website_integration' => $request->website_integration,
                 'mobile_integration' => $request->mobile_integration,
-                'website_link' => $request->website_link,
+                'website_url' => $request->website_url,
                 'programming_languages' => $request->programming_languages,
                 'reference' => strtoupper(Str::random(2)) . rand(10, 99),
                 'needs_help' => $request->needs_help,
@@ -179,7 +179,7 @@ class PartnerProspectController extends Controller
                 'mobile_integration' => 'sometimes|required|boolean',
                 'needs_help' => 'sometimes|required|string',
                 'reference' => 'sometimes|required|string',
-                'website_link' => 'sometimes|required|string',
+                'website_url' => 'sometimes|required|string',
                 'programming_languages' => 'sometimes|required|json',
             ]);
 
@@ -212,7 +212,7 @@ class PartnerProspectController extends Controller
                 'mobile_integration',
                 'needs_help',
                 'reference',
-                'website_link',
+                'website_url',
                 'programming_languages'
             ]));
 
@@ -306,8 +306,8 @@ class PartnerProspectController extends Controller
 
         $application = Application::create([
             'name' => $prospect->name,
-            'website_url' => $prospect->website_link,
-            'redirect_url' => $prospect->website_link,
+            'website_url' => $prospect->website_url,
+            'redirect_url' => $prospect->website_url,
             'user_id' => $user->id,
             'partner_id' => $partner->id,
             'license_id' => $partner->licenses()->first()->id,

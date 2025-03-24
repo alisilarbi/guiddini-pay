@@ -11,6 +11,7 @@ class License extends Model
 
     protected $fillable = [
         'user_id',
+        'partner_id',
         'name',
 
         'satim_development_username',
@@ -23,6 +24,11 @@ class License extends Model
     ];
 
     public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function partner()
     {
         return $this->belongsTo(User::class);
     }

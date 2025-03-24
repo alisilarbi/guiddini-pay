@@ -26,7 +26,9 @@ class ApplicationResource extends JsonResource
                     'website_url' => $data['website_url'],
                     'redirect_url' => $data['redirect_url'],
                     'created_at' => $data['created_at'],
-                    'updated_at' => $data['updated_at']
+                    'updated_at' => $data['updated_at'],
+                    'license_id' => $data['license_id'],
+                    'license_env' => $data['license_env'],
                 ]
             ],
             'meta' => [

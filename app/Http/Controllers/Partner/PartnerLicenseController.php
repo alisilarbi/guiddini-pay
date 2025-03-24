@@ -323,6 +323,51 @@ class PartnerLicenseController extends Controller
                     'message' => $apps ? 'License deleted successfully, and applications were detached.' : 'License deleted successfully.'
                 ]
             ], 200);
+        } catch (\Throwable $e) {
+            return $this->handleApiException($e);
+        }
+    }
+
+    /**
+     * Transfer ownership to another user
+     */
+    public function transferOwnership(Request $request)
+    {
+        try {
+
+            $request->validate([
+                'license_id' => 'required|string|exists:licenses,id',
+                'new_user_id' => 'required|string|exists:users,id'
+            ]);
+
+            $appKey = $request->header('x-app-key');
+            $secretKey = $request->header('x-secret-key');
+
+            $partner = User::where('app_key', $appKey)
+                ->where('app_secret', $secretKey)
+                ->first();
+
+            if (!$partner) {
+                throw new \Exception('Unauthorized', 401);
+            }
+
+            $license = License::where('id', $request->license_id)
+                ->where('user_id', $partner->id)
+                ->firstOrFail();
+
+            $newUser = User::findOrFail($request->new_user_id);
+
+            $license->update([
+                'user_id' => $newUser->id,
+            ]);
+
+            return new LicenseResource([
+                'success' => true,
+                'code' => 'OWNERSHIP_TRANSFERRED',
+                'message' => 'License ownership transferred successfully',
+                'data' => $license,
+                'http' => 200,
+            ]);
 
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
