@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Partner;
 
 use App\Models\User;
 use App\Models\Prospect;
 use App\Models\Application;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\Traits\HandlesApiExceptions;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -15,7 +16,7 @@ use App\Http\Resources\ProspectApiResource;
 use App\Http\Resources\API\ProspectResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class ProspectController extends Controller
+class PartnerProspectController extends Controller
 {
     use HandlesApiExceptions;
 

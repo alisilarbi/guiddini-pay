@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Partner;
 
 use App\Models\User;
-use App\Models\Application;
+use App\Models\Prospect;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\Traits\HandlesApiExceptions;
-use App\Http\Resources\API\ApplicationResource;
-use App\Http\Resources\ApplicationResponseResource;
+use App\Http\Resources\API\ClientResource;
 
-class ApplicationController extends Controller
+class PartnerClientController extends Controller
 {
     use HandlesApiExceptions;
 
@@ -22,25 +23,25 @@ class ApplicationController extends Controller
             $appKey = $request->header('x-app-key');
             $secretKey = $request->header('x-secret-key');
 
-            $partner = User::where('app_key', $appKey)
+            $user = User::where('app_key', $appKey)
                 ->where('app_secret', $secretKey)
                 ->first();
 
-            if (!$partner) {
+            if (!$user) {
                 throw new \Exception('Unauthorized', 401);
             }
 
-            $applications = Application::where('partner_id', $partner->id)->get();
+            $clients = User::where('partner_id', $user->id)->get();
 
             return response()->json([
-                'data' => $applications->isEmpty() ? [] : $applications->map(fn($application) => [
-                    'type' => 'application',
-                    'id' => $application->id,
-                    'attributes' => $application->toArray()
+                'data' => $clients->isEmpty() ? [] : $clients->map(fn($client) => [
+                    'type' => 'client',
+                    'id' => $client->id,
+                    'attributes' => $client->toArray()
                 ]),
                 'meta' => [
-                    'code' => $applications->isEmpty() ? 'NO_APPLICATIONS_FOUND' : 'APPLICATIONS_FOUND',
-                    'message' => $applications->isEmpty() ? 'No applications available' : 'Applications retrieved successfully'
+                    'code' => $clients->isEmpty() ? 'NO_CLIENTS_FOUND' : 'CLIENTS_FOUND',
+                    'message' => $clients->isEmpty() ? 'No clients found' : 'Clients retrieved successfully'
                 ]
             ], 200);
         } catch (\Throwable $e) {
@@ -53,44 +54,41 @@ class ApplicationController extends Controller
      */
     public function store(Request $request)
     {
-
         try {
             $request->validate([
                 'name' => 'required|string',
-                'website_url' => 'required|string',
-                'redirect_url' => 'required|string',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|string',
             ]);
 
             $appKey = $request->header('x-app-key');
             $secretKey = $request->header('x-secret-key');
 
-            $partner = User::where('app_key', $appKey)
+            $user = User::where('app_key', $appKey)
                 ->where('app_secret', $secretKey)
                 ->first();
 
-            if (!$partner) {
+            if (!$user) {
                 throw new \Exception('Unauthorized', 401);
             }
 
-
-            $license = $partner->licenses()->first();
-
-            $application = Application::create([
+            $client = User::create([
                 'name' => $request->name,
-                'website_url' => $request->website_url,
-                'redirect_url' => $request->redirect_url,
-                'user_id' => $partner->id,
-                'license_id' => $license->id,
-                'license_env' => 'development',
-                'partner_id' => $partner->id,
+                'email' => $request->email,
+                'partner_id' => $user->id,
+                'is_admin' => false,
+                'is_partner' => false,
+                'partner_id' => $user->id,
+                'password' => $request->password,
+                'reset_password_flag' => true,
             ]);
 
-            return new ApplicationResource([
+            return new ClientResource([
                 'success' => true,
-                'code' => 'APPLICATION_CREATED',
-                'message' => 'Application savec successfully',
-                'data' => $application,
-                'http' => 201,
+                'code' => 'CLIENT_CREATED',
+                'message' => 'Client created successfully',
+                'data' => $client,
+                'http_code' => 201,
             ]);
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
@@ -103,7 +101,6 @@ class ApplicationController extends Controller
     public function show(Request $request)
     {
         try {
-
             $request->validate([
                 'id' => 'required|string',
             ]);
@@ -119,16 +116,16 @@ class ApplicationController extends Controller
                 throw new \Exception('Unauthorized', 401);
             }
 
-            $application = Application::where('id', $request->id)
-                ->where('user_id', $user->id)
+            $client = User::where('id', $request->id)
+                // ->where('partner_id', $user->id)
                 ->firstOrFail();
 
-            return new ApplicationResource([
+            return new ClientResource([
                 'success' => true,
-                'code' => 'APPLICATION_FOUND',
-                'message' => 'Application retrieved successfully',
-                'data' => $application,
-                'http' => 200,
+                'code' => 'CLIENT_FOUND',
+                'message' => 'Client retrieved successfully',
+                'data' => $client,
+                'http_code' => 200,
             ]);
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
@@ -144,8 +141,7 @@ class ApplicationController extends Controller
             $request->validate([
                 'id' => 'required|string',
                 'name' => 'sometimes|required|string',
-                'website_url' => 'sometimes|required|string',
-                'redirect_url' => 'sometimes|required|string',
+                'email' => 'sometimes|required|email'
             ]);
 
             $appKey = $request->header('x-app-key');
@@ -159,18 +155,18 @@ class ApplicationController extends Controller
                 throw new \Exception('Unauthorized', 401);
             }
 
-            $application = Application::where('id', $request->id)
-                ->where('user_id', $user->id)
+            $client = User::where('id', $request->id)
+                ->where('partner_id', $user->id)
                 ->firstOrFail();
 
-            $application->update($request->only(['name', 'website_url', 'redirect_url']));
+            $client->update($request->only(['name', 'email',]));
 
-            return new ApplicationResource([
+            return new ClientResource([
                 'success' => true,
-                'code' => 'APPLICATION_UPDATED',
-                'message' => 'Application updated successfully',
-                'data' => $application,
-                'http' => 200,
+                'code' => 'CLIENT_UPDATED',
+                'message' => 'Client updated successfully',
+                'data' => $client,
+                'http_code' => 200,
             ]);
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
@@ -183,6 +179,10 @@ class ApplicationController extends Controller
     public function destroy(Request $request)
     {
         try {
+            $request->validate([
+                'id' => 'required|string',
+            ]);
+
             $appKey = $request->header('x-app-key');
             $secretKey = $request->header('x-secret-key');
 
@@ -194,17 +194,39 @@ class ApplicationController extends Controller
                 throw new \Exception('Unauthorized', 401);
             }
 
-            $application = Application::where('id', $request->id)
-                ->where('user_id', $user->id)
+            $client = User::where('id', $request->id)
+                ->where('partner_id', $user->id)
                 ->firstOrFail();
 
-            $application->delete();
+            $apps = [];
+            if ($client->applications->isNotEmpty()) {
+                foreach ($client->applications as $app) {
+                    $app->update([
+                        'user_id' =>  $user->id
+                    ]);
+
+                    $apps[] = [
+                        'type' => 'application',
+                        'id' => $app->id,
+                    'attributes' => [
+                            'name' => $app->name,
+                            'license_id' => $app->license_id,
+                            'license_env' => $app->license_env
+                        ]
+                    ];
+                }
+            }
+
+            $client->delete();
 
             return response()->json([
-                'data' => null,
+                'data' => $apps ? [
+                    'message' => 'Some applications were attached to this client and have been detached.',
+                    'applications' => $apps
+                ] : null,
                 'meta' => [
-                    'code' => 'APPLICATION_DELETED',
-                    'message' => 'Application deleted successfully'
+                    'code' => 'CLIENT_DELETED',
+                    'message' => $apps ? 'Client deleted successfully, and applications were transfered to you.' : 'Client deleted successfully.'
                 ]
             ], 200);
         } catch (\Throwable $e) {

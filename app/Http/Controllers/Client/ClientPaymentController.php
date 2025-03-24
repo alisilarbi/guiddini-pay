@@ -1,19 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Client;
 
 use App\Models\Transaction;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
 use App\Traits\HandlesApiExceptions;
 use App\Services\Payments\PaymentService;
 use App\Http\Resources\API\PaymentResource;
-use App\Http\Resources\ApiResponseResource;
 use App\Http\Resources\API\TransactionResource;
-use App\Http\Resources\PaymentResponseResource;
-use App\Http\Resources\TransactionResponseResource;
 
-class PaymentController extends Controller
+class ClientPaymentController extends Controller
 {
     use HandlesApiExceptions;
 

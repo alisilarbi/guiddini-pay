@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Partner;
 
 use App\Models\User;
 use App\Models\License;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\Traits\HandlesApiExceptions;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\API\LicenseResource;
 
-class LicenseController extends Controller
+class PartnerLicenseController extends Controller
 {
     use HandlesApiExceptions;
 
@@ -54,26 +55,6 @@ class LicenseController extends Controller
     public function store(Request $request)
     {
         try {
-            // $request->validate([
-            //     'name' => 'required|string',
-
-            //     'satim_development_username' => 'required_with:satim_development_password,satim_development_terminal|nullable|string',
-            //     'satim_development_password' => 'required_with:satim_development_username,satim_development_terminal|nullable|string',
-            //     'satim_development_terminal' => 'required_with:satim_development_username,satim_development_password|nullable|string',
-
-            //     'satim_production_username' => 'required_with:satim_production_password,satim_production_terminal|nullable|string',
-            //     'satim_production_password' => 'required_with:satim_production_username,satim_production_terminal|nullable|string',
-            //     'satim_production_terminal' => 'required_with:satim_production_username,satim_production_password|nullable|string',
-            // ], [
-            //     'satim_development_username.required_with' => 'All development credentials are required together.',
-            //     'satim_development_password.required_with' => 'All development credentials are required together.',
-            //     'satim_development_terminal.required_with' => 'All development credentials are required together.',
-
-            //     'satim_production_username.required_with' => 'All production credentials are required together.',
-            //     'satim_production_password.required_with' => 'All production credentials are required together.',
-            //     'satim_production_terminal.required_with' => 'All production credentials are required together.',
-            // ]);
-
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string',
                 'satim_development_username' => 'nullable|string',
