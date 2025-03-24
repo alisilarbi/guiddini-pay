@@ -17,7 +17,7 @@ Route::prefix('payment')->group(function () {
 });
 
 Route::prefix('fetch')->group(function () {
-    Route::post('/transaction', [PaymentController::class, 'getTransaction'])->name('get.transaction')->middleware('validate_partner_api_keys');
+    Route::post('/transaction', [PaymentController::class, 'getTransaction'])->name('get.transaction')->middleware('validate_application_api_keys');
 });
 
 Route::prefix('partner')->middleware('validate_partner_api_keys')->group(function () {
