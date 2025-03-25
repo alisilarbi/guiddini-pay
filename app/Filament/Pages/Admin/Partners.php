@@ -171,7 +171,7 @@ class Partners extends Page implements HasForms, HasTable
                             'password' => Hash::make($data['password']),
                             'is_admin' => false,
                             'is_partner' => true,
-                            'partner_id' => Auth::user()->id,
+                            // 'partner_id' => Auth::user()->id,
                         ]);
                     })
                     ->requiresConfirmation(),

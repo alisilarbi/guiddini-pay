@@ -46,11 +46,11 @@ class Applications extends Page implements HasForms, HasTable
 
     protected static ?string $navigationGroup = 'Integrations';
 
-    public function mount():void
-    {
-        $user = Auth::user();
-        dd($user->partner);
-    }
+    // public function mount():void
+    // {
+    //     $user = Auth::user();
+    //     dd($user->partner);
+    // }
 
     public function table(Table $table): Table
     {
@@ -331,10 +331,10 @@ class Applications extends Page implements HasForms, HasTable
 
 
                         $application = Application::create([
-                            // 'partner_id' => Auth::user()->partner->id
                             'name' => $data['name'],
                             'website_url' => $data['website_url'],
                             'redirect_url' => $data['redirect_url'],
+                            'partner_id' => Auth::user()->partner->id
                         ]);
 
                         if ($data['logo']) {
