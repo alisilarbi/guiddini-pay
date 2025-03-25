@@ -171,6 +171,8 @@ class Licenses extends Page implements HasForms, HasTable
 
                             'name' => $data['name'],
 
+                            'partner_id' => Auth::user()->id,
+
                             'satim_development_username' => $data['satim_development_username'],
                             'satim_development_password' => $data['satim_development_password'],
                             'satim_development_terminal' => $data['satim_development_terminal'],
