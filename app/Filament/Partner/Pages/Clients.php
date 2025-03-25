@@ -37,11 +37,11 @@ class Clients extends Page implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(User::query()->with(['applications', 'createdBy'])->where('created_by', Auth::user()->id))
+            ->query(User::query()->with(['applications', 'partner'])->where('partner_id', Auth::user()->id))
             ->columns([
                 TextColumn::make('name'),
                 TextColumn::make('email'),
-                TextColumn::make('createdBy.name')
+                TextColumn::make('partner.name')
                     ->state(function (User $record) {
                         $user = User::where('id', $record->created_by)->first();
                         return $user->name;

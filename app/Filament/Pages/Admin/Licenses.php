@@ -168,11 +168,10 @@ class Licenses extends Page implements HasForms, HasTable
                     ])
                     ->action(function ($data) {
                         License::create([
+                            'partner_id' => Auth::user()->id,
                             'user_id' => Auth::user()->id,
 
                             'name' => $data['name'],
-
-                            'partner_id' => Auth::user()->id,
 
                             'satim_development_username' => $data['satim_development_username'],
                             'satim_development_password' => $data['satim_development_password'],
@@ -183,9 +182,6 @@ class Licenses extends Page implements HasForms, HasTable
                             'satim_production_terminal' => $data['satim_production_terminal'],
                         ]);
                     }),
-
-
-
 
             ]);
     }
