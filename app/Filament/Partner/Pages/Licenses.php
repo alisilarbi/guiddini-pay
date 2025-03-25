@@ -65,7 +65,47 @@ class Licenses extends Page implements HasForms, HasTable
                 ])
 
             ])
-            ->actions([])
+            ->actions([
+                EditAction::make('update')
+                    ->form([
+                        Fieldset::make('Information')
+                            ->columns(2)
+                            ->schema([
+                                TextInput::make('name')
+                                    ->required(),
+                            ]),
+
+                        Fieldset::make('Development')
+                            ->columns(3)
+                            ->schema([
+                                TextInput::make('satim_development_username')
+                                    ->live()
+                                    ->required(),
+                                TextInput::make('satim_development_password')
+                                    ->live()
+                                    ->required(),
+                                TextInput::make('satim_development_terminal')
+                                    ->live()
+                                    ->required(),
+                            ]),
+
+                        Fieldset::make('Production')
+                            ->columns(3)
+                            ->schema([
+                                TextInput::make('satim_production_username')
+                                    ->live()
+                                    ->required(fn($get) => $get('satim_production_password') || $get('satim_production_terminal')),
+
+                                TextInput::make('satim_production_password')
+                                    ->live()
+                                    ->required(fn($get) => $get('satim_production_username') || $get('satim_production_terminal')),
+
+                                TextInput::make('satim_production_terminal')
+                                    ->live()
+                                    ->required(fn($get) => $get('satim_production_username') || $get('satim_production_password')),
+                            ])
+                    ]),
+            ])
             ->headerActions([
                 Action::make('create')
                     ->label('Create')
