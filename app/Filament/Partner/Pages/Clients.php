@@ -43,7 +43,7 @@ class Clients extends Page implements HasForms, HasTable
                 TextColumn::make('email'),
                 TextColumn::make('partner.name')
                     ->state(function (User $record) {
-                        $user = User::where('id', $record->created_by)->first();
+                        $user = User::where('id', $record->partner_id)->first();
                         return $user->name;
                     }),
                 TextColumn::make('applications_count')
