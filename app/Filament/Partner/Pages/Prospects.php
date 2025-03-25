@@ -125,6 +125,8 @@ class Prospects extends Page implements HasForms, HasTable
                         ->disabled(fn(Prospect $prospect) => $prospect->converted)
                         ->action(function (Prospect $prospect) {
 
+                            $partner = Auth::user();
+
                             $application = Application::create([
                                 'name' => $prospect->company_name,
                                 'website_url' => $prospect->website_link,
@@ -132,7 +134,6 @@ class Prospects extends Page implements HasForms, HasTable
                             ]);
 
                             $license = License::firstWhere('name', 'GD01NI');
-
                             $application->update([
                                 'license_env' => 'development',
                                 'license_id' => $license->id ?? null,
@@ -144,12 +145,13 @@ class Prospects extends Page implements HasForms, HasTable
                                     'name' => $prospect->name,
                                     'email' => $prospect->email,
                                     'password' => Hash::make(Str::random(12)),
-                                    'created_by' => Auth::user()->id,
+                                    'partner_id' => $partner->id,
                                 ]);
                             }
 
                             $application->update([
                                 'user_id' => $user->id,
+                                'partner_id' => $partner->id,
                             ]);
 
                             $prospect->update([
