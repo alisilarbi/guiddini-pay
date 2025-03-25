@@ -39,11 +39,11 @@ class Partners extends Page implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(User::where('is_partner', true)->with(['applications', 'createdBy']))
+            ->query(User::where('is_partner', true)->with(['applications', 'partner']))
             ->columns([
                 TextColumn::make('name'),
                 TextColumn::make('email'),
-                TextColumn::make('createdBy.name')
+                TextColumn::make('partner.name')
                     ->state(function (User $record) {
                         $user = User::where('id', $record->created_by)->first();
                         return $user?->name;
