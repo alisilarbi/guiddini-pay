@@ -71,7 +71,7 @@ class User extends Authenticatable implements FilamentUser
         return true;
     }
 
-    public function createdBy()
+    public function partner()
     {
         return $this->belongsTo(User::class);
     }
