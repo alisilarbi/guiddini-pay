@@ -124,7 +124,6 @@ class Prospects extends Page implements HasForms, HasTable
                         ->icon('heroicon-o-arrow-path')
                         ->disabled(fn(Prospect $prospect) => $prospect->converted)
                         ->action(function (Prospect $prospect) {
-                            dd($prospect);
                             $partner = Auth::user();
 
                             $application = Application::create([
