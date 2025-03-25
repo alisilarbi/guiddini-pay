@@ -129,8 +129,8 @@ class Prospects extends Page implements HasForms, HasTable
 
                             $application = Application::create([
                                 'name' => $prospect->company_name,
-                                'website_url' => $prospect->website_link,
-                                'redirect_url' => $prospect->website_link,
+                                'website_url' => $prospect->website_url,
+                                'redirect_url' => $prospect->website_url,
                                 'partner_id' => $partner->id,
                             ]);
 

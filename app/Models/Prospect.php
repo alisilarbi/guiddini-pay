@@ -21,7 +21,7 @@ class Prospect extends Model
         'converted',
         'website_integration',
         'mobile_integration',
-        'website_link',
+        'website_url',
         'programming_languages',
 
         'user_id',
