@@ -131,6 +131,7 @@ class Prospects extends Page implements HasForms, HasTable
                                 'name' => $prospect->company_name,
                                 'website_url' => $prospect->website_link,
                                 'redirect_url' => $prospect->website_link,
+                                'partner_id' => $partner->id,
                             ]);
 
                             $license = License::firstWhere('name', 'GD01NI');
@@ -151,7 +152,7 @@ class Prospects extends Page implements HasForms, HasTable
 
                             $application->update([
                                 'user_id' => $user->id,
-                                'partner_id' => $partner->id,
+
                             ]);
 
                             $prospect->update([
