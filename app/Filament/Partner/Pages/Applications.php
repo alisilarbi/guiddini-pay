@@ -334,7 +334,8 @@ class Applications extends Page implements HasForms, HasTable
                             'name' => $data['name'],
                             'website_url' => $data['website_url'],
                             'redirect_url' => $data['redirect_url'],
-                            'partner_id' => Auth::user()->partner->id
+                            'partner_id' => Auth::user()->id,
+                            'user_id' => Auth::user()->id,
                         ]);
 
                         if ($data['logo']) {
