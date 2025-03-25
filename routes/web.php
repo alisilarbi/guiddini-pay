@@ -2,17 +2,16 @@
 
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
-use App\Services\OnlinePaymentService;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Client\ClientPaymentController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
 Route::prefix('payment')->group(function () {
-    Route::get('/confirm/{order_number}', [PaymentController::class, 'confirm'])->name('payment.confirm');
-    Route::get('/failed/{order_number}', [PaymentController::class, 'failed'])->name('payment.failed');
+    Route::get('/confirm/{order_number}', [ClientPaymentController::class, 'confirm'])->name('payment.confirm');
+    Route::get('/failed/{order_number}', [ClientPaymentController::class, 'failed'])->name('payment.failed');
 });
 
 Route::get('/private-files/{path}', function ($path) {

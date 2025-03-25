@@ -2,7 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Client\ClientPaymentController;
 use App\Http\Controllers\Partner\PartnerClientController;
 use App\Http\Controllers\Partner\PartnerLicenseController;
