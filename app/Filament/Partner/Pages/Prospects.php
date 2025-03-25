@@ -127,21 +127,13 @@ class Prospects extends Page implements HasForms, HasTable
                             $partner = User::with('licenses')->find(Auth::id());
                             $license = $partner->licenses->first();
 
-                            dd($license);
-
                             $application = Application::create([
                                 'name' => $prospect->company_name,
                                 'website_url' => $prospect->website_url,
                                 'redirect_url' => $prospect->website_url,
                                 'partner_id' => $partner->id,
-                                'license_id' => $license?->id,
+                                'license_id' => $license->id,
                                 'license_env' => 'development',
-                            ]);
-
-                            $license = License::firstWhere('name', 'GD01NI');
-                            $application->update([
-                                'license_env' => 'development',
-                                'license_id' => $license->id ?? null,
                             ]);
 
                             $user = User::where('email', $prospect->email)->first();
