@@ -46,12 +46,6 @@ class Applications extends Page implements HasForms, HasTable
 
     protected static ?string $navigationGroup = 'Integrations';
 
-    // public function mount():void
-    // {
-    //     $user = Auth::user();
-    //     dd($user->partner);
-    // }
-
     public function table(Table $table): Table
     {
         return $table
@@ -327,8 +321,6 @@ class Applications extends Page implements HasForms, HasTable
 
                     ])
                     ->action(function (array $data) {
-                        // $user = Auth::user();
-
 
                         $application = Application::create([
                             'name' => $data['name'],
