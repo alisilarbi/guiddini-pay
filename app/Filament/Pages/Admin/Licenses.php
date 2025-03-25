@@ -108,18 +108,19 @@ class Licenses extends Page implements HasForms, HasTable
                                 ])
                         ]),
 
-                    Action::make('transfer')
-                        ->label('Transfer')
+                    Action::make('transfer_to_partner')
+                        ->label('Transfer to partner')
                         ->icon('heroicon-o-arrow-up-on-square-stack')
                         ->form([
                             Select::make('user_id')
-                                ->label('Author')
+                                ->label('Partner Email')
                                 ->options(User::all()->pluck('email', 'id'))
                                 ->searchable(),
                         ])
                         ->action(function(array $data, License $license){
 
                             $license->update([
+                                'partner_id' => $data['user_id'],
                                 'user_id' => $data['user_id'],
                             ]);
 
