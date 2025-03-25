@@ -48,8 +48,8 @@ class Applications extends Page implements HasForms, HasTable
 
     public function mount():void
     {
-        $user = Auth::user()->id;
-        dd($user);
+        $user = Auth::user();
+        dd($user->partner);
     }
 
     public function table(Table $table): Table
