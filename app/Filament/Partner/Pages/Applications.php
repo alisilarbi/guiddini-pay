@@ -50,7 +50,7 @@ class Applications extends Page implements HasForms, HasTable
     {
         return $table
             // ->query(Application::query()->with(['license', 'user']))
-            ->query(Application::where('user_id', Auth::user()->id)->with(['license', 'user']))
+            ->query(Application::where('partner_id', Auth::user()->id)->with(['license', 'user']))
             ->columns([
                 TextColumn::make('name')
                     ->label('App name'),

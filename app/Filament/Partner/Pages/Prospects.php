@@ -124,13 +124,18 @@ class Prospects extends Page implements HasForms, HasTable
                         ->icon('heroicon-o-arrow-path')
                         ->disabled(fn(Prospect $prospect) => $prospect->converted)
                         ->action(function (Prospect $prospect) {
-                            $partner = Auth::user();
+                            $partner = User::with('licenses')->find(Auth::id());
+                            $license = $partner->licenses->first();
+
+                            dd($license);
 
                             $application = Application::create([
                                 'name' => $prospect->company_name,
                                 'website_url' => $prospect->website_url,
                                 'redirect_url' => $prospect->website_url,
                                 'partner_id' => $partner->id,
+                                'license_id' => $license?->id,
+                                'license_env' => 'development',
                             ]);
 
                             $license = License::firstWhere('name', 'GD01NI');
@@ -151,7 +156,6 @@ class Prospects extends Page implements HasForms, HasTable
 
                             $application->update([
                                 'user_id' => $user->id,
-
                             ]);
 
                             $prospect->update([
@@ -178,5 +182,4 @@ class Prospects extends Page implements HasForms, HasTable
             ->headerActions([])
             ->paginated([25, 50, 75, 100, 'all']);;
     }
-
 }

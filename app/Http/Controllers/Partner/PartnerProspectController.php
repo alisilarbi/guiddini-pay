@@ -89,7 +89,6 @@ class PartnerProspectController extends Controller
                 throw new \Exception('Unauthorized', 401);
             }
 
-
             $prospect = Prospect::create([
                 'name' => $request->name,
                 'company_name' => $request->company_name,

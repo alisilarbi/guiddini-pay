@@ -149,6 +149,8 @@ class PartnerApplicationController extends Controller
                 'name' => 'sometimes|required|string',
                 'website_url' => 'sometimes|required|string',
                 'redirect_url' => 'sometimes|required|string',
+                'license_id' => 'sometimes|required|string',
+                'license_env' => 'sometimes|required|string',
             ]);
 
             $appKey = $request->header('x-app-key');
@@ -165,7 +167,7 @@ class PartnerApplicationController extends Controller
             $application = Application::where('id', $request->id)
                 ->firstOrFail();
 
-            $application->update($request->only(['name', 'website_url', 'redirect_url']));
+            $application->update($request->only(['name', 'website_url', 'redirect_url', 'license_id', 'license_env']));
 
             return new ApplicationResource([
                 'success' => true,
