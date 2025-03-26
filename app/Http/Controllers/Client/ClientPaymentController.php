@@ -70,9 +70,11 @@ class ClientPaymentController extends Controller
 
     public function getTransaction(Request $request)
     {
-        $orderNumber = trim($request->order_number);
-        $transaction = Transaction::whereRaw("BINARY order_number = ?", [$orderNumber])->first();
-        dd($transaction);
+        $request->validate([
+            'order_number' => 'required',
+        ]);
+
+        $transaction = Transaction::where('order_number', $request->order_number)->first();
 
 
         try {
