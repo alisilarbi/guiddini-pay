@@ -170,7 +170,7 @@ class Applications extends Page implements HasForms, HasTable
                                 ->label('Lien du site web')
                                 ->required()
                                 ->url()
-                                ->rule(new ValidUrlRule())
+                                // ->rule(new ValidUrlRule())
                                 ->live(),
 
                             TextInput::make('redirect_url')
@@ -275,7 +275,7 @@ class Applications extends Page implements HasForms, HasTable
                                     ->label('Lien du site web')
                                     ->required()
                                     ->url()
-                                    ->rule(new ValidUrlRule())
+                                    // ->rule(new ValidUrlRule())
                                     ->live(),
 
                                 TextInput::make('redirect_url')
