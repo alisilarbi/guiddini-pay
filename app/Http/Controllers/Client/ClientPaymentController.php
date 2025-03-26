@@ -73,7 +73,7 @@ class ClientPaymentController extends Controller
 
         $transaction = Transaction::where('order_number', $request->order_number)->first();
 
-        dd($transaction);
+        dd($request->all());
         try {
 
             return new TransactionResource([
