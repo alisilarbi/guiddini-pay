@@ -71,9 +71,11 @@ class ClientPaymentController extends Controller
     public function getTransaction(Request $request)
     {
 
-        $transaction = Transaction::where('order_number', $request->order_number)->first();
+        $transaction = Transaction::where('order_id', $request->order_number)->first();
 
         dd($request->all());
+
+
         try {
 
             return new TransactionResource([
@@ -87,7 +89,6 @@ class ClientPaymentController extends Controller
                 'http_code' => 200
             ]);
         } catch (\Throwable $e) {
-            // dd($e->getMessage());
             return $this->handleApiException($e);
         }
     }
