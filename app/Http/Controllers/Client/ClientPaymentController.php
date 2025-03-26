@@ -70,6 +70,7 @@ class ClientPaymentController extends Controller
 
     public function getTransaction(Request $request)
     {
+        dd(Transaction::where('order_number', '11C2GKGUUDY8G84KCK0C')->exists());
 
         $transaction = Transaction::where('order_id', $request->order_number)->first();
 
