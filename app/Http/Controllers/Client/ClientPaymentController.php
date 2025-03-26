@@ -70,14 +70,15 @@ class ClientPaymentController extends Controller
 
     public function getTransaction(Request $request)
     {
-        $request->validate([
-            'order_number' => 'required',
-        ]);
-
-        $transaction = Transaction::where('order_number', $request->order_number)->first();
-
 
         try {
+
+            $request->validate([
+                'order_number' => 'required',
+            ]);
+
+            $transaction = Transaction::where('order_number', $request->order_number)->first();
+
 
             return new TransactionResource([
                 'success' => true,
