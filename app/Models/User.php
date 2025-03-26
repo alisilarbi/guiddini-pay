@@ -31,6 +31,7 @@ class User extends Authenticatable implements FilamentUser
         'password',
         'is_admin',
         'is_partner',
+        'is_user',
         'app_key',
         'app_secret',
         'created_by',
@@ -66,9 +67,19 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Application::class);
     }
 
+    // public function canAccessPanel(Panel $panel): bool
+    // {
+    //     return true;
+    // }
+
     public function canAccessPanel(Panel $panel): bool
     {
-        return true;
+        return match ($panel->getId()) {
+            'admin' => (bool) $this->is_admin,
+            'partner' => (bool) $this->is_partner,
+            'user' => (bool) $this->is_user,
+            default => false,
+        };
     }
 
     public function partner()
@@ -104,5 +115,4 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasMany(License::class);
     }
-
 }

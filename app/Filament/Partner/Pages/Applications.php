@@ -58,9 +58,6 @@ class Applications extends Page implements HasForms, HasTable
                 TextColumn::make('user.name')
                     ->label('Owner'),
 
-                TextColumn::make('license.name')
-                    ->label('License'),
-
                 SelectColumn::make('license_id')
                     ->label('License')
                     ->options(License::where('user_id', Auth::user()->id)->pluck('name', 'id')),

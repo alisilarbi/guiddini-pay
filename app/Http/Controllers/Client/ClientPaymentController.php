@@ -71,8 +71,10 @@ class ClientPaymentController extends Controller
     public function getTransaction(Request $request)
     {
 
+        $transaction = Transaction::where('order_number', $request->order_number)->first();
+
+        dd($transaction);
         try {
-            $transaction = Transaction::where('order_number', $request->order_number)->firstOrFail();
 
             return new TransactionResource([
                 'success' => true,
