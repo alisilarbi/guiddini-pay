@@ -33,6 +33,14 @@ class Transactions extends Page implements HasForms, HasTable
                 Application::where('user_id', Auth::id())->pluck('id')
             ))
             ->columns([
+                // TextColumn::make('updated_at')
+                //     ->label('Date')
+                //     ->dateTime('M d, Y H:i')
+                //     ->sortable()
+                //     // ->since()
+                //     ->color('gray')
+                //     ->description(fn($record) => $record->updated_at->diffForHumans()),
+
                 TextColumn::make('updated_at')
                     ->label('Date')
                     ->dateTime('M d, Y H:i')
