@@ -51,27 +51,33 @@ class Applications extends Page implements HasForms, HasTable
                     ->label('License')
                     ->options(License::where('user_id', Auth::user()->id)->pluck('name', 'id')),
 
-                SelectColumn::make('license_env')
-                    ->options(function ($record) {
-                        $license = $record->license;
-
-                        if (!$license) {
-                            return [];
-                        }
-
-                        if ($license->satim_production_username && $license->satim_production_password && $license->satim_production_terminal) {
-                            return [
-                                'development' => 'Development',
-                                'production' => 'Production',
-                            ];
-                        }
-
-                        return [
-                            'development' => 'Development',
-                        ];
+                TextColumn::make('license_name')
+                    ->label('License')
+                    ->formatStateUsing(function(Application $record){
+                        return $record->license->name;
                     })
-                    ->rules(['required'])
-                    ->selectablePlaceholder(false)
+
+                // SelectColumn::make('license_env')
+                //     ->options(function ($record) {
+                //         $license = $record->license;
+
+                //         if (!$license) {
+                //             return [];
+                //         }
+
+                //         if ($license->satim_production_username && $license->satim_production_password && $license->satim_production_terminal) {
+                //             return [
+                //                 'development' => 'Development',
+                //                 'production' => 'Production',
+                //             ];
+                //         }
+
+                //         return [
+                //             'development' => 'Development',
+                //         ];
+                //     })
+                //     ->rules(['required'])
+                //     ->selectablePlaceholder(false)
 
             ])
             ->actions([
