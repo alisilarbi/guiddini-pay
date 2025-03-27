@@ -263,9 +263,11 @@ class Applications extends Page implements HasForms, HasTable
                                         ->all();
                                 }),
                         ])
-                        ->action(function (array $data) {
+                        ->action(function (array $data, Application $record) {
                             $user = User::where('id', $data['user'])->first();
-                            dd($user);
+
+                            dd($record);
+
                         }),
 
                     Action::make('delete')
