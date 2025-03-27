@@ -251,7 +251,6 @@ class Applications extends Page implements HasForms, HasTable
                         ->icon('heroicon-o-arrow-path-rounded-square')
                         ->form([
 
-
                             Select::make('user')
                                 ->live()
                                 ->required()
@@ -264,7 +263,6 @@ class Applications extends Page implements HasForms, HasTable
                                         })
                                         ->all();
                                 }),
-
 
                         ])
                         ->action(function (array $data, Application $record) {
