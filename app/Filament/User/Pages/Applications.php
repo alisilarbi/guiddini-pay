@@ -38,7 +38,7 @@ class Applications extends Page implements HasForms, HasTable
     {
         $user = Auth::user();
         $app = $user->applications()->first();
-        dd($app);
+        dd($app->license);
     }
 
 
