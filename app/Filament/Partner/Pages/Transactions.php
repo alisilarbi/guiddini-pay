@@ -28,19 +28,11 @@ class Transactions extends Page implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            // ->query(Transaction::whereIn(
-            //     'application_id',
-            //     Application::where('user_id', Auth::id())->pluck('id')
-            // ))
             ->query(Transaction::where('partner_id', Auth::user()->id))
             ->columns([
-                // TextColumn::make('updated_at')
-                //     ->label('Date')
-                //     ->dateTime('M d, Y H:i')
-                //     ->sortable()
-                //     // ->since()
-                //     ->color('gray')
-                //     ->description(fn($record) => $record->updated_at->diffForHumans()),
+
+                TextColumn::make('application.name')
+                    ->label('Application'),
 
                 TextColumn::make('updated_at')
                     ->label('Date')
