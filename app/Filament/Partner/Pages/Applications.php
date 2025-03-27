@@ -87,6 +87,8 @@ class Applications extends Page implements HasForms, HasTable
             ])
             ->actions([
                 ActionGroup::make([
+
+
                     ViewAction::make('view')
                         ->icon('heroicon-o-eye')
                         ->infolist([
@@ -241,6 +243,19 @@ class Applications extends Page implements HasForms, HasTable
                             //     'license_env' => $data['license_env'],
                             //     'license_id' => $env->id,
                             // ]);
+                        }),
+
+                    Action::make('change_ownership')
+                        ->label('Transfer Ownership')
+                        ->icon('heroicon-o-arrow-path-rounded-square')
+                        ->form([
+                            Select::make('applications')
+                                    ->live()
+                                    ->required()
+                                    ->options(Application::where('partner_id', Auth::user()->id)->pluck('name', 'id')),
+                        ])
+                        ->action(function($data){
+                            dd($data);
                         }),
 
                     Action::make('delete')
