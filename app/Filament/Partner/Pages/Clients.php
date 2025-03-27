@@ -142,6 +142,46 @@ class Clients extends Page implements HasForms, HasTable
 
             ])
             ->headerActions([
+
+                Action::make('new_client')
+                    ->label('Create New Client')
+                    ->form([
+                        TextInput::make('name')
+                            ->required(),
+
+                        TextInput::make('email')
+                            ->email()
+                            ->unique('users')
+                            ->required(),
+
+                        TextInput::make('password')
+                            ->label('Password')
+                            ->default(fn() => Str::random(12))
+                            ->live()
+                            ->required()
+                            ->suffixActions([
+                                // Generate password button
+                                \Filament\Forms\Components\Actions\Action::make('generatePassword')
+                                    ->icon('heroicon-o-sparkles')
+                                    ->tooltip('Generate New Password')
+                                    ->action(function (Set $set) {
+                                        $set('password', Str::password(12));
+                                    }),
+
+                            ]),
+                    ])
+                    ->action(function ($data) {
+                        User::create([
+                            'name' => $data['name'],
+                            'email' => $data['email'],
+                            'password' => Hash::make($data['password']),
+                            'is_admin' => false,
+                            'is_partner' => false,
+                            'is_user' => true,
+                        ]);
+                    })
+                    ->requiresConfirmation(),
+
             ])
             ->bulkActions([
                 // ...
