@@ -262,8 +262,8 @@ class Applications extends Page implements HasForms, HasTable
                                 TextInput::make('name')
                                     ->required(),
 
-                                FileUpload::make('logo')
-                                    ->image(),
+                                // FileUpload::make('logo')
+                                //     ->image(),
                             ]),
                         Step::make('Fonctionnement')
                             ->schema([
