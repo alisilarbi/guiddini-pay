@@ -150,11 +150,11 @@ class Transactions extends Page implements HasForms, HasTable
                         'staging' => 'Staging',
                     ])
                     ->label('Environment')
-                    ->color(fn(string $state): string => match ($state) {
-                        'production' => 'success',
-                        'staging' => 'warning',
-                        default => 'gray',
-                    })
+                    // ->color(fn(string $state): string => match ($state) {
+                    //     'production' => 'success',
+                    //     'staging' => 'warning',
+                    //     default => 'gray',
+                    // })
                     ->toggleable(),
 
                 TextColumn::make('license_id')
