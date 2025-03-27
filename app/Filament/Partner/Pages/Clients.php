@@ -70,7 +70,7 @@ class Clients extends Page implements HasForms, HasTable
                                 ->formatStateUsing(fn($record) => $record->email),
 
                             CheckBox::make('is_admin')
-                                ->required()
+                                // ->required()
                                 ->formatStateUsing(function ($record) {
                                     if ($record->is_admin)
                                         return true;
@@ -160,7 +160,6 @@ class Clients extends Page implements HasForms, HasTable
                             ->live()
                             ->required()
                             ->suffixActions([
-                                // Generate password button
                                 \Filament\Forms\Components\Actions\Action::make('generatePassword')
                                     ->icon('heroicon-o-sparkles')
                                     ->tooltip('Generate New Password')
