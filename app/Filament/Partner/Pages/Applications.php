@@ -136,15 +136,15 @@ class Applications extends Page implements HasForms, HasTable
 
                             ]),
 
-                        Action::make('view_transactions')
-                            ->label('Transactions')
-                            ->icon('heroicon-o-credit-card')
-                            ->action(function () {
-                                Notification::make()
-                                    ->title('Coming Soon')
-                                    ->success()
-                                    ->send();
-                            }),
+                        // Action::make('view_transactions')
+                        //     ->label('Transactions')
+                        //     ->icon('heroicon-o-credit-card')
+                        //     ->action(function () {
+                        //         Notification::make()
+                        //             ->title('Coming Soon')
+                        //             ->success()
+                        //             ->send();
+                        //     }),
 
                     ])->dropdown(false),
 
