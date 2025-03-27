@@ -38,7 +38,7 @@ class Clients extends Page implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(User::query()->with(['applications', 'partner']))
+            ->query(User::where('is_client', true)->with(['applications', 'partner']))
             ->columns([
                 TextColumn::make('name'),
                 TextColumn::make('email'),
