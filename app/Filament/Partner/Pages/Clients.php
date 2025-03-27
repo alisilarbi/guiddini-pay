@@ -169,6 +169,7 @@ class Clients extends Page implements HasForms, HasTable
                                     }),
 
                             ]),
+
                     ])
                     ->action(function ($data) {
                         User::create([
@@ -178,6 +179,7 @@ class Clients extends Page implements HasForms, HasTable
                             'is_admin' => false,
                             'is_partner' => false,
                             'is_user' => true,
+                            'partner_id' => Auth::user()->id,
                         ]);
                     })
                     ->requiresConfirmation(),
