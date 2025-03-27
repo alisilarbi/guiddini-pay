@@ -139,11 +139,7 @@ class Transactions extends Page implements HasForms, HasTable
                     ->formatStateUsing(fn($state) => '****-****-****-' . substr($state, -4))
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                SelectColumn::make('license_env')
-                    ->options([
-                        'production' => 'Production',
-                        'staging' => 'Staging',
-                    ])
+                TextColumn::make('license_env')
                     ->label('Environment')
                     // ->color(fn(string $state): string => match ($state) {
                     //     'production' => 'success',
