@@ -82,12 +82,12 @@ class Transactions extends Page implements HasForms, HasTable
                     ])
                     ->searchable()
                     ->sortable()
-                    ->color(fn(string $state): string => match ($state) {
-                        'success' => 'success',
-                        'pending' => 'warning',
-                        'failed' => 'danger',
-                        default => 'gray',
-                    })
+                    // ->color(fn(string $state): string => match ($state) {
+                    //     'success' => 'success',
+                    //     'pending' => 'warning',
+                    //     'failed' => 'danger',
+                    //     default => 'gray',
+                    // })
                     ->toggleable(),
 
                 TextColumn::make('confirmation_status')
