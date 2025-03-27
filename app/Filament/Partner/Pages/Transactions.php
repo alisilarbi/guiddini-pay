@@ -40,6 +40,13 @@ class Transactions extends Page implements HasForms, HasTable
                     ->description(fn($record) => $record->application?->website_url)
                     ->toggleable(),
 
+                TextColumn::make('application.user.name')
+                    ->label('Name')
+                    ->searchable()
+                    ->sortable()
+                    ->description(fn($record) => $record->application?->website_url)
+                    ->toggleable(),
+
                 TextColumn::make('amount')
                     ->money('DZD', true)
                     ->sortable()
@@ -74,7 +81,7 @@ class Transactions extends Page implements HasForms, HasTable
                     ->sortable()
                     ->toggleable(),
 
-                    TextColumn::make('status')
+                TextColumn::make('status')
                     ->badge()
                     ->searchable()
                     ->sortable()
