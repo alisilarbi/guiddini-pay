@@ -30,86 +30,289 @@ class Transactions extends Page implements HasForms, HasTable
         return $table
             ->query(Transaction::where('partner_id', Auth::user()->id))
             ->columns([
-
                 TextColumn::make('application.name')
                     ->label('Application')
-                    ->description(function(Transaction $record){
-                        return $record->application->website_url;
-                    }),
-
-                TextColumn::make('updated_at')
-                    ->label('Date')
-                    ->dateTime('M d, Y H:i')
+                    ->searchable()
                     ->sortable()
-                    // ->since()
-                    ->color('gray')
-                    ->description(fn($record) => $record->updated_at->diffForHumans()),
+                    ->description(fn($record) => $record->application?->website_url)
+                    ->toggleable(),
 
                 TextColumn::make('amount')
-                    // ->money('DZD')
-                    ->suffix(' DZD')
+                    ->money('DZD', true)
+                    ->sortable()
                     ->color(fn($record) => $record->amount > 0 ? 'success' : 'danger')
                     ->weight('bold')
-                    ->alignRight(),
+                    ->alignRight()
+                    ->toggleable(),
+
+                TextColumn::make('deposit_amount')
+                    ->money('DZD', true)
+                    ->label('Deposit')
+                    ->sortable()
+                    ->alignRight()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('currency')
+                    ->badge()
+                    ->color('gray')
+                    ->searchable()
+                    ->toggleable(),
 
                 TextColumn::make('order_id')
                     ->copyable()
                     ->searchable()
                     ->label('Order ID')
-                    ->color('primary'),
+                    ->color('primary')
+                    ->toggleable(),
 
                 TextColumn::make('order_number')
                     ->label('Order #')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
 
-                TextColumn::make('status')
-                    ->badge()
+                SelectColumn::make('status')
+                    ->options([
+                        'success' => 'Success',
+                        'pending' => 'Pending',
+                        'failed' => 'Failed',
+                    ])
+                    ->searchable()
+                    ->sortable()
                     ->color(fn(string $state): string => match ($state) {
                         'success' => 'success',
                         'pending' => 'warning',
                         'failed' => 'danger',
                         default => 'gray',
                     })
-                    ->formatStateUsing(fn($state) => strtoupper($state)),
+                    ->toggleable(),
+
+                TextColumn::make('confirmation_status')
+                    ->badge()
+                    ->color('gray')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('description')
+                    ->wrap()
+                    ->limit(50)
+                    ->tooltip(fn($record) => $record->description)
+                    ->toggleable(),
+
+                TextColumn::make('action_code')
+                    ->label('Action Code')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('action_code_description')
-                    ->label('Description')
+                    ->label('Action Description')
                     ->wrap()
-                    ->limit(50),
+                    ->limit(50)
+                    ->toggleable(),
 
-                TextColumn::make('license_env')
-                    ->badge()
+                TextColumn::make('auth_code')
+                    ->label('Auth Code')
+                    ->copyable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('approval_code')
+                    ->label('Approval Code')
+                    ->copyable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('error_code')
+                    ->label('Error Code')
+                    ->color('danger')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('error_message')
+                    ->label('Error Message')
+                    ->color('danger')
+                    ->wrap()
+                    ->limit(50)
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('card_holder_name')
+                    ->label('Cardholder')
+                    ->searchable()
+                    ->toggleable(),
+
+                TextColumn::make('pan')
+                    ->label('Card Number')
+                    ->formatStateUsing(fn($state) => '****-****-****-' . substr($state, -4))
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                SelectColumn::make('license_env')
+                    ->options([
+                        'production' => 'Production',
+                        'staging' => 'Staging',
+                    ])
+                    ->label('Environment')
                     ->color(fn(string $state): string => match ($state) {
                         'production' => 'success',
                         'staging' => 'warning',
                         default => 'gray',
                     })
-                    ->label('Environment'),
+                    ->toggleable(),
+
+                TextColumn::make('license_id')
+                    ->label('License ID')
+                    ->copyable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('ip_address')
                     ->label('IP Address')
                     ->copyable()
-                    ->color('gray'),
+                    ->color('gray')
+                    ->toggleable(),
 
                 TextColumn::make('form_url')
                     ->label('Payment Link')
                     ->url(fn($record) => $record->form_url)
                     ->openUrlInNewTab()
                     ->icon('heroicon-o-link')
-                    ->color('primary'),
+                    ->color('primary')
+                    ->toggleable(),
+
+                TextColumn::make('svfe_response')
+                    ->label('SVFE Response')
+                    ->json()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('created_at')
+                    ->label('Created')
+                    ->dateTime('M d, Y H:i')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('updated_at')
+                    ->label('Last Updated')
+                    ->dateTime('M d, Y H:i')
+                    ->sortable()
+                    ->since()
+                    ->color('gray')
+                    ->description(fn($record) => $record->updated_at->diffForHumans())
+                    ->toggleable(),
             ])
             ->filters([
-                // Add filters if needed
+                Tables\Filters\SelectFilter::make('status')
+                    ->options([
+                        'success' => 'Success',
+                        'pending' => 'Pending',
+                        'failed' => 'Failed',
+                    ]),
+                Tables\Filters\SelectFilter::make('license_env')
+                    ->options([
+                        'production' => 'Production',
+                        'staging' => 'Staging',
+                    ]),
             ])
             ->actions([
-                // Add actions if needed
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
-                // Add bulk actions if needed
+                Tables\Actions\DeleteBulkAction::make(),
             ])
             ->defaultSort('updated_at', 'desc')
             ->striped()
             ->deferLoading()
-            ->paginated([10, 25, 50, 100]);
+            ->paginated([10, 25, 50, 100, 'all'])
+            ->persistSortInSession()
+            ->persistFiltersInSession()
+            ->recordClasses(fn($record) => match ($record->status) {
+                'failed' => 'border-l-2 border-red-500',
+                'pending' => 'border-l-2 border-yellow-500',
+                'success' => 'border-l-2 border-green-500',
+                default => null,
+            });
     }
+
+    // public function table(Table $table): Table
+    // {
+    //     return $table
+    //         ->query(Transaction::where('partner_id', Auth::user()->id))
+    //         ->columns([
+
+    //             TextColumn::make('application.name')
+    //                 ->label('Application')
+    //                 ->description(function (Transaction $record) {
+    //                     return $record->application->website_url;
+    //                 }),
+
+
+
+    //             TextColumn::make('amount')
+    //                 // ->money('DZD')
+    //                 ->suffix(' DZD')
+    //                 ->color(fn($record) => $record->amount > 0 ? 'success' : 'danger')
+    //                 ->weight('bold')
+    //                 ->alignRight(),
+
+    //             TextColumn::make('order_id')
+    //                 ->copyable()
+    //                 ->searchable()
+    //                 ->label('Order ID')
+    //                 ->color('primary'),
+
+    //             TextColumn::make('order_number')
+    //                 ->label('Order #')
+    //                 ->searchable(),
+
+    //             TextColumn::make('status')
+    //                 ->badge()
+    //                 ->color(fn(string $state): string => match ($state) {
+    //                     'success' => 'success',
+    //                     'pending' => 'warning',
+    //                     'failed' => 'danger',
+    //                     default => 'gray',
+    //                 })
+    //                 ->formatStateUsing(fn($state) => strtoupper($state)),
+
+    //             TextColumn::make('action_code_description')
+    //                 ->label('Description')
+    //                 ->wrap()
+    //                 ->limit(50),
+
+    //             TextColumn::make('license_env')
+    //                 ->badge()
+    //                 ->color(fn(string $state): string => match ($state) {
+    //                     'production' => 'success',
+    //                     'staging' => 'warning',
+    //                     default => 'gray',
+    //                 })
+    //                 ->label('Environment'),
+
+    //             TextColumn::make('ip_address')
+    //                 ->label('IP Address')
+    //                 ->copyable()
+    //                 ->color('gray'),
+
+    //             TextColumn::make('form_url')
+    //                 ->label('Payment Link')
+    //                 ->url(fn($record) => $record->form_url)
+    //                 ->openUrlInNewTab()
+    //                 ->icon('heroicon-o-link')
+    //                 ->color('primary'),
+
+    //             TextColumn::make('updated_at')
+    //                 ->label('Date')
+    //                 ->dateTime('M d, Y H:i')
+    //                 ->sortable()
+    //                 // ->since()
+    //                 ->color('gray')
+    //                 ->description(fn($record) => $record->updated_at->diffForHumans()),
+    //         ])
+    //         ->filters([
+    //             // Add filters if needed
+    //         ])
+    //         ->actions([
+    //             // Add actions if needed
+    //         ])
+    //         ->bulkActions([
+    //             // Add bulk actions if needed
+    //         ])
+    //         ->defaultSort('updated_at', 'desc')
+    //         ->striped()
+    //         ->deferLoading()
+    //         ->paginated([10, 25, 50, 100]);
+    // }
 }
