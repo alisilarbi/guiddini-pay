@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'admin@guiddini.com',
             'is_admin' => true,
+            'is_partner' => false,
+            'is_user' => false,
         ]);
 
     }
