@@ -143,6 +143,7 @@ class Prospects extends Page implements HasForms, HasTable
                                     'email' => $prospect->email,
                                     'password' => Hash::make(Str::random(12)),
                                     'partner_id' => $partner->id,
+                                    'is_user' => true,
                                 ]);
                             }
 
