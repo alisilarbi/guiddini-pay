@@ -114,7 +114,7 @@ class Licenses extends Page implements HasForms, HasTable
                         ->form([
                             Select::make('user_id')
                                 ->label('Partner Email')
-                                ->options(User::all()->pluck('email', 'id'))
+                                ->options(User::where('is_partner', true)->pluck('email', 'id'))
                                 ->searchable(),
                         ])
                         ->action(function(array $data, License $license){
