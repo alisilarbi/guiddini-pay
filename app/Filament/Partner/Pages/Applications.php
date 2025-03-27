@@ -266,7 +266,10 @@ class Applications extends Page implements HasForms, HasTable
                         ->action(function (array $data, Application $record) {
                             $user = User::where('id', $data['user'])->first();
 
-                            dd($record);
+                            $record->update([
+                                'user_id' => $user->id,
+                            ]);
+
 
                         }),
 
