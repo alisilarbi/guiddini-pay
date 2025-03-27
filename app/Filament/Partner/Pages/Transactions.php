@@ -37,13 +37,13 @@ class Transactions extends Page implements HasForms, HasTable
                     ->label('Application')
                     ->searchable()
                     ->sortable()
+                    ->description(fn($record) => $record->application?->website_url)
                     ->toggleable(),
 
                 TextColumn::make('application.user.name')
                     ->label('Name')
                     ->searchable()
                     ->sortable()
-                    ->description(fn($record) => $record->application?->website_url)
                     ->toggleable(isToggledHiddenByDefault: false),
 
                 TextColumn::make('amount')
