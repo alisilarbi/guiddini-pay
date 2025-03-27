@@ -37,7 +37,11 @@ class TransactionResource extends JsonResource
                     'pan' => $data['transaction']['pan'],
                     'ip_address' => $data['transaction']['ip_address'],
                     'approval_code' => $data['transaction']['approval_code'],
-                    'updated_at' => \Carbon\Carbon::parse($data['transaction']['updated_at'])->toRfc3339String(),
+                    'updated_at' => $data['transaction']['updated_at'],
+                    'updated_at_2' => \Carbon\Carbon::parse($data['transaction']['updated_at'])->toRfc3339String(),
+                    'updated_at_3' => \Carbon\Carbon::parse($data['transaction']['updated_at'])->toISOString(),
+
+
                 ]
             ],
             'meta' => [
