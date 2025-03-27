@@ -43,11 +43,6 @@ class Partners extends Page implements HasForms, HasTable
             ->columns([
                 TextColumn::make('name'),
                 TextColumn::make('email'),
-                TextColumn::make('partner.name')
-                    ->state(function (User $record) {
-                        $user = User::where('id', $record->created_by)->first();
-                        return $user?->name;
-                    }),
                 TextColumn::make('applications_count')
                     ->state(function (User $record) {
                         return $record->applications()->count();
