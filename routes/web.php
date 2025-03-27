@@ -6,7 +6,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Client\ClientPaymentController;
 
 Route::get('/', function () {
-    return view('welcome');
+    // return view('welcome');
+    return redirect()->to('user');
 });
 
 Route::prefix('payment')->group(function () {
