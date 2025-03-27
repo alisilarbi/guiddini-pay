@@ -263,7 +263,6 @@ class Applications extends Page implements HasForms, HasTable
                                         })
                                         ->all();
                                 }),
-
                         ])
                         ->action(function (array $data, Application $record) {
                             $user = User::where('id', $data['user'])->first();
@@ -272,6 +271,15 @@ class Applications extends Page implements HasForms, HasTable
                                 'user_id' => $user->id,
                             ]);
 
+                        }),
+
+                    Action::make('recover')
+                        ->label('Recover')
+                        ->requiresConfirmation()
+                        ->action(function(Application $record){
+                            $record->update([
+                                'user_id' => Auth::user()->id,
+                            ]);
                         }),
 
                     Action::make('delete')
