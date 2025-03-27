@@ -327,19 +327,19 @@ class Applications extends Page implements HasForms, HasTable
                             'user_id' => Auth::user()->id,
                         ]);
 
-                        if ($data['logo']) {
-                            $tempPath = Storage::disk('public')->path($data['logo']);
-                            $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
-                            $destination = 'applications/' . $application->id;
+                        // if ($data['logo']) {
+                        //     $tempPath = Storage::disk('public')->path($data['logo']);
+                        //     $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
+                        //     $destination = 'applications/' . $application->id;
 
-                            Storage::disk('private')->putFileAs($destination, $tempPath, $newFileName);
-                            Storage::disk('public')->delete($tempPath);
+                        //     Storage::disk('private')->putFileAs($destination, $tempPath, $newFileName);
+                        //     Storage::disk('public')->delete($tempPath);
 
-                            $path = $destination . '/' . $newFileName;
-                            $application->update([
-                                'logo' => $path,
-                            ]);
-                        }
+                        //     $path = $destination . '/' . $newFileName;
+                        //     $application->update([
+                        //         'logo' => $path,
+                        //     ]);
+                        // }
 
                         $env = License::where('id', $data['license'])->first();
                         $application->update([
