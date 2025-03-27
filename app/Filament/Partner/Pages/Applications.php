@@ -3,6 +3,7 @@
 namespace App\Filament\Partner\Pages;
 
 use Closure;
+use App\Models\User;
 use App\Models\License;
 use Filament\Forms\Get;
 use Filament\Pages\Page;
@@ -249,10 +250,10 @@ class Applications extends Page implements HasForms, HasTable
                         ->label('Transfer Ownership')
                         ->icon('heroicon-o-arrow-path-rounded-square')
                         ->form([
-                            Select::make('applications')
+                            Select::make('users')
                                     ->live()
                                     ->required()
-                                    ->options(Application::where('partner_id', Auth::user()->id)->pluck('name', 'id')),
+                                    ->options(User::where('is_user', true)->pluck('name', 'id')),
                         ])
                         ->action(function($data){
                             dd($data);
