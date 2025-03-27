@@ -250,7 +250,7 @@ class Applications extends Page implements HasForms, HasTable
                         ->label('Transfer Ownership')
                         ->icon('heroicon-o-arrow-path-rounded-square')
                         ->form([
-                            Select::make('users')
+                            Select::make('user')
                                 ->live()
                                 ->required()
                                 ->options(function () {
@@ -263,8 +263,9 @@ class Applications extends Page implements HasForms, HasTable
                                         ->all();
                                 }),
                         ])
-                        ->action(function ($data) {
-                            dd($data);
+                        ->action(function (array $data) {
+                            $user = User::where('id', $data['user'])->first();
+                            dd($user);
                         }),
 
                     Action::make('delete')
@@ -371,10 +372,6 @@ class Applications extends Page implements HasForms, HasTable
                             'license_id' => $env->id,
                         ]);
                     }),
-
-
-
-
             ]);
     }
 }
