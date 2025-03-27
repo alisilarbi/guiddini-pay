@@ -45,17 +45,17 @@ class ValidateApplicationApiKeys
             ]))->response();
         }
 
-        $origin = $request->header('Origin') ?? $request->header('Referer');
+        // $origin = $request->header('Origin') ?? $request->header('Referer');
 
-        if ($origin && rtrim($origin, '/') !== rtrim($application->website_url, '/')) {
-            return (new ErrorResource([
-                'http_code' => 403,
-                'code' => 'UNAUTHORIZED_ORIGIN',
-                'message' => 'Unauthorized origin',
-                'detail' => null,
-                'meta' => []
-            ]))->response();
-        }
+        // if ($origin && rtrim($origin, '/') !== rtrim($application->website_url, '/')) {
+        //     return (new ErrorResource([
+        //         'http_code' => 403,
+        //         'code' => 'UNAUTHORIZED_ORIGIN',
+        //         'message' => 'Unauthorized origin',
+        //         'detail' => null,
+        //         'meta' => []
+        //     ]))->response();
+        // }
 
         return $next($request);
 
