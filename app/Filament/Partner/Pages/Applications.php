@@ -279,6 +279,7 @@ class Applications extends Page implements HasForms, HasTable
 
                         Action::make('recover')
                             ->label('Recover')
+                            ->icon('heroicon-o-arrow-uturn-left')
                             ->requiresConfirmation()
                             ->action(function (Application $record) {
                                 $record->update([
