@@ -89,207 +89,226 @@ class Applications extends Page implements HasForms, HasTable
             ->actions([
                 ActionGroup::make([
 
+                    ActionGroup::make([
+                        ViewAction::make('view')
+                            ->icon('heroicon-o-eye')
+                            ->infolist([
 
-                    ViewAction::make('view')
-                        ->icon('heroicon-o-eye')
-                        ->infolist([
+                                Fieldset::make('General Information')
+                                    ->schema([
 
-                            Fieldset::make('General Information')
-                                ->schema([
+                                        TextEntry::make('name')
+                                            ->label('Name'),
 
-                                    TextEntry::make('name')
-                                        ->label('Name'),
+                                        TextEntry::make('app_key')
+                                            ->label('App Key'),
 
-                                    TextEntry::make('app_key')
-                                        ->label('App Key'),
+                                        TextEntry::make('app_secret')
+                                            ->label('App Secret'),
 
-                                    TextEntry::make('app_secret')
-                                        ->label('App Secret'),
+                                        TextEntry::make('website_url')
+                                            ->label('Website URL'),
 
-                                    TextEntry::make('website_url')
-                                        ->label('Website URL'),
-
-                                    TextEntry::make('redirect_url')
-                                        ->label('Redirect URL'),
+                                        TextEntry::make('redirect_url')
+                                            ->label('Redirect URL'),
 
 
-                                ]),
-                        ]),
+                                    ]),
+                            ]),
 
-                    ViewAction::make('view_keys')
-                        ->label('Keys')
-                        ->icon('heroicon-o-key')
-                        ->form([
+                        ViewAction::make('view_keys')
+                            ->label('Keys')
+                            ->icon('heroicon-o-key')
+                            ->form([
 
-                            Grid::make(2)
-                                ->schema([
-                                    TextInput::make('app_key')
-                                        ->label('Application Key')
-                                        ->formatStateUsing(fn($record) => $record->app_key),
+                                Grid::make(2)
+                                    ->schema([
+                                        TextInput::make('app_key')
+                                            ->label('Application Key')
+                                            ->formatStateUsing(fn($record) => $record->app_key),
 
-                                    TextInput::make('app_secret')
-                                        ->label('Application Secret')
-                                        ->formatStateUsing(fn($record) => $record->app_secret)
-                                        ->password()
-                                        ->revealable(),
-                                ]),
+                                        TextInput::make('app_secret')
+                                            ->label('Application Secret')
+                                            ->formatStateUsing(fn($record) => $record->app_secret)
+                                            ->password()
+                                            ->revealable(),
+                                    ]),
 
-                        ]),
+                            ]),
 
-                    Action::make('view_transactions')
-                        ->label('Transactions')
-                        ->icon('heroicon-o-credit-card')
-                        ->action(function () {
-                            Notification::make()
-                                ->title('Coming Soon')
-                                ->success()
-                                ->send();
-                        }),
+                        Action::make('view_transactions')
+                            ->label('Transactions')
+                            ->icon('heroicon-o-credit-card')
+                            ->action(function () {
+                                Notification::make()
+                                    ->title('Coming Soon')
+                                    ->success()
+                                    ->send();
+                            }),
 
-                    Action::make('edit')
-                        ->label('Edit')
-                        ->icon('heroicon-o-pencil-square')
-                        ->fillForm(function ($record) {
-                            return [
-                                'name' => $record->name,
-                                'logo' => $record->logo,
-                                'website_url' => $record->website_url,
-                                'redirect_url' => $record->redirect_url,
-                                'license' => $record->license_id,
-                                'license_env' => $record->license_env,
-                            ];
-                        })
-                        ->form([
-                            TextInput::make('name')
-                                ->required(),
+                    ])->dropdown(false),
 
-                            // FileUpload::make('logo')
-                            //     ->image(),
+                    ActionGroup::make([
 
-                            TextInput::make('website_url')
-                                ->label('Lien du site web')
-                                ->required()
-                                ->url()
-                                ->rule(new ValidUrlRule())
-                                ->live(),
+                        Action::make('edit')
+                            ->label('Edit')
+                            ->icon('heroicon-o-pencil-square')
+                            ->fillForm(function ($record) {
+                                return [
+                                    'name' => $record->name,
+                                    'logo' => $record->logo,
+                                    'website_url' => $record->website_url,
+                                    'redirect_url' => $record->redirect_url,
+                                    'license' => $record->license_id,
+                                    'license_env' => $record->license_env,
+                                ];
+                            })
+                            ->form([
+                                TextInput::make('name')
+                                    ->required(),
 
-                            TextInput::make('redirect_url')
-                                ->label('Lien de redirection')
-                                ->required()
-                                ->url()
-                                ->rule(fn($get) => $get('website_url') ? new RedirectUrlRule($get('website_url')) : 'nullable')
-                                ->live(),
+                                // FileUpload::make('logo')
+                                //     ->image(),
 
-                            Select::make('license')
-                                ->live()
-                                ->required()
-                                ->options(License::all()->pluck('name', 'id')),
+                                TextInput::make('website_url')
+                                    ->label('Lien du site web')
+                                    ->required()
+                                    ->url()
+                                    ->rule(new ValidUrlRule())
+                                    ->live(),
 
-                            Select::make('license_env')
-                                ->live()
-                                ->required()
-                                ->options(function (Get $get) {
+                                TextInput::make('redirect_url')
+                                    ->label('Lien de redirection')
+                                    ->required()
+                                    ->url()
+                                    ->rule(fn($get) => $get('website_url') ? new RedirectUrlRule($get('website_url')) : 'nullable')
+                                    ->live(),
 
-                                    if (!$get('license')) {
-                                        return [];
-                                    }
+                                Select::make('license')
+                                    ->live()
+                                    ->required()
+                                    ->options(License::all()->pluck('name', 'id')),
 
-                                    $license = License::where('id', $get('license'))->first();
-                                    if (!$license || $license->satim_production_username || $license->satim_production_password || $license->satim_production_terminal) {
+                                Select::make('license_env')
+                                    ->live()
+                                    ->required()
+                                    ->options(function (Get $get) {
+
+                                        if (!$get('license')) {
+                                            return [];
+                                        }
+
+                                        $license = License::where('id', $get('license'))->first();
+                                        if (!$license || $license->satim_production_username || $license->satim_production_password || $license->satim_production_terminal) {
+                                            return collect([
+                                                ['id' => 'development', 'name' => 'Development'],
+                                                ['id' => 'production', 'name' => 'Production'],
+                                            ])->pluck('name', 'id')->toArray();
+                                        }
+
                                         return collect([
                                             ['id' => 'development', 'name' => 'Development'],
-                                            ['id' => 'production', 'name' => 'Production'],
                                         ])->pluck('name', 'id')->toArray();
-                                    }
+                                    })
 
-                                    return collect([
-                                        ['id' => 'development', 'name' => 'Development'],
-                                    ])->pluck('name', 'id')->toArray();
-                                })
+                            ])
+                            ->action(function ($data, $record) {
 
-                        ])
-                        ->action(function ($data, $record) {
+                                $env = License::where('id', $data['license'])->first();
+                                $record->update([
+                                    'name' => $data['name'],
+                                    'website_url' => $data['website_url'],
+                                    'redirect_url' => $data['redirect_url'],
+                                    'license_env' => $data['license_env'],
+                                    'license_id' => $env->id,
+                                ]);
 
-                            $env = License::where('id', $data['license'])->first();
-                            $record->update([
-                                'name' => $data['name'],
-                                'website_url' => $data['website_url'],
-                                'redirect_url' => $data['redirect_url'],
-                                'license_env' => $data['license_env'],
-                                'license_id' => $env->id,
-                            ]);
+                                // $application = Application::create([
+                                //     'name' => $data['name'],
+                                //     'website_url' => $data['website_url'],
+                                //     'redirect_url' => $data['redirect_url'],
+                                // ]);
 
-                            // $application = Application::create([
-                            //     'name' => $data['name'],
-                            //     'website_url' => $data['website_url'],
-                            //     'redirect_url' => $data['redirect_url'],
-                            // ]);
+                                // if ($data['logo']) {
+                                //     $tempPath = Storage::disk('public')->path($data['logo']);
+                                //     $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
+                                //     $destination = 'applications/' . $application->id;
 
-                            // if ($data['logo']) {
-                            //     $tempPath = Storage::disk('public')->path($data['logo']);
-                            //     $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
-                            //     $destination = 'applications/' . $application->id;
+                                //     Storage::disk('private')->putFileAs($destination, $tempPath, $newFileName);
+                                //     Storage::disk('public')->delete($tempPath);
 
-                            //     Storage::disk('private')->putFileAs($destination, $tempPath, $newFileName);
-                            //     Storage::disk('public')->delete($tempPath);
+                                //     $path = $destination . '/' . $newFileName;
+                                //     $application->update([
+                                //         'logo' => $path,
+                                //     ]);
+                                // }
 
-                            //     $path = $destination . '/' . $newFileName;
-                            //     $application->update([
-                            //         'logo' => $path,
-                            //     ]);
-                            // }
+                                // $env = License::where('id', $data['license'])->first();
+                                // $application->update([
+                                //     'license_env' => $data['license_env'],
+                                //     'license_id' => $env->id,
+                                // ]);
+                            }),
 
-                            // $env = License::where('id', $data['license'])->first();
-                            // $application->update([
-                            //     'license_env' => $data['license_env'],
-                            //     'license_id' => $env->id,
-                            // ]);
-                        }),
 
-                    Action::make('change_ownership')
-                        ->label('Transfer Ownership')
-                        ->icon('heroicon-o-arrow-path-rounded-square')
-                        ->form([
+                        Action::make('change_ownership')
+                            ->label('Transfer Ownership')
+                            ->icon('heroicon-o-arrow-path-rounded-square')
+                            ->form([
 
-                            Select::make('user')
-                                ->live()
-                                ->required()
-                                ->options(function () {
-                                    return User::where('is_user', true)
-                                        ->pluck('name', 'id')
-                                        ->mapWithKeys(function ($name, $id) {
-                                            $user = User::find($id);
-                                            return [$id => "{$name} ({$user->email})"];
-                                        })
-                                        ->all();
-                                }),
-                        ])
-                        ->action(function (array $data, Application $record) {
-                            $user = User::where('id', $data['user'])->first();
+                                Select::make('user')
+                                    ->live()
+                                    ->required()
+                                    ->options(function () {
+                                        return User::where('is_user', true)
+                                            ->pluck('name', 'id')
+                                            ->mapWithKeys(function ($name, $id) {
+                                                $user = User::find($id);
+                                                return [$id => "{$name} ({$user->email})"];
+                                            })
+                                            ->all();
+                                    }),
+                            ])
+                            ->action(function (array $data, Application $record) {
+                                $user = User::where('id', $data['user'])->first();
 
-                            $record->update([
-                                'user_id' => $user->id,
-                            ]);
+                                $record->update([
+                                    'user_id' => $user->id,
+                                ]);
+                            }),
 
-                        }),
+                        Action::make('recover')
+                            ->label('Recover')
+                            ->requiresConfirmation()
+                            ->action(function (Application $record) {
+                                $record->update([
+                                    'user_id' => Auth::user()->id,
+                                ]);
+                            }),
 
-                    Action::make('recover')
-                        ->label('Recover')
-                        ->requiresConfirmation()
-                        ->action(function(Application $record){
-                            $record->update([
-                                'user_id' => Auth::user()->id,
-                            ]);
-                        }),
+                    ])->dropdown(false),
 
-                    Action::make('delete')
-                        ->label('Delete')
-                        ->color('danger')
-                        ->icon('heroicon-o-x-circle')
-                        ->requiresConfirmation()
-                        ->action(function ($record) {
-                            $record->delete();
-                        })
+                    ActionGroup::make([
+                        Action::make('delete')
+                            ->label('Delete')
+                            ->color('danger')
+                            ->icon('heroicon-o-x-circle')
+                            ->requiresConfirmation()
+                            ->action(function ($record) {
+                                $record->delete();
+                            })
+                    ])->dropdown(false),
+
+
+
+
+
+
+
+
+
+
+
 
                 ])->tooltip('Actions'),
             ])
