@@ -38,7 +38,7 @@ class Applications extends Page implements HasForms, HasTable
     {
         $user = Auth::user();
         $app = $user->applications()->first();
-        dd($app->license->name);
+        // dd($app->license->name);
     }
 
 
@@ -60,7 +60,7 @@ class Applications extends Page implements HasForms, HasTable
 
                 TextColumn::make('license_name')
                     ->label('License')
-                    ->formatStateUsing(function(Application $record){
+                    ->state(function(Application $record){
                         return $record->license->name;
                     }),
 
