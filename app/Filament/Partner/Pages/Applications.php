@@ -250,6 +250,8 @@ class Applications extends Page implements HasForms, HasTable
                         ->label('Transfer Ownership')
                         ->icon('heroicon-o-arrow-path-rounded-square')
                         ->form([
+
+
                             Select::make('user')
                                 ->live()
                                 ->required()
@@ -262,6 +264,8 @@ class Applications extends Page implements HasForms, HasTable
                                         })
                                         ->all();
                                 }),
+
+
                         ])
                         ->action(function (array $data, Application $record) {
                             $user = User::where('id', $data['user'])->first();
@@ -269,7 +273,6 @@ class Applications extends Page implements HasForms, HasTable
                             $record->update([
                                 'user_id' => $user->id,
                             ]);
-
 
                         }),
 
