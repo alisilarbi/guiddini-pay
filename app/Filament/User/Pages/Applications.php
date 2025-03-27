@@ -34,6 +34,13 @@ class Applications extends Page implements HasForms, HasTable
 
     protected static string $view = 'filament.user.pages.applications';
 
+    public function mount(): void
+    {
+        $user = Auth::user();
+        $app = $user->applications()->first();
+        dd($app);
+    }
+
 
     public function table(Table $table): Table
     {
