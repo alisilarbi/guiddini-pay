@@ -265,12 +265,6 @@ class Applications extends Page implements HasForms, HasTable
                                 $record->update([
                                     'user_id' => $user->id,
                                 ]);
-                            })
-                            ->disabled(function(Application $record){
-                                if($record->user_id !== Auth::user()->id)
-                                    return true;
-
-                                return false;
                             }),
 
                         Action::make('recover')
