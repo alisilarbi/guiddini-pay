@@ -300,6 +300,7 @@ class PartnerProspectController extends Controller
                 'email' => $prospect->email,
                 'password' => Hash::make(Str::random(12)),
                 'partner_id' => $partner->id,
+                'is_user' => false,
             ]);
         }
 
