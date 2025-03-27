@@ -7,10 +7,13 @@ use Filament\Tables\Table;
 use App\Models\Application;
 
 use App\Models\Transaction;
+use Tables\Actions\ViewAction;
+use Tables\Filters\SelectFilter;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
@@ -194,23 +197,23 @@ class Transactions extends Page implements HasForms, HasTable
                     ->toggleable(),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('status')
-                    ->options([
-                        'success' => 'Success',
-                        'pending' => 'Pending',
-                        'failed' => 'Failed',
-                    ]),
-                Tables\Filters\SelectFilter::make('license_env')
-                    ->options([
-                        'production' => 'Production',
-                        'staging' => 'Staging',
-                    ]),
+                // SelectFilter::make('status')
+                //     ->options([
+                //         'success' => 'Success',
+                //         'pending' => 'Pending',
+                //         'failed' => 'Failed',
+                //     ]),
+                // Tables\Filters\SelectFilter::make('license_env')
+                //     ->options([
+                //         'production' => 'Production',
+                //         'staging' => 'Staging',
+                //     ]),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                // ViewAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                // Tables\Actions\DeleteBulkAction::make(),
             ])
             ->defaultSort('updated_at', 'desc')
             ->striped()
