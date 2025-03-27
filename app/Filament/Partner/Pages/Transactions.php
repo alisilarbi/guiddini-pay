@@ -32,7 +32,10 @@ class Transactions extends Page implements HasForms, HasTable
             ->columns([
 
                 TextColumn::make('application.name')
-                    ->label('Application'),
+                    ->label('Application')
+                    ->description(function(Transaction $record){
+                        return $record->application->website_url;
+                    }),
 
                 TextColumn::make('updated_at')
                     ->label('Date')
