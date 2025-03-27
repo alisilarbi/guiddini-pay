@@ -58,6 +58,11 @@ class Application extends Model
         return $this->hasMany(Transaction::class, 'application_id');
     }
 
+    public function partner()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     protected static function boot()
     {
         parent::boot();
@@ -76,5 +81,7 @@ class Application extends Model
         //     $application->info()->delete();
         // });
     }
+
+
 
 }

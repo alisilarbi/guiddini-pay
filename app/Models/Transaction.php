@@ -16,6 +16,7 @@ class Transaction extends Model
 
         'application_id',
         'environment_id',
+        'partner_id',
 
         'amount',
 
@@ -57,8 +58,8 @@ class Transaction extends Model
         return $this->belongsTo(Application::class);
     }
 
-    // public function environment()
-    // {
-    //     return $this->belongsTo(Environment::class);
-    // }
+    public function partner()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
