@@ -251,11 +251,19 @@ class Applications extends Page implements HasForms, HasTable
                         ->icon('heroicon-o-arrow-path-rounded-square')
                         ->form([
                             Select::make('users')
-                                    ->live()
-                                    ->required()
-                                    ->options(User::where('is_user', true)->pluck('name', 'id')),
+                                ->live()
+                                ->required()
+                                ->options(function () {
+                                    return User::where('is_user', true)
+                                        ->pluck('name', 'id')
+                                        ->mapWithKeys(function ($name, $id) {
+                                            $user = User::find($id);
+                                            return [$id => "{$name} ({$user->email})"];
+                                        })
+                                        ->all();
+                                }),
                         ])
-                        ->action(function($data){
+                        ->action(function ($data) {
                             dd($data);
                         }),
 
@@ -362,8 +370,6 @@ class Applications extends Page implements HasForms, HasTable
                             'license_env' => $data['license_env'],
                             'license_id' => $env->id,
                         ]);
-
-
                     }),
 
 
