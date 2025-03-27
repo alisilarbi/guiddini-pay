@@ -178,7 +178,7 @@ class Transactions extends Page implements HasForms, HasTable
 
                 TextColumn::make('svfe_response')
                     ->label('SVFE Response')
-                    ->json()
+                    // ->json()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('created_at')
