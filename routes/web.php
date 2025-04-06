@@ -5,15 +5,17 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Client\ClientPaymentController;
 
+Route::prefix('payment')->group(function () {
+    Route::get('/confirm/{order_number}', [ClientPaymentController::class, 'confirm'])->name('payment.confirm');
+});
+
+Route::get('/failed/{order_number}', [ClientPaymentController::class, 'failed'])->name('payment.failed');
 Route::get('/', function () {
     // return view('welcome');
     return redirect()->to('user');
 });
 
-Route::prefix('payment')->group(function () {
-    Route::get('/confirm/{order_number}', [ClientPaymentController::class, 'confirm'])->name('payment.confirm');
-    Route::get('/failed/{order_number}', [ClientPaymentController::class, 'failed'])->name('payment.failed');
-});
+
 
 Route::get('/private-files/{path}', function ($path) {
     $filePath = "private/{$path}";

@@ -60,7 +60,7 @@ class Applications extends Page implements HasForms, HasTable
 
                 TextColumn::make('license_name')
                     ->label('License')
-                    ->state(function(Application $record){
+                    ->state(function (Application $record) {
                         return $record->license->name;
                     }),
 
@@ -136,10 +136,109 @@ class Applications extends Page implements HasForms, HasTable
 
                             ]),
 
+                        Action::make('edit')
+                            ->label('Edit')
+                            ->icon('heroicon-o-pencil-square')
+                            ->fillForm(function ($record) {
+                                return [
+                                    'name' => $record->name,
+                                    'logo' => $record->logo,
+                                    'website_url' => $record->website_url,
+                                    'redirect_url' => $record->redirect_url,
+                                    'license' => $record->license_id,
+                                    'license_env' => $record->license_env,
+                                ];
+                            })
+                            ->form([
+                                TextInput::make('name')
+                                    ->required(),
+
+                                // FileUpload::make('logo')
+                                //     ->image(),
+
+                                TextInput::make('website_url')
+                                    ->label('Lien du site web')
+                                    ->required()
+                                    ->url()
+                                    ->rule(new ValidUrlRule())
+                                    ->live(),
+
+                                TextInput::make('redirect_url')
+                                    ->label('Lien de redirection')
+                                    ->required()
+                                    ->url()
+                                    ->rule(fn($get) => $get('website_url') ? new RedirectUrlRule($get('website_url')) : 'nullable')
+                                    ->live(),
+
+                                Select::make('license')
+                                    ->live()
+                                    ->required()
+                                    ->options(License::all()->pluck('name', 'id')),
+
+                                Select::make('license_env')
+                                    ->live()
+                                    ->required()
+                                    ->options(function (Get $get) {
+
+                                        if (!$get('license')) {
+                                            return [];
+                                        }
+
+                                        $license = License::where('id', $get('license'))->first();
+                                        if (!$license || $license->satim_production_username || $license->satim_production_password || $license->satim_production_terminal) {
+                                            return collect([
+                                                ['id' => 'development', 'name' => 'Development'],
+                                                ['id' => 'production', 'name' => 'Production'],
+                                            ])->pluck('name', 'id')->toArray();
+                                        }
+
+                                        return collect([
+                                            ['id' => 'development', 'name' => 'Development'],
+                                        ])->pluck('name', 'id')->toArray();
+                                    })
+
+                            ])
+                            ->action(function ($data, $record) {
+
+                                $env = License::where('id', $data['license'])->first();
+                                $record->update([
+                                    'name' => $data['name'],
+                                    'website_url' => $data['website_url'],
+                                    'redirect_url' => $data['redirect_url'],
+                                    'license_env' => $data['license_env'],
+                                    'license_id' => $env->id,
+                                ]);
+
+                                // $application = Application::create([
+                                //     'name' => $data['name'],
+                                //     'website_url' => $data['website_url'],
+                                //     'redirect_url' => $data['redirect_url'],
+                                // ]);
+
+                                // if ($data['logo']) {
+                                //     $tempPath = Storage::disk('public')->path($data['logo']);
+                                //     $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
+                                //     $destination = 'applications/' . $application->id;
+
+                                //     Storage::disk('private')->putFileAs($destination, $tempPath, $newFileName);
+                                //     Storage::disk('public')->delete($tempPath);
+
+                                //     $path = $destination . '/' . $newFileName;
+                                //     $application->update([
+                                //         'logo' => $path,
+                                //     ]);
+                                // }
+
+                                // $env = License::where('id', $data['license'])->first();
+                                // $application->update([
+                                //     'license_env' => $data['license_env'],
+                                //     'license_id' => $env->id,
+                                // ]);
+                            }),
+
                     ])->dropdown(false),
                 ])->tooltip('Actions'),
             ])
-            ->headerActions([
-            ]);
+            ->headerActions([]);
     }
 }

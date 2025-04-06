@@ -10,14 +10,16 @@ use App\Http\Controllers\Partner\PartnerApplicationController;
 
 
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
 
 Route::prefix('client/payment')->middleware('validate_application_api_keys')->group(function () {
     Route::post('/initiate', [ClientPaymentController::class, 'initiate']);
     Route::get('/show', [ClientPaymentController::class, 'getTransaction']);
 });
+
+
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');
 
 Route::prefix('partner')->middleware('validate_partner_api_keys')->group(function () {
     Route::prefix('application')->group(function () {
