@@ -145,8 +145,6 @@ class Applications extends Page implements HasForms, HasTable
                                     'logo' => $record->logo,
                                     'website_url' => $record->website_url,
                                     'redirect_url' => $record->redirect_url,
-                                    'license' => $record->license_id,
-                                    'license_env' => $record->license_env,
                                 ];
                             })
                             ->form([
@@ -169,34 +167,6 @@ class Applications extends Page implements HasForms, HasTable
                                     ->url()
                                     ->rule(fn($get) => $get('website_url') ? new RedirectUrlRule($get('website_url')) : 'nullable')
                                     ->live(),
-
-                                Select::make('license')
-                                    ->live()
-                                    ->required()
-                                    ->options(License::all()->pluck('name', 'id')),
-
-                                Select::make('license_env')
-                                    ->live()
-                                    ->required()
-                                    ->options(function (Get $get) {
-
-                                        if (!$get('license')) {
-                                            return [];
-                                        }
-
-                                        $license = License::where('id', $get('license'))->first();
-                                        if (!$license || $license->satim_production_username || $license->satim_production_password || $license->satim_production_terminal) {
-                                            return collect([
-                                                ['id' => 'development', 'name' => 'Development'],
-                                                ['id' => 'production', 'name' => 'Production'],
-                                            ])->pluck('name', 'id')->toArray();
-                                        }
-
-                                        return collect([
-                                            ['id' => 'development', 'name' => 'Development'],
-                                        ])->pluck('name', 'id')->toArray();
-                                    })
-
                             ])
                             ->action(function ($data, $record) {
 
