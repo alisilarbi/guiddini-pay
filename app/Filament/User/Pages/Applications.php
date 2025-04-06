@@ -170,7 +170,6 @@ class Applications extends Page implements HasForms, HasTable
                             ])
                             ->action(function ($data, $record) {
 
-                                $env = License::where('id', $data['license'])->first();
                                 $record->update([
                                     'name' => $data['name'],
                                     'website_url' => $data['website_url'],
