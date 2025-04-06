@@ -174,8 +174,6 @@ class Applications extends Page implements HasForms, HasTable
                                     'name' => $data['name'],
                                     'website_url' => $data['website_url'],
                                     'redirect_url' => $data['redirect_url'],
-                                    'license_env' => $data['license_env'],
-                                    'license_id' => $env->id,
                                 ]);
 
                                 // $application = Application::create([
