@@ -44,7 +44,8 @@ class Prospects extends Page implements HasForms, HasTable
             ->columns([
 
                 TextColumn::make('partner.name')
-                    ->label('Partenaire de :')
+                    ->label('Partenaire :')
+                    ->searchable()
                     ->getStateUsing(fn(Prospect $record) => $record->partner?->name),
 
                 TextColumn::make('name')
@@ -119,65 +120,13 @@ class Prospects extends Page implements HasForms, HasTable
                         true: fn(Builder $query) => $query->where('converted', true),
                         false: fn(Builder $query) => $query->where('converted', false),
                     ),
-            ])
-            ->actions([
 
-                // ActionGroup::make([
-                //     Action::make('convert')
-                //         ->label('Convertir')
-                //         ->requiresConfirmation()
-                //         ->icon('heroicon-o-arrow-path')
-                //         ->disabled(fn(Prospect $prospect) => $prospect->converted)
-                //         ->action(function (Prospect $prospect) {
-
-                //             $application = Application::create([
-                //                 'name' => $prospect->company_name,
-                //                 'website_url' => $prospect->website_link,
-                //                 'redirect_url' => $prospect->website_link,
-                //             ]);
-
-                //             $license = License::firstWhere('name', 'GD01NI');
-
-                //             $application->update([
-                //                 'license_env' => 'development',
-                //                 'license_id' => $license->id ?? null,
-                //             ]);
-
-                //             $user = User::where('email', $prospect->email)->first();
-                //             if (!$user) {
-                //                 $user = User::create([
-                //                     'name' => $prospect->name,
-                //                     'email' => $prospect->email,
-                //                     'password' => Hash::make(Str::random(12)),
-                //                     'created_by' => Auth::user()->id,
-                //                 ]);
-                //             }
-
-                //             $application->update([
-                //                 'user_id' => $user->id,
-                //             ]);
-
-                //             $prospect->update([
-                //                 'application_id' => $application->id,
-                //                 'user_id' => $user->id,
-                //                 'converted' => true,
-                //             ]);
-                //         }),
-
-                //     Action::make('delete')
-                //         ->label('Delete')
-                //         ->color('danger')
-                //         ->icon('heroicon-o-x-circle')
-                //         ->requiresConfirmation()
-                //         ->action(function (Prospect $prospect) {
-                //             $prospect->delete();
-                //         }),
-
-                // ])
-
+                SelectFilter::make('partner_id')
+                    ->relationship('partner_id', 'name')
 
 
             ])
+            ->actions([])
             ->headerActions([])
             ->paginated([25, 50, 75, 100, 'all']);;
     }
