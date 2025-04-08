@@ -40,7 +40,7 @@ class Prospects extends Page implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(Prospect::with('partner'))
+            ->query(Prospect::with(['partner']))
             ->columns([
 
                 TextColumn::make('partner.name')
