@@ -146,6 +146,7 @@ class Licenses extends Page implements HasForms, HasTable
                     ->action(function ($data) {
                         License::create([
                             'user_id' => Auth::user()->id,
+                            'partner_id' => Auth::user()->id,
 
                             'name' => $data['name'],
 
