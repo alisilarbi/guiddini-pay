@@ -44,7 +44,8 @@ class Prospects extends Page implements HasForms, HasTable
             ->columns([
 
                 TextColumn::make('partner.name')
-                    ->name('Partenaire de : '),
+                    ->label('Partenaire de :')
+                    ->getStateUsing(fn(Prospect $record) => $record->partner?->name),
 
                 TextColumn::make('name')
                     ->sortable()
