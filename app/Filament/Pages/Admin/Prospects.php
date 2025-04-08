@@ -38,7 +38,7 @@ class Prospects extends Page implements HasForms, HasTable
 
     public function mount(): void
     {
-        $prospect = Prospect::first()->with('partner');
+        $prospect = Prospect::with('partner')->first();
 
         dd($prospect->partner);
     }
