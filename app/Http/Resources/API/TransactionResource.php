@@ -15,7 +15,6 @@ class TransactionResource extends JsonResource
     public function toArray(Request $request): array
     {
         $data = $this->resource['data'];
-
         return [
             'data' => [
                 'type' => 'transaction',
