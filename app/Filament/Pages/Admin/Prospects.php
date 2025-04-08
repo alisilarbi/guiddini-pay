@@ -122,7 +122,7 @@ class Prospects extends Page implements HasForms, HasTable
                     ),
 
                 SelectFilter::make('partner_id')
-                    ->relationship('partner_id', 'name')
+                    ->relationship('partner', 'name')
 
 
             ])
