@@ -36,17 +36,11 @@ class Prospects extends Page implements HasForms, HasTable
 
     protected static ?string $navigationGroup = 'CRM';
 
-    public function mount(): void
-    {
-        $prospect = Prospect::with('partner')->first();
-
-        dd($prospect->partner);
-    }
 
     public function table(Table $table): Table
     {
         return $table
-            ->query(Prospect::query()->with('partner'))
+            ->query(Prospect::with('partner'))
             ->columns([
 
                 TextColumn::make('partner.name')
