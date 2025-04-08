@@ -40,7 +40,7 @@ class Prospects extends Page implements HasForms, HasTable
     {
         $prospect = Prospect::first()->with('partner');
 
-        dd($prospect);
+        dd($prospect->partner);
     }
 
     public function table(Table $table): Table
