@@ -39,8 +39,11 @@ class Prospects extends Page implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(Prospect::query())
+            ->query(Prospect::query()->with('partner'))
             ->columns([
+
+                TextColumn::make('partner.name')
+                    ->name('Partenaire de : '),
 
                 TextColumn::make('name')
                     ->sortable()
