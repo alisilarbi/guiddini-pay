@@ -36,12 +36,6 @@ class Prospects extends Page implements HasForms, HasTable
 
     protected static ?string $navigationGroup = 'CRM';
 
-    public function mount(): void
-    {
-        $prospect = Prospect::with('partner')->first();
-
-        dd($prospect->partner->name);
-    }
 
     public function table(Table $table): Table
     {
@@ -50,10 +44,7 @@ class Prospects extends Page implements HasForms, HasTable
             ->columns([
 
                 TextColumn::make('partner.name')
-                    ->name('Partenaire de : ')
-                    ->formatStateUsing(function(Prospect $record) {
-                        return $record->partner->name;
-                    }),
+                    ->name('Partenaire de : '),
 
                 TextColumn::make('name')
                     ->sortable()
