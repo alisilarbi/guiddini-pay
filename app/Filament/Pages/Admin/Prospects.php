@@ -122,7 +122,8 @@ class Prospects extends Page implements HasForms, HasTable
                     ),
 
                 SelectFilter::make('partner_id')
-                    ->relationship('partner', 'name')
+                    ->relationship('partner', 'name', fn(Builder $query) => $query->where('is_partner', true)),
+                    // ->relationship('author', 'name', fn (Builder $query) => $query->withTrashed())
 
 
             ])
