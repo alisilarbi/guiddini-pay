@@ -11,8 +11,10 @@ use App\Http\Controllers\Controller;
 use App\Traits\HandlesApiExceptions;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Resources\API\ClientResource;
 use App\Http\Resources\ProspectApiResource;
+use App\Mail\Partner\NewProspectRegistered;
 use App\Http\Resources\API\ProspectResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -106,6 +108,9 @@ class PartnerProspectController extends Controller
                 'converted' => false,
                 'partner_id' => $user->id,
             ]);
+
+            Mail::to($user->email)->send(new NewProspectRegistered($prospect));
+
 
             return new ProspectResource([
                 'success' => true,
