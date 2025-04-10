@@ -164,14 +164,14 @@ class Applications extends Page implements HasForms, HasTable
                                     ->label('Lien du site web')
                                     ->required()
                                     ->url()
-                                    ->rule(new ValidUrlRule())
+                                    // ->rule(new ValidUrlRule())
                                     ->live(),
 
                                 TextInput::make('redirect_url')
                                     ->label('Lien de redirection')
                                     ->required()
                                     ->url()
-                                    ->rule(fn($get) => $get('website_url') ? new RedirectUrlRule($get('website_url')) : 'nullable')
+                                    // ->rule(fn($get) => $get('website_url') ? new RedirectUrlRule($get('website_url')) : 'nullable')
                                     ->live(),
 
                                 Select::make('license')
@@ -295,18 +295,6 @@ class Applications extends Page implements HasForms, HasTable
                                 $record->delete();
                             })
                     ])->dropdown(false),
-
-
-
-
-
-
-
-
-
-
-
-
                 ])->tooltip('Actions'),
             ])
             ->headerActions([
@@ -327,14 +315,14 @@ class Applications extends Page implements HasForms, HasTable
                                     ->label('Lien du site web')
                                     ->required()
                                     ->url()
-                                    ->rule(new ValidUrlRule())
+                                    // ->rule(new ValidUrlRule())
                                     ->live(),
 
                                 TextInput::make('redirect_url')
                                     ->label('Lien de redirection')
                                     ->required()
                                     ->url()
-                                    ->rule(fn($get) => $get('website_url') ? new RedirectUrlRule($get('website_url')) : 'nullable')
+                                    // ->rule(fn($get) => $get('website_url') ? new RedirectUrlRule($get('website_url')) : 'nullable')
                                     ->live()
                             ]),
 
