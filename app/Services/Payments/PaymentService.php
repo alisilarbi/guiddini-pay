@@ -57,7 +57,7 @@ class PaymentService
 
     private function createTransaction(array $data, Application $application): Transaction
     {
-        dd($application->license);
+        dd($application);
         return Transaction::create([
             'amount' => $data['amount'],
             'order_number' => $this->generateOrderNumber($application),
