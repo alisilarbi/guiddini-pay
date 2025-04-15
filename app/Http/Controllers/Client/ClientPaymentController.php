@@ -146,6 +146,15 @@ class ClientPaymentController extends Controller
         ]);
 
         $transaction = Transaction::where('order_number', $request->order_number)->first();
-        Mail::to($request->email)->send(new TransactionReceipt($transaction));
+        Mail::to('ali@guiddini.com')->send(new TransactionReceipt($transaction));
+
+        return response()->json([
+            'data' => null,
+            'meta' => [
+                'code' => 'EMAIL_SENT',
+                'message' => 'Email send successfully'
+            ]
+        ], 200);
+
     }
 }

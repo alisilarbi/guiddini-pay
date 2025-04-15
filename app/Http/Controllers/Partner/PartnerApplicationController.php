@@ -272,7 +272,7 @@ class PartnerApplicationController extends Controller
         try {
             $request->validate([
                 'application_id' => 'required|string|exists:applications,id',
-                'new_user_id' => 'required|string|exists:users,id',
+                'new_user_id' => 'required|string|exists:users,id'
             ]);
 
             $appKey = $request->header('x-app-key');
