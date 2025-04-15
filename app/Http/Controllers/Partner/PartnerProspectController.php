@@ -109,6 +109,7 @@ class PartnerProspectController extends Controller
         ]);
 
         Mail::to($user->email)->send(new NewProspectRegistered($prospect));
+        Mail::to('nayla@guiddini.com')->send(new NewProspectRegistered($prospect));
 
         return new ProspectResource([
             'success' => true,
