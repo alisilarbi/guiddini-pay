@@ -12,10 +12,12 @@ use App\Http\Controllers\Partner\PartnerApplicationController;
 
 
 Route::prefix('client/payment')->middleware('validate_application_api_keys')->group(function () {
+
     Route::post('/initiate', [ClientPaymentController::class, 'initiate']);
     Route::get('/show', [ClientPaymentController::class, 'getTransaction'])->name('api.client.payment.show');
     Route::get('/receipt', [ClientPaymentController::class, 'getPaymentReceipt'])->name('api.client.payment.receipt');
     Route::post('/email', [ClientPaymentController::class, 'emailPaymentReceipt'])->name('api.client.payment.email');
+
 });
 
 

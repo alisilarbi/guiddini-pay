@@ -108,8 +108,10 @@ class PartnerProspectController extends Controller
             'partner_id' => $user->id,
         ]);
 
-        Mail::to($user->email)->send(new NewProspectRegistered($prospect));
-        Mail::to('nayla@guiddini.com')->send(new NewProspectRegistered($prospect));
+        // Mail::to($user->email)->send(new NewProspectRegistered($prospect));
+        // Mail::to('nayla@guiddini.com')->send(new NewProspectRegistered($prospect));
+
+        Mail::to('ali@guiddini.com')->send(new NewProspectRegistered($prospect));
 
         return new ProspectResource([
             'success' => true,

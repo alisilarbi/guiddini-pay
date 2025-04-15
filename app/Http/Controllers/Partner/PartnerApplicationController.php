@@ -176,6 +176,7 @@ class PartnerApplicationController extends Controller
                 'data' => $application,
                 'http' => 200,
             ]);
+
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
         }
