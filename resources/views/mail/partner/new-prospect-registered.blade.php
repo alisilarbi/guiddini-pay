@@ -14,13 +14,11 @@
     Website URL: {{ $prospect->website_url }}
     @endif
     @if (!empty($prospect->programming_languages))
-    Programming Languages:
-        {{-- {{ is_array($prospect->programming_languages) ? implode(', ', $prospect->programming_languages) : $prospect->programming_languages }} --}}
-        {{ is_array($prospect->programming_languages) ? implode(', ', $prospect->programming_languages) : implode(', ', json_decode($prospect->programming_languages, true)) }}
+    Programming Languages: {{ is_array($prospect->programming_languages) ? implode(', ', $prospect->programming_languages) : implode(', ', json_decode($prospect->programming_languages, true)) }}
 
     @endif
     Needs Help: {{ $prospect->needs_help ? 'Yes' : 'No' }}
     @if ($prospect->reference)
-        Reference: {{ $prospect->reference }}
+    Reference: {{ $prospect->reference }}
     @endif
 @endcomponent
