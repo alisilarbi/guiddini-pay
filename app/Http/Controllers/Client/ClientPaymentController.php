@@ -4,8 +4,14 @@ namespace App\Http\Controllers\Client;
 
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
 use App\Traits\HandlesApiExceptions;
+use App\Traits\HandlesWebExceptions;
+
+use Illuminate\Support\Facades\Mail;
+use App\Mail\User\TransactionReceipt;
 use App\Services\Payments\PaymentService;
 use App\Http\Resources\API\PaymentResource;
 use App\Http\Resources\API\TransactionResource;
@@ -13,6 +19,7 @@ use App\Http\Resources\API\TransactionResource;
 class ClientPaymentController extends Controller
 {
     use HandlesApiExceptions;
+    use HandlesWebExceptions;
 
     public function __construct(private PaymentService $paymentService) {}
 
@@ -70,15 +77,13 @@ class ClientPaymentController extends Controller
 
     public function getTransaction(Request $request)
     {
-
         try {
-
             $request->validate([
                 'order_number' => 'required',
             ]);
 
-            $transaction = Transaction::where('order_number', $request->order_number)->first();
-
+            $transaction = Transaction::where('order_number', $request->order_number)->firstOrFail();
+            $receiptUrl = URL::signedRoute('client.payment.pdf', ['order_number' => $transaction->order_number]);
 
             return new TransactionResource([
                 'success' => true,
@@ -86,12 +91,61 @@ class ClientPaymentController extends Controller
                 'message' => 'Transaction retrieved successfully',
                 'data' => [
                     'transaction' => $transaction->toArray(),
-                    'formUrl' => null,
+                    'receipt_url' => $receiptUrl,
                 ],
                 'http_code' => 200
             ]);
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
         }
+    }
+
+    public function getPaymentReceipt(Request $request)
+    {
+        try {
+
+            $request->validate([
+                'order_number' => 'required',
+            ]);
+
+            $transaction = Transaction::where('order_number', $request->order_number)->firstOrFail();
+            $receiptUrl = URL::signedRoute('client.payment.pdf', ['order_number' => $transaction->order_number]);
+
+            return response()->json([
+                'links' => [
+                    'self' => route('api.client.payment.receipt', ['order_number' => $request->order_number]) ?? null,
+                    'href' => $receiptUrl,
+                ],
+                'meta' => [
+                    'code' => 'RECEIPT_GENERATED',
+                    'message' => 'Receipt generated successfully'
+                ]
+            ], 200);
+        } catch (\Throwable $e) {
+            return $this->handleApiException($e);
+        }
+    }
+
+    public function downloadPaymentReceipt(string $orderNumber)
+    {
+        $transaction = Transaction::where('order_number', $orderNumber)->first();
+        $pdf = Pdf::loadView('components.pdfs.transaction-success', compact('transaction'));
+        return $pdf->download('invoice.pdf');
+
+        // try {
+        // } catch (\Throwable $e) {
+        //     return $this->handleWebException($e);
+        // }
+    }
+
+    public function emailPaymentReceipt(Request $request)
+    {
+        $request->validate([
+            'order_number' => 'required',
+            'email' => 'required',
+        ]);
+
+        $transaction = Transaction::where('order_number', $request->order_number)->first();
+        Mail::to($request->email)->send(new TransactionReceipt($transaction));
     }
 }

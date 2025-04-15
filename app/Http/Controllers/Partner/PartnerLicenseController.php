@@ -123,7 +123,7 @@ class PartnerLicenseController extends Controller
                 'satim_production_terminal' => $request->satim_production_terminal,
 
                 'user_id' => $user->id,
-
+                'partner_id' => $user->id,
             ]);
 
             return new LicenseResource([

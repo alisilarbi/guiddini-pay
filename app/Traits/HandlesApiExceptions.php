@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\User;
 use App\Models\Application;
+use App\Models\Transaction;
 use Illuminate\Http\JsonResponse;
 use App\Exceptions\PaymentException;
 use App\Http\Resources\API\ErrorResource;
@@ -70,15 +71,40 @@ trait HandlesApiExceptions
             $message = $exception->getMessage();
             $errors = $exception->getErrors();
             $detail = $exception->getDetail();
-        } elseif ($exception instanceof ModelNotFoundException) {
+        }
+
+        elseif ($exception instanceof ModelNotFoundException) {
             $statusCode = 404;
             $errorCode = 'NOT_FOUND';
-            $message = $exception->getModel() === User::class
-                ? 'The new user ID does not exist'
-                : ($exception->getModel() === Application::class
-                    ? 'The application ID does not exist'
-                    : 'Resource not found');
-        } elseif ($exception instanceof ValidationException) {
+
+            switch ($exception->getModel()) {
+                case User::class:
+                    $message = 'The new user ID does not exist';
+                    break;
+                case Application::class:
+                    $message = 'The application ID does not exist';
+                    break;
+                case Transaction::class:
+                    $message = 'The transaction ID does not exist';
+                    break;
+                default:
+                    $message = 'Resource not found';
+                    break;
+            }
+        }
+
+        // elseif ($exception instanceof ModelNotFoundException) {
+        //     $statusCode = 404;
+        //     $errorCode = 'NOT_FOUND';
+        //     $message = $exception->getModel() === User::class
+        //         ? 'The new user ID does not exist'
+        //         : ($exception->getModel() === Application::class
+        //             ? 'The application ID does not exist'
+        //             : 'Resource not found');
+        // }
+
+
+        elseif ($exception instanceof ValidationException) {
             $statusCode = 422;
             $errorCode = 'VALIDATION_ERROR';
             $message = 'Validation failed';
