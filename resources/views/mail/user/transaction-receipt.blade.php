@@ -303,7 +303,7 @@
                                                                                 style="text-decoration: none;"><img
                                                                                     class="icon" alt="Beefree Logo"
                                                                                     src="{{ asset('images/logotype.svg') }}"
-                                                                                    height="auto" width="80"
+                                                                                    height="auto" width="70"
                                                                                     align="center"
                                                                                     style="display: block; height: auto; margin: 0 auto; border: 0;"></a>
                                                                         </td>
