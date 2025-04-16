@@ -156,6 +156,18 @@
                                                                 </div>
                                                             </td>
                                                         </tr>
+
+                                                        <tr>
+                                                            <td class="pad" style="width:100%;">
+                                                                <div class="alignment" align="center">
+                                                                    <div style="max-width: 180px;"><img
+                                                                            src="{{ asset('images/email-sucess.png') }}"
+                                                                            style="display: block; height: auto; border: 0; width: 100%;"
+                                                                            width="180" alt title height="auto">
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
                                                     </table>
                                                     <table class="paragraph_block block-4" width="100%" border="0"
                                                         cellpadding="0" cellspacing="0" role="presentation"
