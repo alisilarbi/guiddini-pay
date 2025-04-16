@@ -293,8 +293,8 @@
                                                                             style="font-family: 'Inter', sans-serif; font-size: 15px; font-weight: undefined; color: #1e0e4b; vertical-align: middle; letter-spacing: undefined; text-align: center; line-height: normal;">
                                                                             <a href="http://designedwithbeefree.com/"
                                                                                 target="_blank"
-                                                                                style="color: #1e0e4b; text-decoration: none;">Designed
-                                                                                with </a>
+                                                                                style="color: #1e0e4b; text-decoration: none;">Powered
+                                                                                by </a>
                                                                         </td>
                                                                         <td
                                                                             style="vertical-align: middle; text-align: center; padding-top: 5px; padding-bottom: 5px; padding-left: 5px; padding-right: 6px;">
