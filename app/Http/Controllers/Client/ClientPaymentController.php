@@ -153,6 +153,8 @@ class ClientPaymentController extends Controller
 
         $downloadLink = $this->getPaymentReceipt($request);
 
+        dd($downloadLink);
+
         $transaction = Transaction::where('order_number', $request->order_number)->first();
         Mail::to('ali@guiddini.com')->send(new TransactionReceipt($transaction, $application, $downloadLink));
 
