@@ -75,9 +75,7 @@ class PartnerApplicationController extends Controller
                 throw new \Exception('Unauthorized', 401);
             }
 
-
             $license = $partner->licenses()->first();
-
             $application = Application::create([
                 'name' => $request->name,
                 'website_url' => $request->website_url,

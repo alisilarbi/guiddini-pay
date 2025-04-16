@@ -2,6 +2,7 @@
 
 namespace App\Mail\User;
 
+use App\Models\User;
 use App\Models\Transaction;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -15,13 +16,15 @@ class TransactionReceipt extends Mailable
     use Queueable, SerializesModels;
 
     public Transaction $transaction;
+    public User $user;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(Transaction $transaction)
+    public function __construct(Transaction $transaction, User $user)
     {
         $this->transaction = $transaction;
+        $this->user = $user;
     }
 
     /**

@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Client;
 
+use App\Models\User;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
 use App\Traits\HandlesApiExceptions;
-use App\Traits\HandlesWebExceptions;
 
+use App\Traits\HandlesWebExceptions;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\User\TransactionReceipt;
 use App\Services\Payments\PaymentService;
@@ -131,11 +132,6 @@ class ClientPaymentController extends Controller
         $transaction = Transaction::where('order_number', $orderNumber)->first();
         $pdf = Pdf::loadView('components.pdfs.transaction-success', compact('transaction'));
         return $pdf->download('invoice.pdf');
-
-        // try {
-        // } catch (\Throwable $e) {
-        //     return $this->handleWebException($e);
-        // }
     }
 
     public function emailPaymentReceipt(Request $request)
@@ -145,16 +141,24 @@ class ClientPaymentController extends Controller
             'email' => 'required',
         ]);
 
-        $transaction = Transaction::where('order_number', $request->order_number)->first();
-        Mail::to('ali@guiddini.com')->send(new TransactionReceipt($transaction));
+        $appKey = $request->header('x-app-key');
+        $secretKey = $request->header('x-secret-key');
 
-        return response()->json([
-            'data' => null,
-            'meta' => [
-                'code' => 'EMAIL_SENT',
-                'message' => 'Email send successfully'
-            ]
-        ], 200);
+        $user = User::where('app_key', $appKey)
+            ->where('app_secret', $secretKey)
+            ->first();
 
+        dd($user);
+
+        // $transaction = Transaction::where('order_number', $request->order_number)->first();
+        // Mail::to('ali@guiddini.com')->send(new TransactionReceipt($transaction, $user));
+
+        // return response()->json([
+        //     'data' => null,
+        //     'meta' => [
+        //         'code' => 'EMAIL_SENT',
+        //         'message' => 'Email send successfully'
+        //     ]
+        // ], 200);
     }
 }
