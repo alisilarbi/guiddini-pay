@@ -152,9 +152,9 @@ class ClientPaymentController extends Controller
             ->first();
 
         $transaction = Transaction::where('order_number', $request->order_number)->first();
-        // $receiptUrl = URL::signedRoute('client.payment.pdf', ['order_number' => $transaction->order_number]);;
+        $receiptUrl = URL::signedRoute('client.payment.pdf', ['order_number' => $transaction->order_number]);
 
-        Mail::to('ali@guiddini.com')->send(new TransactionReceipt($transaction, $application,   'hehe'));
+        Mail::to('ali@guiddini.com')->send(new TransactionReceipt($transaction, $application, $receiptUrl));
 
         return response()->json([
             'data' => null,
