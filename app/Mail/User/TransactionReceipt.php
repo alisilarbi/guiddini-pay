@@ -11,6 +11,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class TransactionReceipt extends Mailable
@@ -58,12 +59,14 @@ class TransactionReceipt extends Mailable
      */
     public function attachments(): array
     {
-        // $pdf = Pdf::loadView('components.pdfs.transaction-success', ['transaction' => $this->transaction]);
-        $pdfContent = Pdf::loadView('components.pdfs.transaction-success', ['transaction' => $this->transaction])->output();
 
+        $pdf = Pdf::loadView('components.pdfs.transaction-success', ['transaction' => $this->transaction]);
 
         return [
-            'invoice.pdf' => $pdfContent
+            Attachment::fromData(
+                fn() => $pdf->output(),
+                'invoice.pdf'
+            )->withMime('application/pdf'),
         ];
     }
 }
