@@ -149,18 +149,6 @@
                                                             <td class="pad" style="width:100%;">
                                                                 <div class="alignment" align="center">
                                                                     <div style="max-width: 180px;"><img
-                                                                            src="https://1a784427eb.imgdist.com/pub/bfra/4h09jjt9/x3u/m4n/6yd/Capture%20d%E2%80%99%C3%A9cran%202025-04-14%20112914%201.png"
-                                                                            style="display: block; height: auto; border: 0; width: 100%;"
-                                                                            width="180" alt title height="auto">
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td class="pad" style="width:100%;">
-                                                                <div class="alignment" align="center">
-                                                                    <div style="max-width: 180px;"><img
                                                                             src="{{ asset('images/email-sucess.png') }}"
                                                                             style="display: block; height: auto; border: 0; width: 100%;"
                                                                             width="180" alt title height="auto">
