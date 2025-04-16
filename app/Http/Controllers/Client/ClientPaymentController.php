@@ -151,12 +151,10 @@ class ClientPaymentController extends Controller
             ->where('app_secret', $secretKey)
             ->first();
 
-        $downloadLink = $this->getPaymentReceipt($request);
-
-        dd($downloadLink);
-
         $transaction = Transaction::where('order_number', $request->order_number)->first();
-        Mail::to('ali@guiddini.com')->send(new TransactionReceipt($transaction, $application, $downloadLink));
+        $receiptUrl = URL::signedRoute('client.payment.pdf', ['order_number' => $transaction->order_number]);;
+
+        Mail::to('ali@guiddini.com')->send(new TransactionReceipt($transaction, $application, $receiptUrl));
 
         return response()->json([
             'data' => null,
