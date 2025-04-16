@@ -175,7 +175,8 @@
                                                                         Bonjour,&nbsp;<br><br><br>Nous vous confirmons
                                                                         que votre paiement a bien été reçu.<br><br>Vous
                                                                         pouvez télécharger votre reçu de paiement en
-                                                                        cliquant sur : {lien}<br><br>Nous vous
+                                                                        cliquant sur : <a href="{{ $downloadLink }}">ce
+                                                                            lien</a><br><br>Nous vous
                                                                         remercions pour votre confiance.</p>
                                                                     <p style="margin: 0;"><br><br>Bien cordialement,</p>
                                                                 </div>

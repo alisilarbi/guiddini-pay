@@ -149,15 +149,17 @@ class ClientPaymentController extends Controller
             ->where('app_secret', $secretKey)
             ->first();
 
-        $transaction = Transaction::where('order_number', $request->order_number)->first();
-        Mail::to('ali@guiddini.com')->send(new TransactionReceipt($transaction, $application));
+        $downloadLink = $this->getPaymentReceipt($request->orderNumber);
 
-        // return response()->json([
-        //     'data' => null,
-        //     'meta' => [
-        //         'code' => 'EMAIL_SENT',
-        //         'message' => 'Email send successfully'
-        //     ]
-        // ], 200);
+        $transaction = Transaction::where('order_number', $request->order_number)->first();
+        Mail::to('ali@guiddini.com')->send(new TransactionReceipt($transaction, $application, $downloadLink));
+
+        return response()->json([
+            'data' => null,
+            'meta' => [
+                'code' => 'EMAIL_SENT',
+                'message' => 'Email send successfully'
+            ]
+        ], 200);
     }
 }
