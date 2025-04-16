@@ -197,60 +197,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <table class="row row-2" align="center" width="100%" border="0" cellpadding="0"
-                        cellspacing="0" role="presentation"
-                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #51a2ff;">
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <table class="row-content stack" align="center" border="0" cellpadding="0"
-                                        cellspacing="0" role="presentation"
-                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #3faff2; border-radius: 0; color: #000000; width: 600px; margin: 0 auto;"
-                                        width="600">
-                                        <tbody>
-                                            <tr>
-                                                <td class="column column-1" width="50%"
-                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top;">
-                                                    <table class="paragraph_block block-1" width="100%"
-                                                        border="0" cellpadding="10" cellspacing="0"
-                                                        role="presentation"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-                                                        <tr>
-                                                            <td class="pad">
-                                                                <div
-                                                                    style="color:#ffffff;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:16px;font-weight:400;letter-spacing:0px;line-height:1.2;text-align:right;mso-line-height-alt:19px;">
-                                                                    <p style="margin: 0;">Powered by <u>Guiddini</u>
-                                                                    </p>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                                <td class="column column-2" width="50%"
-                                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top;">
-                                                    <table class="image_block block-1" width="100%" border="0"
-                                                        cellpadding="0" cellspacing="0" role="presentation"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                                                        <tr>
-                                                            <td class="pad" style="width:100%;">
-                                                                <div class="alignment" align="left">
-                                                                    <div style="max-width: 30px;"><img
-                                                                            src="https://1a784427eb.imgdist.com/pub/bfra/4h09jjt9/gro/z2q/5fn/e8206fbd-6be1-4f82-a8cc-99d314cda97f.png"
-                                                                            style="display: block; height: auto; border: 0; width: 100%;"
-                                                                            width="30" alt title height="auto">
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+
                     <table class="row row-3" align="center" width="100%" border="0" cellpadding="0"
                         cellspacing="0" role="presentation"
                         style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff;">
