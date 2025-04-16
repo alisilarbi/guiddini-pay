@@ -197,7 +197,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <table class="row row-2" align="center" width="100%" border="0" cellpadding="0"
+                    {{-- <table class="row row-2" align="center" width="100%" border="0" cellpadding="0"
                         cellspacing="0" role="presentation"
                         style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #51a2ff;">
                         <tbody>
@@ -250,8 +250,8 @@
                                 </td>
                             </tr>
                         </tbody>
-                    </table>
-                    {{-- <table class="row row-3" align="center" width="100%" border="0" cellpadding="0"
+                    </table> --}}
+                    <table class="row row-3" align="center" width="100%" border="0" cellpadding="0"
                         cellspacing="0" role="presentation"
                         style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff;">
                         <tbody>
@@ -307,7 +307,7 @@
                                 </td>
                             </tr>
                         </tbody>
-                    </table> --}}
+                    </table>
                 </td>
             </tr>
         </tbody>
