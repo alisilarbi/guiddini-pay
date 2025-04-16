@@ -102,6 +102,8 @@ class ClientPaymentController extends Controller
         }
     }
 
+
+
     public function getPaymentReceipt(Request $request)
     {
         try {
@@ -149,7 +151,7 @@ class ClientPaymentController extends Controller
             ->where('app_secret', $secretKey)
             ->first();
 
-        $downloadLink = $this->getPaymentReceipt($request->orderNumber);
+        $downloadLink = $this->getPaymentReceipt($request);
 
         $transaction = Transaction::where('order_number', $request->order_number)->first();
         Mail::to('ali@guiddini.com')->send(new TransactionReceipt($transaction, $application, $downloadLink));
