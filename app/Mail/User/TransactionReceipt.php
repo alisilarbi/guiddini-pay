@@ -61,7 +61,7 @@ class TransactionReceipt extends Mailable
         $pdf = Pdf::loadView('components.pdfs.transaction-success', ['transaction' => $this->transaction]);
 
         return [
-            \Illuminate\Mail\Mailables\Attachment::fromData($pdf->output(), 'invoice.pdf')
+            'invoice.pdf' => $pdf->output()
         ];
     }
 }
