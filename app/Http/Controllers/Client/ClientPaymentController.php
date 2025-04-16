@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Client;
 
 use App\Models\User;
+use App\Models\Application;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
-use App\Traits\HandlesApiExceptions;
 
+use App\Traits\HandlesApiExceptions;
 use App\Traits\HandlesWebExceptions;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\User\TransactionReceipt;
@@ -144,7 +145,7 @@ class ClientPaymentController extends Controller
         $appKey = $request->header('x-app-key');
         $secretKey = $request->header('x-secret-key');
 
-        $user = User::where('app_key', $appKey)
+        $user = Application::where('app_key', $appKey)
             ->where('app_secret', $secretKey)
             ->first();
 
