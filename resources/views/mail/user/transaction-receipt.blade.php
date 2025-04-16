@@ -116,7 +116,7 @@
                                                     style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top;">
 
 
-                                                    @if ($this->application->logo)
+                                                    @if ($application->logo)
                                                         <table class="image_block block-1" width="100%" border="0"
                                                             cellpadding="0" cellspacing="0" role="presentation"
                                                             style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
