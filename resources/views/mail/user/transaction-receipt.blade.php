@@ -285,7 +285,7 @@
                                                                                 style="text-decoration: none;"><img
                                                                                     class="icon" alt="Beefree Logo"
                                                                                     src="{{ asset('images/icon.svg') }}"
-                                                                                    height="auto" width="34"
+                                                                                    height="auto" width="26"
                                                                                     align="center"
                                                                                     style="display: block; height: auto; margin: 0 auto; border: 0;"></a>
                                                                         </td>
@@ -303,7 +303,7 @@
                                                                                 style="text-decoration: none;"><img
                                                                                     class="icon" alt="Beefree Logo"
                                                                                     src="{{ asset('images/logotype.svg') }}"
-                                                                                    height="auto" width="34"
+                                                                                    height="auto" width="38"
                                                                                     align="center"
                                                                                     style="display: block; height: auto; margin: 0 auto; border: 0;"></a>
                                                                         </td>
