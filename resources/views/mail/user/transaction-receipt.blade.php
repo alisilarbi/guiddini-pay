@@ -116,21 +116,23 @@
                                                     style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top;">
 
 
-                                                    <table class="image_block block-1" width="100%" border="0"
-                                                        cellpadding="0" cellspacing="0" role="presentation"
-                                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                                                        <tr>
-                                                            <td class="pad" style="padding-top:20px;width:100%;">
-                                                                <div class="alignment" align="center">
-                                                                    <div style="max-width: 50px;"><img
-                                                                            src="https://1a784427eb.imgdist.com/pub/bfra/4h09jjt9/4fl/8xu/uaz/f908318b-c9e4-48d9-b209-983324293010.png"
-                                                                            style="display: block; height: auto; border: 0; width: 100%;"
-                                                                            width="50" alt title height="auto">
+                                                    @if ($this->application->logo)
+                                                        <table class="image_block block-1" width="100%" border="0"
+                                                            cellpadding="0" cellspacing="0" role="presentation"
+                                                            style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                                            <tr>
+                                                                <td class="pad" style="padding-top:20px;width:100%;">
+                                                                    <div class="alignment" align="center">
+                                                                        <div style="max-width: 50px;"><img
+                                                                                src="https://1a784427eb.imgdist.com/pub/bfra/4h09jjt9/4fl/8xu/uaz/f908318b-c9e4-48d9-b209-983324293010.png"
+                                                                                style="display: block; height: auto; border: 0; width: 100%;"
+                                                                                width="50" alt title height="auto">
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    @endif
 
 
                                                     <table class="heading_block block-2" width="100%" border="0"

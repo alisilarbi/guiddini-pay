@@ -145,14 +145,12 @@ class ClientPaymentController extends Controller
         $appKey = $request->header('x-app-key');
         $secretKey = $request->header('x-secret-key');
 
-        $user = Application::where('app_key', $appKey)
+        $application = Application::where('app_key', $appKey)
             ->where('app_secret', $secretKey)
             ->first();
 
-        dd($user);
-
-        // $transaction = Transaction::where('order_number', $request->order_number)->first();
-        // Mail::to('ali@guiddini.com')->send(new TransactionReceipt($transaction, $user));
+        $transaction = Transaction::where('order_number', $request->order_number)->first();
+        Mail::to('ali@guiddini.com')->send(new TransactionReceipt($transaction, $application));
 
         // return response()->json([
         //     'data' => null,
