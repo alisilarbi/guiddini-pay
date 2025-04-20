@@ -24,6 +24,7 @@ class PaymentService
     {
         try {
             $application = Application::where('app_key', $appKey)->firstOrFail();
+            dd($data);
             $transaction = $this->createTransaction($data, $application);
 
             $response = $this->initiator->execute($transaction);
