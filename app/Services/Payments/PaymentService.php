@@ -72,7 +72,7 @@ class PaymentService
             'license_env' => $application->license_env,
             'currency' => '012',
             'partner_id' => $application->partner->id,
-            'type' => $data['type'],
+            // 'type' => $data['type'],
         ]);
     }
 
