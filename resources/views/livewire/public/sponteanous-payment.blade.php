@@ -64,8 +64,8 @@
                         <table class="min-w-full table-auto">
                             <thead>
                                 <tr>
-                                    <th class="py-2 px-4 border-b">Column 1</th>
-                                    <th class="py-2 px-4 border-b">Column 2</th>
+                                    <th class="py-2 px-4 border-b"></th>
+                                    <th class="py-2 px-4 border-b"></th>
                                 </tr>
                             </thead>
                             <tbody>
