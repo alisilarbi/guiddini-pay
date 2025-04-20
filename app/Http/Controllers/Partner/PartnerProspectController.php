@@ -12,10 +12,10 @@ use App\Traits\HandlesApiExceptions;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use App\Http\Resources\API\ClientResource;
+use App\Http\Resources\Api\ClientResource;
 use App\Http\Resources\ProspectApiResource;
 use App\Mail\Partner\NewProspectRegistered;
-use App\Http\Resources\API\ProspectResource;
+use App\Http\Resources\Api\ProspectResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PartnerProspectController extends Controller

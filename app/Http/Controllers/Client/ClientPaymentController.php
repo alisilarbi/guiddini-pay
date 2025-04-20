@@ -14,9 +14,9 @@ use App\Traits\HandlesApiExceptions;
 use App\Traits\HandlesWebExceptions;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\User\TransactionReceipt;
-use App\Http\Resources\API\PaymentResource;
-use App\Services\API\Payments\PaymentService;
-use App\Http\Resources\API\TransactionResource;
+use App\Http\Resources\Api\PaymentResource;
+use App\Services\Api\Payments\PaymentService;
+use App\Http\Resources\Api\TransactionResource;
 
 class ClientPaymentController extends Controller
 {

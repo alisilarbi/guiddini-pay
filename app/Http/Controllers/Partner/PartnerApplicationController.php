@@ -8,7 +8,7 @@ use App\Models\Application;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Traits\HandlesApiExceptions;
-use App\Http\Resources\API\ApplicationResource;
+use App\Http\Resources\Api\ApplicationResource;
 use App\Http\Resources\ApplicationResponseResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 

@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Services\API\Payments;
+namespace App\Services\Api\Payments;
 
 use App\Models\Transaction;
 use App\Exceptions\PaymentException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\RequestException;
-use App\Services\Payments\CredentialsService;
-use App\Services\Payments\TransactionUpdater;
 use Illuminate\Http\Client\ConnectionException;
+use App\Services\Api\Payments\CredentialsService;
+use App\Services\Api\Payments\TransactionUpdater;
 
 class InitiateGatewayService
 {

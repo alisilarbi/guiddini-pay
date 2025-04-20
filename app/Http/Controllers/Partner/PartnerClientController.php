@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Traits\HandlesApiExceptions;
-use App\Http\Resources\API\ClientResource;
+use App\Http\Resources\Api\ClientResource;
 
 class PartnerClientController extends Controller
 {

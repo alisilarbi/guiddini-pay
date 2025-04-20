@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Traits\HandlesApiExceptions;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Resources\API\LicenseResource;
+use App\Http\Resources\Api\LicenseResource;
 
 class PartnerLicenseController extends Controller
 {

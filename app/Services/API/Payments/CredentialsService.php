@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\API\Payments;
+namespace App\Services\Api\Payments;
 
 use App\Models\Transaction;
 use App\Exceptions\PaymentException;
