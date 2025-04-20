@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Services\Api\Payments;
+namespace App\Services\Payments;
 
 use App\Models\Application;
 use App\Models\Transaction;
 use App\Exceptions\PaymentException;
-use App\Services\Api\Payments\CredentialsService;
-use App\Services\Api\Payments\TransactionUpdater;
-use App\Services\Api\Payments\ConfirmGatewayService;
-use App\Services\Api\Payments\InitiateGatewayService;
+use App\Services\Payments\CredentialsService;
+use App\Services\Payments\TransactionUpdater;
+use App\Services\Payments\ConfirmGatewayService;
+use App\Services\Payments\InitiateGatewayService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PaymentService

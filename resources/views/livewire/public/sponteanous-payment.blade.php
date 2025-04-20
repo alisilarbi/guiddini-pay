@@ -79,6 +79,10 @@
                             <input type="amount" id="amount" wire:model="amount"
                                 class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-guiddini-accent"
                                 placeholder="exemple@entreprise.com">
+
+                            @error('amount')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div>

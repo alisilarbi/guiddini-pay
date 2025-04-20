@@ -48,7 +48,7 @@
 
             <!-- Form -->
             <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200">
-                <form class="space-y-6">
+                <form class="space-y-6" wire:submit.prevent="submit">
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nom complet</label>
                         <input type="text" id="name" name="name"
@@ -66,9 +66,13 @@
 
                     <div>
                         <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Montant</label>
-                        <input type="amount" id="amount" name="amount"
+                        <input type="text" id="amount" wire:model="amount"
                             class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-guiddini-accent"
-                            placeholder="exemple@entreprise.com">
+                            placeholder="Montant">
+
+                        @error('amount')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>

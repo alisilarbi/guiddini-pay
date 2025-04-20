@@ -5,12 +5,21 @@ namespace App\Livewire\Public;
 use Livewire\Component;
 use App\Models\Application;
 use Illuminate\Http\Request;
+use App\Services\Payments\PaymentService;
 
 class SponteanousPayment extends Component
 {
     public Application $application;
 
-    public float $amount;
+    public $amount;
+
+    protected $rules = [
+        'amount' => 'required',
+    ];
+
+    protected $messages = [
+        'amount.required' => 'Le montant est obligatoire.',
+    ];
 
     public function mount($slug)
     {
@@ -22,8 +31,17 @@ class SponteanousPayment extends Component
         return view('livewire.public.sponteanous-payment');
     }
 
-    public function submit()
+    public function submit(PaymentService $paymentService)
     {
+        $this->validate();
 
+        $data['amount'] = $this->amount;
+
+        $result = $paymentService->initiatePayment(
+            $data,
+            $this->application->app_key,
+        );
+
+        dd($result);
     }
 }
