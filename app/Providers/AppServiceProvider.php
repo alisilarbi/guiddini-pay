@@ -29,6 +29,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Schema::defaultStringLength(191);
-        // DB::prohibitDestructiveCommands($this->app->isProduction());
+        DB::prohibitDestructiveCommands($this->app->isProduction());
     }
 }
