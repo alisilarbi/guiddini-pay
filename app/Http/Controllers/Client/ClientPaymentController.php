@@ -51,8 +51,7 @@ class ClientPaymentController extends Controller
 
     public function confirm(string $orderNumber)
     {
-        try {
-            $result = $this->paymentService->confirmPayment($orderNumber);
+        $result = $this->paymentService->confirmPayment($orderNumber);
 
             $transaction = $result['transaction'];
             $gatewayResponse = $result['gateway_response'];
@@ -67,12 +66,15 @@ class ClientPaymentController extends Controller
             ]);
 
             if($transaction->origin === 'System')
-                return redirect()->route('certification',[
+                return redirect()->route('certification', [
                     'slug' => $transaction->slug,
-                    'order_number' => $transaction->order_number
+                    // 'order_number' => $transaction->order_number
                 ]);
 
             return redirect()->to("$redirectUrl?$queryParams");
+
+        try {
+
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
         }
