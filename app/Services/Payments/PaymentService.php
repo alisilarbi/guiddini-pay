@@ -23,9 +23,9 @@ class PaymentService
     public function initiatePayment(array $data, string $appKey): array
     {
         $application = Application::where('app_key', $appKey)->firstOrFail();
-            $transaction = $this->createTransaction($data, $application);
+        $transaction = $this->createTransaction($data, $application);
 
-            $response = $this->initiator->execute($transaction);
+        $response = $this->initiator->execute($transaction);
 
 
         try {
@@ -72,7 +72,7 @@ class PaymentService
             'license_env' => $application->license_env,
             'currency' => '012',
             'partner_id' => $application->partner->id,
-            'type' => $data['type'] ?? 'Application',
+            // 'type' => $data['type'] ?? 'Application',
         ]);
     }
 
