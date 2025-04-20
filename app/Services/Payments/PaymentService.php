@@ -22,12 +22,6 @@ class PaymentService
 
     public function initiatePayment(array $data, string $appKey): array
     {
-        $application = Application::where('app_key', $appKey)->firstOrFail();
-        $transaction = $this->createTransaction($data, $application);
-
-        $response = $this->initiator->execute($transaction);
-
-
         try {
             $application = Application::where('app_key', $appKey)->firstOrFail();
             $transaction = $this->createTransaction($data, $application);
