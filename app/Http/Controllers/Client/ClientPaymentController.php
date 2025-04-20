@@ -59,6 +59,8 @@ class ClientPaymentController extends Controller
 
             $redirectUrl = $transaction->application->redirect_url;
 
+            dd($transaction);
+
             $queryParams = http_build_query([
                 'order_number' => $orderNumber,
                 // 'status' => $transaction->status,

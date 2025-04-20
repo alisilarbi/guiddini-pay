@@ -42,7 +42,6 @@ class InitiateGatewayService
                 ->json();
 
             $this->updater->handleInitiationResponse($transaction, $response);
-
             if ($this->isErrorResponse($response)) {
                 $errorCode = $response['ErrorCode'] ?? $response['errorCode'] ?? 'UNKNOWN';
                 if ($errorCode === '5') {
