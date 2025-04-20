@@ -43,6 +43,8 @@ class SponteanousPayment extends Component
             $this->application->app_key,
         );
 
+        dd($result);
+
         return redirect()->to($result['data']['attributes']['form_url']);
 
 
