@@ -4,34 +4,26 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use App\Livewire\Public\SponteanousPayment;
 use App\Http\Controllers\Client\ClientPaymentController;
 
 
 Route::get('/', function () {
     return redirect()->to('user');
 });
+
 Route::prefix('payment')->group(function () {
     Route::get('/confirm/{order_number}', [ClientPaymentController::class, 'confirm'])->name('payment.confirm');
 });
 
 Route::prefix('client/payment')->group(function () {
-
     Route::get('/pdf/{order_number}', [ClientPaymentController::class, 'downloadPaymentReceipt'])
         ->name('client.payment.pdf')
         ->middleware('signed');
-
 });
 
-Route::get('/{slug}', [ClientPaymentController::class, 'certification'])->name('certification');
-
-
-
-
-
-
-
-
-
+// Route::get('/{slug}', [ClientPaymentController::class, 'certification'])->name('certification');
+Route::get('/{slug}', SponteanousPayment::class)->name('certification');
 
 
 // Route::prefix('payment')->group(function () {

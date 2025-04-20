@@ -11,10 +11,10 @@
             theme: {
                 extend: {
                     colors: {
-                        'guiddini-dark': '#0a1428',
-                        'guiddini-blue': '#1e3a8a',
-                        'guiddini-light': '#3b82f6',
-                        'guiddini-nav': '#111827',
+                        'guiddini-primary': '#1e3a8a',
+                        'guiddini-accent': '#3b82f6',
+                        'guiddini-light': '#f1f5f9',
+                        'guiddini-text': '#1f2937',
                     }
                 }
             }
@@ -22,58 +22,59 @@
     </script>
 </head>
 
-<body class="bg-guiddini-blue min-h-screen">
+<body class="bg-white min-h-screen">
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-12">
         <div class="max-w-4xl mx-auto">
             <!-- Badge -->
             <div class="flex justify-center mb-8">
-                <div class="inline-flex items-center px-4 py-2 rounded-full bg-guiddini-dark/50 text-white text-sm">
-                    <span class="text-yellow-400 mr-2">✨</span>
+                <div
+                    class="inline-flex items-center px-4 py-2 rounded-full bg-guiddini-light text-guiddini-text text-sm">
+                    <span class="text-yellow-500 mr-2">✨</span>
                     <span>Solutions adaptées à votre secteur</span>
                 </div>
             </div>
 
             <!-- Heading -->
-            <h1 class="text-4xl md:text-5xl font-bold text-center text-white mb-4">
-                Contactez notre équipe <span class="text-guiddini-light">d'experts</span>
+            <h1 class="text-4xl md:text-5xl font-bold text-center text-guiddini-text mb-4">
+                Paiement <span class="text-guiddini-accent">Spontané</span>
             </h1>
 
-            <p class="text-center text-gray-300 mb-12 max-w-2xl mx-auto">
-                Vous souhaitez intégrer notre solution de paiement sur votre site web ou application ?
-                Remplissez le formulaire ci-dessous et nous vous contacterons rapidement.
+            <p class="text-center text-guiddini-text mb-12 max-w-2xl mx-auto text-lg md:text-xl">
+                Vous souhaitez nous régler via un <span class="text-guiddini-accent">paiement spontané</span> ?
+                Remplissez simplement le formulaire ci-dessous.
             </p>
 
             <!-- Form -->
-            <div class="bg-guiddini-dark/30 backdrop-blur-sm p-8 rounded-xl shadow-lg">
+            <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200">
                 <form class="space-y-6">
                     <div>
-                        <label for="name" class="block text-sm font-medium text-gray-300 mb-1">Nom complet</label>
+                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nom complet</label>
                         <input type="text" id="name" name="name"
-                            class="w-full px-4 py-3 bg-guiddini-dark/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-guiddini-light"
+                            class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-guiddini-accent"
                             placeholder="Votre nom et prénom">
                     </div>
 
                     <div>
-                        <label for="email" class="block text-sm font-medium text-gray-300 mb-1">Email
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email
                             professionnel</label>
                         <input type="email" id="email" name="email"
-                            class="w-full px-4 py-3 bg-guiddini-dark/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-guiddini-light"
+                            class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-guiddini-accent"
                             placeholder="exemple@entreprise.com">
                     </div>
 
                     <div>
-                        <label for="message" class="block text-sm font-medium text-gray-300 mb-1">Votre message</label>
-                        <textarea id="message" name="message" rows="4"
-                            class="w-full px-4 py-3 bg-guiddini-dark/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-guiddini-light"
-                            placeholder="Décrivez votre projet ou vos besoins..."></textarea>
+                        <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Montant</label>
+                        <input type="amount" id="amount" name="amount"
+                            class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-guiddini-accent"
+                            placeholder="exemple@entreprise.com">
                     </div>
 
                     <div>
                         <button type="submit"
-                            class="w-full bg-gradient-to-r from-blue-600 to-blue-400 text-white font-medium py-3 px-6 rounded-lg hover:opacity-90 transition-opacity">
-                            Envoyer ma demande
+                            class="w-full bg-guiddini-accent text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-500 transition-colors">
+                            Payer
                         </button>
                     </div>
                 </form>
@@ -81,12 +82,12 @@
         </div>
     </main>
 
+    <!-- Partner Logos -->
     <div class="container mx-auto px-4 py-8">
-        <div class="flex flex-wrap justify-center items-center gap-8 opacity-70">
-            <img src="{{ asset('images/icon.svg') }}" alt="Partner logo" class="h-8">
-            @if ($application->logo)
-                <img src="{{ $application->logo }}" alt="Partner logo" class="h-8">
-            @endif
+        <div class="flex flex-wrap justify-center items-center gap-4 opacity-80">
+            <img src="{{ asset('images/icon.svg') }}" alt="Icon" class="h-6">
+            <span class="text-sm text-gray-600">Powered by</span>
+            <img src="{{ asset('images/logotype.svg') }}" alt="Partner logo" class="h-8">
         </div>
     </div>
 
