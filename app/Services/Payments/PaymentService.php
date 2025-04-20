@@ -24,6 +24,7 @@ class PaymentService
     {
         $application = Application::where('app_key', $appKey)->firstOrFail();
         $transaction = $this->createTransaction($data, $application);
+        dd($transaction);
 
         $response = $this->initiator->execute($transaction);
 
@@ -72,7 +73,7 @@ class PaymentService
             'license_env' => $application->license_env,
             'currency' => '012',
             'partner_id' => $application->partner->id,
-            // 'type' => $data['type'],
+            'type' => $data['type'],
         ]);
     }
 
