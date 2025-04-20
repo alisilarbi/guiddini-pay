@@ -66,9 +66,7 @@ class ClientPaymentController extends Controller
                 // 'gateway_code' => $this->getGatewayErrorCode($gatewayResponse)
             ]);
 
-            dd($transaction);
-
-            if($transaction->type === 'System')
+            if($transaction->origin === 'System')
                 return redirect()->route('certification',[
                     'slug' => $transaction->slug,
                     'order_number' => $transaction->order_number
