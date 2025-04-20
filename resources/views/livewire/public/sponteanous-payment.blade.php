@@ -59,7 +59,7 @@
 
                 @if ($this->transaction)
                     <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200 mb-8">
-                        <p class="text-center text-green-600 text-xl font-semibold mb-6">Payment successful</p>
+                        <p class="text-center text-green-600 text-xl font-semibold mb-6">Payment status</p>
 
                         <table class="min-w-full table-auto">
                             <thead>
@@ -69,12 +69,14 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @if ($this->transaction->status === 'paid')
+                                    {{-- Payment successful details --}}
                                     <tr>
                                         <td class="py-2 px-4 border-b">Méthode de paiement</td>
                                         <td class="py-2 px-4 border-b">CIB / Edahabia</td>
                                     </tr>
                                     <tr>
-                                        <td class="py-2 px-4 border-b">Numéro de commande </td>
+                                        <td class="py-2 px-4 border-b">Numéro de commande</td>
                                         <td class="py-2 px-4 border-b">{{ $this->transaction->order_id }}</td>
                                     </tr>
                                     <tr>
@@ -86,13 +88,28 @@
                                         <td class="py-2 px-4 border-b">{{ $this->transaction->auth_code }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="py-2 px-4 border-b">Montant total </td>
+                                        <td class="py-2 px-4 border-b">Montant total</td>
                                         <td class="py-2 px-4 border-b">{{ $this->transaction->deposit_amount }}</td>
                                     </tr>
                                     <tr>
                                         <td class="py-2 px-4 border-b">Date et heure</td>
                                         <td class="py-2 px-4 border-b">{{ $this->transaction->deposit_amount }}</td>
                                     </tr>
+                                @else
+                                    {{-- Payment failed or pending details --}}
+                                    <tr>
+                                        <td class="py-2 px-4 border-b">Status</td>
+                                        <td class="py-2 px-4 border-b text-red-600">Not Paid</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-4 border-b">Error Message</td>
+                                        <td class="py-2 px-4 border-b">Payment failed or is pending</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-4 border-b">Suggested Action</td>
+                                        <td class="py-2 px-4 border-b">Please try again or contact support</td>
+                                    </tr>
+                                @endif
                             </tbody>
                         </table>
 
@@ -103,44 +120,45 @@
                     </div>
                 @else
                     <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200">
-                    <form wire:submit.prevent="submit" class="space-y-6">
+                        <form wire:submit.prevent="submit" class="space-y-6">
 
-                        <div>
-                            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nom
-                                complet</label>
-                            <input type="text" id="name" name="name"
-                                class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-guiddini-accent"
-                                placeholder="Votre nom et prénom">
-                        </div>
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nom
+                                    complet</label>
+                                <input type="text" id="name" name="name"
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-guiddini-accent"
+                                    placeholder="Votre nom et prénom">
+                            </div>
 
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email
-                                professionnel</label>
-                            <input type="email" id="email" name="email"
-                                class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-guiddini-accent"
-                                placeholder="exemple@entreprise.com">
-                        </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email
+                                    professionnel</label>
+                                <input type="email" id="email" name="email"
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-guiddini-accent"
+                                    placeholder="exemple@entreprise.com">
+                            </div>
 
-                        <div>
-                            <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Montant</label>
-                            <input type="amount" id="amount" wire:model="amount"
-                                class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-guiddini-accent"
-                                placeholder="exemple@entreprise.com">
+                            <div>
+                                <label for="message"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Montant</label>
+                                <input type="amount" id="amount" wire:model="amount"
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-guiddini-accent"
+                                    placeholder="exemple@entreprise.com">
 
-                            @error('amount')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
+                                @error('amount')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-                        <div>
-                            <button type="submit"
-                                class="w-full bg-guiddini-accent text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-500 transition-colors flex justify-center items-center gap-2">
-                                <span>Payer par</span>
-                                <img src="{{ asset('images/cib_logotype.jpg') }}" alt="CIB" class="h-10">
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                            <div>
+                                <button type="submit"
+                                    class="w-full bg-guiddini-accent text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-500 transition-colors flex justify-center items-center gap-2">
+                                    <span>Payer par</span>
+                                    <img src="{{ asset('images/cib_logotype.jpg') }}" alt="CIB" class="h-10">
+                                </button>
+                            </div>
+                        </form>
+                    </div>
 
                 @endif
             </div>
