@@ -59,7 +59,12 @@
 
                 @if ($this->transaction)
                     <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200 mb-8">
-                        <p class="text-center text-green-600 text-xl font-semibold mb-6">Payment status</p>
+
+                        @if ($this->transaction->status === 'Paid')
+                            <p class="text-center text-green-600 text-xl font-semibold mb-6">{{ $this->transaction->action_code_description }}</p>
+                        @else
+                            <p class="text-center text-red-600 text-xl font-semibold mb-6">{{ $this->transaction->action_code_description }}</p>
+                        @endif
 
                         <table class="min-w-full table-auto">
                             <thead>
@@ -97,9 +102,9 @@
                                     </tr>
                                 @else
                                     {{-- Payment failed or pending details --}}
-                                    <tr>
+                                    {{-- <tr>
                                         <td class="py-2 px-4 border-b">Status</td>
-                                        <td class="py-2 px-4 border-b text-red-600">Not Paid</td>
+                                        <td class="py-2 px-4 border-b text-red-600">Échoué</td>
                                     </tr>
                                     <tr>
                                         <td class="py-2 px-4 border-b">Error Message</td>
@@ -108,7 +113,7 @@
                                     <tr>
                                         <td class="py-2 px-4 border-b">Suggested Action</td>
                                         <td class="py-2 px-4 border-b">Please try again or contact support</td>
-                                    </tr>
+                                    </tr> --}}
                                 @endif
                             </tbody>
                         </table>
