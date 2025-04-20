@@ -66,6 +66,12 @@ class ClientPaymentController extends Controller
                 // 'gateway_code' => $this->getGatewayErrorCode($gatewayResponse)
             ]);
 
+            if($transaction->type === 'System')
+                return redirect()->route('certification',[
+                    'slug' => $transaction->slug,
+                    'order_number' => $transaction->order_number
+                ]);
+
             return redirect()->to("$redirectUrl?$queryParams");
         } catch (\Throwable $e) {
             return $this->handleApiException($e);

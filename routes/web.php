@@ -23,7 +23,7 @@ Route::prefix('client/payment')->group(function () {
 });
 
 // Route::get('/{slug}', [ClientPaymentController::class, 'certification'])->name('certification');
-Route::get('/{slug}', SponteanousPayment::class)->name('certification');
+Route::get('/{slug}/{order_number?}', SponteanousPayment::class)->name('certification');
 
 
 // Route::prefix('payment')->group(function () {

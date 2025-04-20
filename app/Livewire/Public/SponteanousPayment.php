@@ -45,6 +45,5 @@ class SponteanousPayment extends Component
 
         return redirect()->to($result['formUrl']);
 
-
     }
 }
