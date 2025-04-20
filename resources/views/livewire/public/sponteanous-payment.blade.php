@@ -1,5 +1,7 @@
 <div>
 
+
+
     <body class="bg-white min-h-screen">
 
         <main class="container mx-auto px-4 py-12">
@@ -55,7 +57,52 @@
                     </div>
                 </div>
 
-                <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200">
+                @if ($this->transaction)
+                    <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200 mb-8">
+                        <p class="text-center text-green-600 text-xl font-semibold mb-6">Payment successful</p>
+
+                        <table class="min-w-full table-auto">
+                            <thead>
+                                <tr>
+                                    {{-- <th class="py-2 px-4 border-b">Column 1</th> --}}
+                                    {{-- <th class="py-2 px-4 border-b">Column 2</th> --}}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                    <tr>
+                                        <td class="py-2 px-4 border-b">Méthode de paiement</td>
+                                        <td class="py-2 px-4 border-b">CIB / Edahabia</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-4 border-b">Numéro de commande </td>
+                                        <td class="py-2 px-4 border-b">{{ $this->transaction->order_id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-4 border-b">ID de transaction</td>
+                                        <td class="py-2 px-4 border-b">{{ $this->transaction->order_number }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-4 border-b">Numéro d'autorisation</td>
+                                        <td class="py-2 px-4 border-b">{{ $this->transaction->auth_code }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-4 border-b">Montant total </td>
+                                        <td class="py-2 px-4 border-b">{{ $this->transaction->deposit_amount }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-4 border-b">Date et heure</td>
+                                        <td class="py-2 px-4 border-b">{{ $this->transaction->deposit_amount }}</td>
+                                    </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="mt-6 flex justify-center gap-4">
+                            <button class="bg-blue-500 text-white py-2 px-6 rounded-lg">Download PDF</button>
+                            <button class="bg-green-500 text-white py-2 px-6 rounded-lg">Send via Email</button>
+                        </div>
+                    </div>
+                @else
+                    <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200">
                     <form wire:submit.prevent="submit" class="space-y-6">
 
                         <div>
@@ -94,6 +141,8 @@
                         </div>
                     </form>
                 </div>
+
+                @endif
             </div>
         </main>
 
@@ -108,4 +157,6 @@
         </div>
 
     </body>
+
+
 </div>

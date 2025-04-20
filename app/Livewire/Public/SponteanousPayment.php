@@ -4,6 +4,7 @@ namespace App\Livewire\Public;
 
 use Livewire\Component;
 use App\Models\Application;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Services\Payments\PaymentService;
 
@@ -12,6 +13,9 @@ class SponteanousPayment extends Component
     public Application $application;
 
     public $amount;
+    public $showTransaction = false;
+    public $transaction;
+    public $orderNumber;
 
     protected $rules = [
         'amount' => 'required',
@@ -21,9 +25,18 @@ class SponteanousPayment extends Component
         'amount.required' => 'Le montant est obligatoire.',
     ];
 
-    public function mount($slug)
+    public function mount($slug, $order_number = null)
     {
         $this->application = Application::where('slug', $slug)->firstOrFail();
+        $this->orderNumber = $order_number;
+
+        // Check if orderNumber is not null before querying the transaction
+        if ($this->orderNumber) {
+            $this->transaction = Transaction::where('order_number', $this->orderNumber)->first();
+        } else {
+            $this->transaction = null;
+        }
+
     }
 
     public function render()
@@ -44,6 +57,5 @@ class SponteanousPayment extends Component
         );
 
         return redirect()->to($result['formUrl']);
-
     }
 }
