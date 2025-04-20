@@ -60,7 +60,7 @@
                 @if ($this->transaction)
                     <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200 mb-8">
 
-                        @if ($this->transaction->status === 'Paid')
+                        @if ($this->transaction->status === 'paid')
                             <p class="text-center text-green-600 text-xl font-semibold mb-6">{{ $this->transaction->action_code_description }}</p>
                         @else
                             <p class="text-center text-red-600 text-xl font-semibold mb-6">{{ $this->transaction->action_code_description }}</p>
