@@ -14,13 +14,13 @@ use Filament\Tables\Actions\Action;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Components\Fieldset;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\SelectColumn;
+use Filament\Infolists\Components\Fieldset;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -90,6 +90,8 @@ class Applications extends Page implements HasForms, HasTable
             ->actions([
                 ActionGroup::make([
                     ActionGroup::make([
+
+
                         ViewAction::make('view')
                             ->icon('heroicon-o-eye')
                             ->infolist([
