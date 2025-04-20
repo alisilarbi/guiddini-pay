@@ -30,7 +30,7 @@ class Applications extends Page implements HasForms, HasTable
     use InteractsWithTable;
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-cube';
 
     protected static string $view = 'filament.user.pages.applications';
 

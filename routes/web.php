@@ -20,8 +20,26 @@ Route::prefix('client/payment')->group(function () {
         ->name('client.payment.pdf')
         ->middleware('signed');
 
-
 });
+
+Route::get('/{slug}', [ClientPaymentController::class, 'certification']);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Route::prefix('payment')->group(function () {
 //     Route::get('/receipt/{order_number}', [ClientPaymentController::class, 'getPaymentReceipt'])

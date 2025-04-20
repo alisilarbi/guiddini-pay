@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Partner\Pages;
+namespace App\Filament\User\Pages;
 
 use Filament\Pages\Page;
 use Filament\Tables\Table;
@@ -17,16 +17,15 @@ use Filament\Tables\Columns\SelectColumn;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
+
 class Transactions extends Page implements HasForms, HasTable
 {
     use InteractsWithTable;
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.partner.pages.transactions';
-
-    protected static ?string $navigationGroup = 'Finances';
+    protected static string $view = 'filament.user.pages.transactions';
 
     public function table(Table $table): Table
     {
@@ -225,5 +224,4 @@ class Transactions extends Page implements HasForms, HasTable
                 default => null,
             });
     }
-
 }

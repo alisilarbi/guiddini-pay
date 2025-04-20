@@ -102,8 +102,6 @@ class ClientPaymentController extends Controller
         }
     }
 
-
-
     public function getPaymentReceipt(Request $request)
     {
         try {
@@ -164,4 +162,16 @@ class ClientPaymentController extends Controller
             ]
         ], 200);
     }
+
+    public function certification(string $slug)
+    {
+        $application = Application::where('slug', $slug)->firstOrFail();
+
+        return view('public.user.payment')->with(['application' => $application]);
+    }
+
+
+
+
+
 }
