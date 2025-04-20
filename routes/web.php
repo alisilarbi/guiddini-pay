@@ -22,14 +22,7 @@ Route::prefix('client/payment')->group(function () {
 
 });
 
-Route::get('/{slug}', [ClientPaymentController::class, 'certification']);
-
-
-
-
-
-
-
+Route::get('/{slug}', [ClientPaymentController::class, 'certification'])->name('certification');
 
 
 

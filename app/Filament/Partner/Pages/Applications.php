@@ -139,7 +139,6 @@ class Applications extends Page implements HasForms, HasTable
                     ])->dropdown(false),
 
                     ActionGroup::make([
-
                         Action::make('edit')
                             ->label('Edit')
                             ->icon('heroicon-o-pencil-square')
@@ -240,6 +239,16 @@ class Applications extends Page implements HasForms, HasTable
                                 // ]);
                             }),
 
+                        Action::make('certification')
+                            ->label('Certification')
+                            ->icon('heroicon-o-arrow-top-right-on-square')
+                            ->url(fn(Application $record): string => route('certification', ['slug' => $record->slug]))
+                            ->openUrlInNewTab()
+
+                    ])
+                        ->dropdown(false),
+
+                    ActionGroup::make([
 
                         Action::make('change_ownership')
                             ->label('Transfer Ownership')
@@ -276,8 +285,8 @@ class Applications extends Page implements HasForms, HasTable
                                     'user_id' => Auth::user()->id,
                                 ]);
                             })
-                            ->disabled(function(Application $record){
-                                if($record->user_id === Auth::user()->id)
+                            ->disabled(function (Application $record) {
+                                if ($record->user_id === Auth::user()->id)
                                     return true;
 
                                 return false;
@@ -295,6 +304,11 @@ class Applications extends Page implements HasForms, HasTable
                                 $record->delete();
                             })
                     ])->dropdown(false),
+
+
+
+
+
                 ])->tooltip('Actions'),
             ])
             ->headerActions([

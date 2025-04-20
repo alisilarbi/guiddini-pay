@@ -41,7 +41,6 @@ class Applications extends Page implements HasForms, HasTable
         // dd($app->license->name);
     }
 
-
     public function table(Table $table): Table
     {
         return $table
