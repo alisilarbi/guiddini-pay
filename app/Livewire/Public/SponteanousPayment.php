@@ -36,6 +36,7 @@ class SponteanousPayment extends Component
         $this->validate();
 
         $data['amount'] = $this->amount;
+        $data['type'] = 'System';
 
         $result = $paymentService->initiatePayment(
             $data,
