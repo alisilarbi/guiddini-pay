@@ -66,10 +66,10 @@ class ClientPaymentController extends Controller
             ]);
 
 
-            dd($transaction->application);
+            // dd($transaction->application);
             if($transaction->origin === 'System')
                 return redirect()->route('certification', [
-                    'slug' => $transaction->slug,
+                    'slug' => $transaction->application->slug,
                     'order_number' => $transaction->order_number
                 ]);
 
