@@ -68,7 +68,7 @@ class ClientPaymentController extends Controller
             if($transaction->origin === 'System')
                 return redirect()->route('certification', [
                     'slug' => $transaction->slug,
-                    // 'order_number' => $transaction->order_number
+                    'order_number' => $transaction->order_number
                 ]);
 
             return redirect()->to("$redirectUrl?$queryParams");
