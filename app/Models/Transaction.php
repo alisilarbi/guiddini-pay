@@ -12,7 +12,7 @@ class Transaction extends Model
     use HasUuids;
 
     protected $fillable = [
-        'type',
+        'origin',
         'status',
 
         'application_id',
