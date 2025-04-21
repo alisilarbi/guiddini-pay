@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <title>INVOICE</title>
@@ -187,12 +188,14 @@
     <header class="clearfix">
         <h2 style="text-align: center;">Reçu de paiement éléctronique</h2>
         <div id="logo">
-            <img style="width: 100%; max-width: 140px ;height: 50px;"
-                src="{{ url('images/icon.svg') }}">
+            <img style="width: 100%; max-width: 140px ;height: 50px;" src="{{ url('images/icon.svg') }}">
 
-            </div>
-            <img style="width: 100%; max-width: 75px ;height: 75px;float: right;"
-                src="{{ url($application->logo)  }}">
+        </div>
+
+        @if ($application->logo)
+            <img style="width: 100%; max-width: 75px ;height: 75px;float: right;" src="{{ url($application->logo) }}">
+        @endif
+
     </header>
     <main>
         <div id="invoice-header">
