@@ -146,6 +146,9 @@ class ClientPaymentController extends Controller
         $pdf = Pdf::loadView('components.pdfs.transaction-success', [
             'transaction' => $transaction,
             'application' => $application,
+        ])->setOptions([
+            'isRemoteEnabled' => true, // Enable remote images
+            'isHtml5ParserEnabled' => true,
         ]);
 
         return $pdf->download('invoice.pdf');
