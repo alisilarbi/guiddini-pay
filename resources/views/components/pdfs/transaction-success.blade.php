@@ -254,7 +254,7 @@
                 <tr>
                     <td class="desc">Montant total</td>
                     <td class="unit">
-                        {{ $transaction->total }} DA
+                        {{ $transaction->amount }} DA
                     </td>
                 </tr>
             </tbody>
