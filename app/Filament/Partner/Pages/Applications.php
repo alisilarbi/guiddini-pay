@@ -50,8 +50,7 @@ class Applications extends Page implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            // ->query(Application::query()->with(['license', 'user']))
-            ->query(Application::where('partner_id', Auth::user()->id)->with(['license', 'user']))
+            ->query(Application::where('partner_id', Auth::user()->id)->with(['license', 'user'])->latest())
             ->columns([
                 TextColumn::make('name')
                     ->label('App name'),
@@ -153,52 +152,58 @@ class Applications extends Page implements HasForms, HasTable
                                 ];
                             })
                             ->form([
-                                TextInput::make('name')
-                                    ->required(),
 
-                                // FileUpload::make('logo')
-                                //     ->image(),
+                                FileUpload::make('logo')
+                                    ->moveFiles()
+                                    ->image(),
 
-                                TextInput::make('website_url')
-                                    ->label('Lien du site web')
-                                    ->required()
-                                    ->url()
-                                    // ->rule(new ValidUrlRule())
-                                    ->live(),
+                                Grid::make(2)
+                                    ->schema([
+                                        TextInput::make('name')
+                                            ->required(),
 
-                                TextInput::make('redirect_url')
-                                    ->label('Lien de redirection')
-                                    ->required()
-                                    ->url()
-                                    // ->rule(fn($get) => $get('website_url') ? new RedirectUrlRule($get('website_url')) : 'nullable')
-                                    ->live(),
+                                        TextInput::make('website_url')
+                                            ->label('Lien du site web')
+                                            ->required()
+                                            ->url()
+                                            // ->rule(new ValidUrlRule())
+                                            ->live(),
 
-                                Select::make('license')
-                                    ->live()
-                                    ->required()
-                                    ->options(License::all()->pluck('name', 'id')),
+                                        TextInput::make('redirect_url')
+                                            ->label('Lien de redirection')
+                                            ->required()
+                                            ->url()
+                                            // ->rule(fn($get) => $get('website_url') ? new RedirectUrlRule($get('website_url')) : 'nullable')
+                                            ->live(),
 
-                                Select::make('license_env')
-                                    ->live()
-                                    ->required()
-                                    ->options(function (Get $get) {
+                                        Select::make('license')
+                                            ->live()
+                                            ->required()
+                                            ->options(License::all()->pluck('name', 'id')),
 
-                                        if (!$get('license')) {
-                                            return [];
-                                        }
+                                        Select::make('license_env')
+                                            ->live()
+                                            ->required()
+                                            ->options(function (Get $get) {
 
-                                        $license = License::where('id', $get('license'))->first();
-                                        if (!$license || $license->satim_production_username || $license->satim_production_password || $license->satim_production_terminal) {
-                                            return collect([
-                                                ['id' => 'development', 'name' => 'Development'],
-                                                ['id' => 'production', 'name' => 'Production'],
-                                            ])->pluck('name', 'id')->toArray();
-                                        }
+                                                if (!$get('license')) {
+                                                    return [];
+                                                }
 
-                                        return collect([
-                                            ['id' => 'development', 'name' => 'Development'],
-                                        ])->pluck('name', 'id')->toArray();
-                                    })
+                                                $license = License::where('id', $get('license'))->first();
+                                                if (!$license || $license->satim_production_username || $license->satim_production_password || $license->satim_production_terminal) {
+                                                    return collect([
+                                                        ['id' => 'development', 'name' => 'Development'],
+                                                        ['id' => 'production', 'name' => 'Production'],
+                                                    ])->pluck('name', 'id')->toArray();
+                                                }
+
+                                                return collect([
+                                                    ['id' => 'development', 'name' => 'Development'],
+                                                ])->pluck('name', 'id')->toArray();
+                                            })
+                                    ]),
+
 
                             ])
                             ->action(function ($data, $record) {
@@ -212,31 +217,23 @@ class Applications extends Page implements HasForms, HasTable
                                     'license_id' => $env->id,
                                 ]);
 
-                                // $application = Application::create([
-                                //     'name' => $data['name'],
-                                //     'website_url' => $data['website_url'],
-                                //     'redirect_url' => $data['redirect_url'],
-                                // ]);
+                                if ($data['logo'] && $data['logo'] !== $record->logo) {
+                                    $tempPath = Storage::disk('public')->path($data['logo']);
+                                    $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
 
-                                // if ($data['logo']) {
-                                //     $tempPath = Storage::disk('public')->path($data['logo']);
-                                //     $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
-                                //     $destination = 'applications/' . $application->id;
+                                    Storage::disk('logos')->putFileAs(null, $tempPath, $newFileName);
+                                    Storage::disk('public')->delete($data['logo']);
 
-                                //     Storage::disk('private')->putFileAs($destination, $tempPath, $newFileName);
-                                //     Storage::disk('public')->delete($tempPath);
+                                    $path = 'logos/' . $newFileName;
+                                    $record->update([
+                                        'logo' => $path,
+                                    ]);
+                                }
 
-                                //     $path = $destination . '/' . $newFileName;
-                                //     $application->update([
-                                //         'logo' => $path,
-                                //     ]);
-                                // }
-
-                                // $env = License::where('id', $data['license'])->first();
-                                // $application->update([
-                                //     'license_env' => $data['license_env'],
-                                //     'license_id' => $env->id,
-                                // ]);
+                                if (is_null($data['logo']) && $record->logo) {
+                                    Storage::disk('logos')->delete(basename($record->logo));
+                                    $record->update(['logo' => null]);
+                                }
                             }),
 
                         Action::make('certification')
@@ -305,10 +302,6 @@ class Applications extends Page implements HasForms, HasTable
                             })
                     ])->dropdown(false),
 
-
-
-
-
                 ])->tooltip('Actions'),
             ])
             ->headerActions([
@@ -319,8 +312,8 @@ class Applications extends Page implements HasForms, HasTable
                                 TextInput::make('name')
                                     ->required(),
 
-                                // FileUpload::make('logo')
-                                //     ->image(),
+                                FileUpload::make('logo')
+                                    ->image(),
                             ]),
                         Step::make('Fonctionnement')
                             ->schema([
@@ -384,19 +377,18 @@ class Applications extends Page implements HasForms, HasTable
                             'user_id' => Auth::user()->id,
                         ]);
 
-                        // if ($data['logo']) {
-                        //     $tempPath = Storage::disk('public')->path($data['logo']);
-                        //     $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
-                        //     $destination = 'applications/' . $application->id;
+                        if ($data['logo']) {
+                            $tempPath = Storage::disk('public')->path($data['logo']);
+                            $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
 
-                        //     Storage::disk('private')->putFileAs($destination, $tempPath, $newFileName);
-                        //     Storage::disk('public')->delete($tempPath);
+                            Storage::disk('logos')->putFileAs(null, $tempPath, $newFileName);
+                            Storage::disk('public')->delete($data['logo']);
 
-                        //     $path = $destination . '/' . $newFileName;
-                        //     $application->update([
-                        //         'logo' => $path,
-                        //     ]);
-                        // }
+                            $path = 'logos/' . $newFileName;
+                            $application->update([
+                                'logo' => $path,
+                            ]);
+                        }
 
                         $env = License::where('id', $data['license'])->first();
                         $application->update([

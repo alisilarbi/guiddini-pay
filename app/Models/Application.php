@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Application extends Model
@@ -87,8 +88,11 @@ class Application extends Model
             }
         });
 
-        // static::deleting(function ($application) {
-        //     $application->info()->delete();
-        // });
+        static::deleting(function ($application) {
+            if ($application->logo) {
+                Storage::disk('logos')->delete(basename($application->logo));
+                $application->update(['logo' => null]);
+            }
+        });
     }
 }

@@ -31,7 +31,8 @@ Route::get('/{slug}/{order_number?}', SponteanousPayment::class)->name('certific
 //         ->name('payment.receipt')
 //         ->middleware('signed'); // Enforces signature verification
 // });
-// Route::get('/private-files/{path}', function ($path) {
+
+// Route::get('/media/{path}', function ($path) {
 //     $filePath = "private/{$path}";
 
 //     if (Storage::disk('private')->exists($filePath)) {
