@@ -188,11 +188,11 @@
         <h2 style="text-align: center;">Reçu de paiement éléctronique</h2>
         <div id="logo">
             <img style="width: 100%; max-width: 140px ;height: 50px;"
-                src="{{ public_path('images/cib_logotype.png') }}">
+                src="{{ public_path('images/cib_logotype.jpg') }}">
 
             </div>
-            {{-- <img style="width: 100%; max-width: 75px ;height: 75px;float: right;"
-                src="{{ url($application->logo)  }}"> --}}
+            <img style="width: 100%; max-width: 75px ;height: 75px;float: right;"
+                src="{{ url($application->logo)  }}">
     </header>
     <main>
         <div id="invoice-header">
