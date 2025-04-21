@@ -17,12 +17,14 @@ class ReceiptService
     public function downloadPaymentReceipt(string $orderNumber): \Illuminate\Http\Response
     {
         $transaction = Transaction::where('order_number', $orderNumber)->first();
+        $application = $transaction->application;
 
-        if (!$transaction) {
-            throw new PaymentException('Transaction not found', 'TRANSACTION_NOT_FOUND', 404);
-        }
+        // $pdf = Pdf::loadView('components.pdfs.transaction-success', compact('transaction'));
+        $pdf = Pdf::loadView('components.pdfs.transaction-success', [
+            'transaction' => $transaction,
+            'application' => $application,
+        ]);
 
-        $pdf = Pdf::loadView('components.pdfs.transaction-success', compact('transaction'));
         return $pdf->download('invoice.pdf');
     }
 

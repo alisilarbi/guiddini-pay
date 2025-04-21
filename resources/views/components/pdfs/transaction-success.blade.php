@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <title>INVOICE</title>
@@ -193,15 +192,15 @@
 
             </div>
             {{-- <img style="width: 100%; max-width: 75px ;height: 75px;float: right;"
-                src="{{ $logo }}"> --}}
+                src="{{ asset($application->logo)  }}"> --}}
     </header>
     <main>
         <div id="invoice-header">
             <div id="details" class="clearfix" style="float: left;">
                 <div id="Signature">
-                    <h3>L'entreprise: Guiddini Plus</h3>
-                    <div>Télépone: 0540761845</div>
-                    <div>Email: contact@efawtara.com </div>
+                    <h3>L'entreprise: {{ $application->name }}</h3>
+                    {{-- <div>Télépone: {{ $application->user->phone }}</div> --}}
+                    <div>Email: {{ $application->user->email }} </div>
                 </div>
             </div>
 
@@ -229,19 +228,19 @@
                 <tr>
                     <td class="desc">Numéro de commande </td>
                     <td class="unit">
-                        {{ $transaction['order_id'] }}
+                        {{ $transaction->order_id }}
                     </td>
                 </tr>
                 <tr>
                     <td class="desc">ID de transaction </td>
                     <td class="unit">
-                        {{ $transaction['gateway_order_id'] }}
+                        {{ $transaction->order_number }}
                     </td>
                 </tr>
                 <tr>
                     <td class="desc">Numéro d'autorisation</td>
                     <td class="unit">
-                        {{ $transaction['gateway_code'] }}
+                        {{ $transaction->approval_code }}
                     </td>
                 </tr>
 
@@ -249,13 +248,13 @@
                     <td class="desc">Date et heure
                     </td>
                     <td class="unit">
-                        {{ $transaction['created_at'] }}
+                        {{ $transaction->updated_at }}
                     </td>
                 </tr>
                 <tr>
                     <td class="desc">Montant total</td>
                     <td class="unit">
-                        {{ $transaction['total'] }} DA
+                        {{ $transaction->total }} DA
                     </td>
                 </tr>
             </tbody>

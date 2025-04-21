@@ -15,6 +15,7 @@ use App\Traits\HandlesWebExceptions;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\User\TransactionReceipt;
 use App\Services\Payments\PaymentService;
+use App\Services\Payments\ReceiptService;
 use App\Http\Resources\Api\PaymentResource;
 use App\Http\Resources\Api\TransactionResource;
 
@@ -23,7 +24,7 @@ class ClientPaymentController extends Controller
     use HandlesApiExceptions;
     use HandlesWebExceptions;
 
-    public function __construct(private PaymentService $paymentService) {}
+    public function __construct(private PaymentService $paymentService, ReceiptService $receiptService) {}
 
     public function initiate(Request $request)
     {
@@ -53,28 +54,27 @@ class ClientPaymentController extends Controller
     {
         $result = $this->paymentService->confirmPayment($orderNumber);
 
-            $transaction = $result['transaction'];
-            $gatewayResponse = $result['gateway_response'];
+        $transaction = $result['transaction'];
+        $gatewayResponse = $result['gateway_response'];
 
-            $redirectUrl = $transaction->application->redirect_url;
+        $redirectUrl = $transaction->application->redirect_url;
 
-            $queryParams = http_build_query([
-                'order_number' => $orderNumber,
-                // 'status' => $transaction->status,
-                // 'confirmation_status' => $transaction->confirmation_status,
-                // 'gateway_code' => $this->getGatewayErrorCode($gatewayResponse)
+        $queryParams = http_build_query([
+            'order_number' => $orderNumber,
+            // 'status' => $transaction->status,
+            // 'confirmation_status' => $transaction->confirmation_status,
+            // 'gateway_code' => $this->getGatewayErrorCode($gatewayResponse)
+        ]);
+
+        if ($transaction->origin === 'System')
+            return redirect()->route('certification', [
+                'slug' => $transaction->application->slug,
+                'order_number' => $transaction->order_number
             ]);
 
-            if($transaction->origin === 'System')
-                return redirect()->route('certification', [
-                    'slug' => $transaction->application->slug,
-                    'order_number' => $transaction->order_number
-                ]);
-
-            return redirect()->to("$redirectUrl?$queryParams");
+        return redirect()->to("$redirectUrl?$queryParams");
 
         try {
-
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
         }
@@ -139,7 +139,12 @@ class ClientPaymentController extends Controller
     public function downloadPaymentReceipt(string $orderNumber)
     {
         $transaction = Transaction::where('order_number', $orderNumber)->first();
-        $pdf = Pdf::loadView('components.pdfs.transaction-success', compact('transaction'));
+        $application = $transaction->application;
+        // $pdf = Pdf::loadView('components.pdfs.transaction-success', compact('transaction'));
+        $pdf = Pdf::loadView('components.pdfs.transaction-success', [
+            'transaction' => $transaction,
+            'application' => $application,
+        ]);
         return $pdf->download('invoice.pdf');
     }
 
@@ -177,9 +182,4 @@ class ClientPaymentController extends Controller
 
         return view('public.user.payment')->with(['application' => $application]);
     }
-
-
-
-
-
 }
