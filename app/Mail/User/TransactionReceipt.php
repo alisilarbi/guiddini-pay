@@ -60,7 +60,10 @@ class TransactionReceipt extends Mailable
     public function attachments(): array
     {
 
-        $pdf = Pdf::loadView('components.pdfs.transaction-success', ['transaction' => $this->transaction]);
+        $pdf = Pdf::loadView('components.pdfs.transaction-success', [
+            'transaction' => $this->transaction,
+            'application' => $this->application,
+        ]);
 
         return [
             Attachment::fromData(
