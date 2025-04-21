@@ -159,9 +159,8 @@
                         </div>
                     </div>
 
-                    <footer class="clearfix" style="text-align: center;">
-                        <h5 style="text-align: center;">Si vous rencontrez un problème avec le paiement, Contactez la
-                            SATIM</h5>
+                    <footer class="clearfix mt-2 mb-10" style="text-align: center;">
+                        <h5 style="text-align: center;">Si vous rencontrez un problème avec le paiement, Contactez la SATIM</h5>
 
                         <div style="text-align: center;">
                             <img style="width: 100%; max-width: 140px; height: 50px; display: block; margin: 0 auto;"
@@ -226,15 +225,6 @@
                         </form>
                     </div>
 
-                    <footer class="clearfix" style="text-align: center;">
-                        <h5 style="text-align: center;">Si vous rencontrez un problème avec le paiement, Contactez la
-                            SATIM</h5>
-
-                        <div style="text-align: center;">
-                            <img style="width: 100%; max-width: 140px; height: 50px; display: block; margin: 0 auto;"
-                                src="{{ url('images/green_number.png') }}">
-                        </div>
-                    </footer>
                 @endif
             </div>
         </main>
