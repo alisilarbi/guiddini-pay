@@ -63,6 +63,9 @@ class TransactionReceipt extends Mailable
         $pdf = Pdf::loadView('components.pdfs.transaction-success', [
             'transaction' => $this->transaction,
             'application' => $this->application,
+        ])->setOptions([
+            'isRemoteEnabled' => true,
+            'isHtml5ParserEnabled' => true,
         ]);
 
         return [
