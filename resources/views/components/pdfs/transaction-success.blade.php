@@ -192,7 +192,7 @@
 
             </div>
             <img style="width: 100%; max-width: 75px ;height: 75px;float: right;"
-                src="{{ asset($application->logo)  }}">
+                src="{{ url($application->logo)  }}">
     </header>
     <main>
         <div id="invoice-header">
