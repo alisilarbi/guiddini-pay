@@ -43,6 +43,8 @@ class InitiateGatewayService
 
 
         $this->updater->handleInitiationResponse($transaction, $response);
+
+        dd($this->isErrorResponse($response));
         if ($this->isErrorResponse($response)) {
             $errorCode = $response['ErrorCode'] ?? $response['errorCode'] ?? 'UNKNOWN';
             if ($errorCode === '5') {
@@ -65,6 +67,7 @@ class InitiateGatewayService
                 ['gateway_response' => $response]
             );
         }
+
 
         return $response;
 
