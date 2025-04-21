@@ -159,7 +159,7 @@
                         </div>
                     </div>
 
-                    <footer class="clearfix" style="text-align: center; padding-bottom: 30px;">
+                    <footer class="clearfix" style="text-align: center;">
                         <h5 style="text-align: center;">Si vous rencontrez un problème avec le paiement, Contactez la SATIM</h5>
 
                         <div style="text-align: center;">
