@@ -158,6 +158,16 @@
                             </x-filament::button>
                         </div>
                     </div>
+
+                    <footer class="clearfix" style="text-align: center;">
+                        <h5 style="text-align: center;">Si vous rencontrez un problème avec le paiement, Contactez la
+                            SATIM</h5>
+
+                        <div style="text-align: center;">
+                            <img style="width: 100%; max-width: 140px; height: 50px; display: block; margin: 0 auto;"
+                                src="{{ url('images/green_number.png') }}">
+                        </div>
+                    </footer>
                 @else
                     <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
                         <form wire:submit.prevent="pay" class="space-y-6">
@@ -215,6 +225,16 @@
                             </div>
                         </form>
                     </div>
+
+                    <footer class="clearfix" style="text-align: center;">
+                        <h5 style="text-align: center;">Si vous rencontrez un problème avec le paiement, Contactez la
+                            SATIM</h5>
+
+                        <div style="text-align: center;">
+                            <img style="width: 100%; max-width: 140px; height: 50px; display: block; margin: 0 auto;"
+                                src="{{ url('images/green_number.png') }}">
+                        </div>
+                    </footer>
                 @endif
             </div>
         </main>

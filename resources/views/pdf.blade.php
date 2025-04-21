@@ -524,7 +524,7 @@
             </div>
             <div class="footer-right">
                 <span>Powered by</span>
-                <span class="fawtara">Fawtara</span>
+                <span class="fawtara">Guiddini</span>
             </div>
         </div>
     </div>
