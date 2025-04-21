@@ -34,12 +34,14 @@ class InitiateGatewayService
                 "udf5" => "00",
             ])
         ];
-        dd('hehe');
+
 
         $response = Http::timeout(30)
             ->get($this->baseUrl($transaction) . 'register.do', $params)
             ->throw()
             ->json();
+
+            dd($response);
 
         $this->updater->handleInitiationResponse($transaction, $response);
         if ($this->isErrorResponse($response)) {
