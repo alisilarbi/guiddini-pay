@@ -1,7 +1,6 @@
 <div>
 
     <body class="bg-white min-h-screen">
-
         <main class="container mx-auto px-4 py-12">
             <div class="max-w-4xl mx-auto">
                 <div class="flex justify-center mb-8">
@@ -26,14 +25,13 @@
                     Remplissez simplement le formulaire ci-dessous.
                 </p>
 
-                <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200 mb-8">
+                <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 mb-10">
 
                     @if ($application->logo)
                         <div class="flex justify-center mb-6">
                             <img src="{{ asset($application->logo) }}" alt="Company Logo" class="h-16">
                         </div>
                     @endif
-
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -49,82 +47,76 @@
                         @endif
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Email </label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                             <p class="text-gray-900">{{ $application->user->email }}</p>
                         </div>
                     </div>
                 </div>
 
                 @if ($this->transaction)
-                    <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200 mb-8">
+                    <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 mb-10">
+                        <p
+                            class="text-center text-xl font-semibold mb-6
+                            {{ $this->transaction->status === 'paid' ? 'text-green-600' : 'text-red-600' }}">
+                            {{ $this->transaction->action_code_description }}
+                        </p>
 
                         @if ($this->transaction->status === 'paid')
-                            <p class="text-center text-green-600 text-xl font-semibold mb-6">{{ $this->transaction->action_code_description }}</p>
-                        @else
-                            <p class="text-center text-red-600 text-xl font-semibold mb-6">{{ $this->transaction->action_code_description }}</p>
+                            <table class="min-w-full table-auto mb-8">
+                                <tbody>
+                                    <tr>
+                                        <td class="py-3 px-4 border-b font-medium text-gray-600">Méthode de paiement
+                                        </td>
+                                        <td class="py-3 px-4 border-b text-gray-900">CIB / Edahabia</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 px-4 border-b font-medium text-gray-600">Numéro de commande</td>
+                                        <td class="py-3 px-4 border-b text-gray-900">{{ $this->transaction->order_id }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 px-4 border-b font-medium text-gray-600">ID de transaction</td>
+                                        <td class="py-3 px-4 border-b text-gray-900">
+                                            {{ $this->transaction->order_number }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 px-4 border-b font-medium text-gray-600">Numéro d'autorisation
+                                        </td>
+                                        <td class="py-3 px-4 border-b text-gray-900">
+                                            {{ $this->transaction->auth_code }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 px-4 border-b font-medium text-gray-600">Montant total</td>
+                                        <td class="py-3 px-4 border-b text-gray-900">
+                                            {{ $this->transaction->deposit_amount }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 px-4 border-b font-medium text-gray-600">Date et heure</td>
+                                        <td class="py-3 px-4 border-b text-gray-900">
+                                            {{ $this->transaction->deposit_amount }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="flex justify-center flex-wrap gap-4 mt-6">
+                                <button
+                                    class="bg-guiddini-accent hover:bg-guiddini-accent/80 text-white py-2 px-6 rounded-xl transition-all">Télécharger
+                                    PDF</button>
+                                <button
+                                    class="bg-guiddini-accent hover:bg-guiddini-accent/80 text-white py-2 px-6 rounded-xl transition-all">Envoyer
+                                    par Email</button>
+                            </div>
                         @endif
 
-                        <table class="min-w-full table-auto">
-                            <thead>
-                                <tr>
-                                    <th class="py-2 px-4 border-b"></th>
-                                    <th class="py-2 px-4 border-b"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if ($this->transaction->status === 'paid')
-                                    {{-- Payment successful details --}}
-                                    <tr>
-                                        <td class="py-2 px-4 border-b">Méthode de paiement</td>
-                                        <td class="py-2 px-4 border-b">CIB / Edahabia</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="py-2 px-4 border-b">Numéro de commande</td>
-                                        <td class="py-2 px-4 border-b">{{ $this->transaction->order_id }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="py-2 px-4 border-b">ID de transaction</td>
-                                        <td class="py-2 px-4 border-b">{{ $this->transaction->order_number }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="py-2 px-4 border-b">Numéro d'autorisation</td>
-                                        <td class="py-2 px-4 border-b">{{ $this->transaction->auth_code }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="py-2 px-4 border-b">Montant total</td>
-                                        <td class="py-2 px-4 border-b">{{ $this->transaction->deposit_amount }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="py-2 px-4 border-b">Date et heure</td>
-                                        <td class="py-2 px-4 border-b">{{ $this->transaction->deposit_amount }}</td>
-                                    </tr>
-                                @else
-                                    {{-- Payment failed or pending details --}}
-                                    {{-- <tr>
-                                        <td class="py-2 px-4 border-b">Status</td>
-                                        <td class="py-2 px-4 border-b text-red-600">Échoué</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="py-2 px-4 border-b">Error Message</td>
-                                        <td class="py-2 px-4 border-b">Payment failed or is pending</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="py-2 px-4 border-b">Suggested Action</td>
-                                        <td class="py-2 px-4 border-b">Please try again or contact support</td>
-                                    </tr> --}}
-                                @endif
-                            </tbody>
-                        </table>
-
-                        <div class="mt-6 flex justify-center gap-4">
-                            <button class="bg-blue-500 text-white py-2 px-6 rounded-lg">Download PDF</button>
-                            <button class="bg-green-500 text-white py-2 px-6 rounded-lg">Send via Email</button>
+                        <div class="mt-8 flex justify-center">
+                            <button
+                                class="bg-gray-800 hover:bg-gray-900 text-white py-2 px-6 rounded-xl transition-all">Effectuer
+                                un nouveau paiement</button>
                         </div>
                     </div>
                 @else
-                    <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200">
+                    <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
                         <form wire:submit.prevent="submit" class="space-y-6">
-
                             <div>
                                 <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nom
                                     complet</label>
@@ -142,11 +134,11 @@
                             </div>
 
                             <div>
-                                <label for="message"
+                                <label for="amount"
                                     class="block text-sm font-medium text-gray-700 mb-1">Montant</label>
                                 <input type="amount" id="amount" wire:model="amount"
                                     class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-guiddini-accent"
-                                    placeholder="exemple@entreprise.com">
+                                    placeholder="DZD">
 
                                 @error('amount')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -162,7 +154,6 @@
                             </div>
                         </form>
                     </div>
-
                 @endif
             </div>
         </main>
@@ -176,8 +167,5 @@
                 </div>
             </div>
         </div>
-
     </body>
-
-
 </div>
