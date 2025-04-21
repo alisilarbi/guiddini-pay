@@ -24,7 +24,7 @@ class ClientPaymentController extends Controller
     use HandlesApiExceptions;
     use HandlesWebExceptions;
 
-    public function __construct(private PaymentService $paymentService, ReceiptService $receiptService) {}
+    public function __construct(private PaymentService $paymentService, private ReceiptService $receiptService) {}
 
     public function initiate(Request $request)
     {
@@ -136,21 +136,23 @@ class ClientPaymentController extends Controller
         }
     }
 
-    public function downloadPaymentReceipt(string $orderNumber)
+    public function downloadPaymentReceipt(string $orderNumber): \Illuminate\Http\Response
     {
         $transaction = Transaction::where('order_number', $orderNumber)->first();
         $application = $transaction->application;
+
         // $pdf = Pdf::loadView('components.pdfs.transaction-success', compact('transaction'));
         $pdf = Pdf::loadView('components.pdfs.transaction-success', [
             'transaction' => $transaction,
             'application' => $application,
         ]);
+
         return $pdf->download('invoice.pdf');
     }
 
     public function emailPaymentReceipt(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'order_number' => 'required',
             'email' => 'required',
         ]);
@@ -162,10 +164,7 @@ class ClientPaymentController extends Controller
             ->where('app_secret', $secretKey)
             ->first();
 
-        $transaction = Transaction::where('order_number', $request->order_number)->first();
-        $receiptUrl = URL::signedRoute('client.payment.pdf', ['order_number' => $transaction->order_number]);
-
-        Mail::to('ali@guiddini.com')->send(new TransactionReceipt($transaction, $application, $receiptUrl));
+        $this->receiptService->emailPaymentReceipt($data, $application);
 
         return response()->json([
             'data' => null,
@@ -174,6 +173,7 @@ class ClientPaymentController extends Controller
                 'message' => 'Email send successfully'
             ]
         ], 200);
+
     }
 
     public function certification(string $slug)

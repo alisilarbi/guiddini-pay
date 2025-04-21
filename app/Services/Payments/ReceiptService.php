@@ -42,7 +42,6 @@ class ReceiptService
 
         $transaction = Transaction::where('order_number', $orderNumber)->first();
 
-        // $receiptUrl = URL::signedRoute('client.payment.pdf', ['order_number' => $transaction->order_number]);
         $receiptUrl = $this->generateDownloadLink($transaction->order_number);
         Mail::to($email)->send(new TransactionReceipt($transaction, $application, $receiptUrl));
 
