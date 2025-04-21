@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Environment;
 use Illuminate\Support\Str;
 use App\Models\ProductionRequest;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Model;
@@ -68,20 +69,26 @@ class Application extends Model
         parent::boot();
 
         static::creating(function ($application) {
+
+            $baseSlug = Str::slug($application->name);
+            $slug = $baseSlug;
+            $counter = 1;
+
+            while (DB::table('applications')->where('slug', $slug)->exists()) {
+                $slug = $baseSlug . '-' . $counter++;
+            }
+
+            $application->slug = $slug;
             $application->app_key = self::generateAppKey();
             $application->app_secret = self::generateSecretKey();
 
             if (auth()->check()) {
                 $application->user_id = Auth::user()->id;
             }
-
         });
 
         // static::deleting(function ($application) {
         //     $application->info()->delete();
         // });
     }
-
-
-
 }
