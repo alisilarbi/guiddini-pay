@@ -188,7 +188,7 @@
         <h2 style="text-align: center;">Reçu de paiement éléctronique</h2>
         <div id="logo">
             <img style="width: 100%; max-width: 140px ;height: 50px;"
-                src="{{ url('images/logotype.svg') }}">
+                src="{{ url('images/icon.svg') }}">
 
             </div>
             <img style="width: 100%; max-width: 75px ;height: 75px;float: right;"
