@@ -82,7 +82,7 @@
                                         <td class="py-3 px-4 border-b font-medium text-gray-600">Numéro d'autorisation
                                         </td>
                                         <td class="py-3 px-4 border-b text-gray-900">
-                                            {{ $this->transaction->auth_code }}</td>
+                                            {{ $this->transaction->approval_code }}</td>
                                     </tr>
                                     <tr>
                                         <td class="py-3 px-4 border-b font-medium text-gray-600">Montant total</td>
