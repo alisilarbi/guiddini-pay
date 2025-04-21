@@ -20,7 +20,6 @@ class TransactionUpdater
 
     public function handleConfirmationResponse(Transaction $transaction, array $response): void
     {
-        dd($response);
         $updateData = [
             'deposit_amount' => isset($response['depositAmount']) ? $response['depositAmount'] / 100 : null,
             'auth_code' => $response['authCode'] ?? null,
