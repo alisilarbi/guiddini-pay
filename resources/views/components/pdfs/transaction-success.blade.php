@@ -266,7 +266,7 @@
 
         <div style="text-align: center;">
             <img style="width: 100%; max-width: 140px; height: 50px; display: block; margin: 0 auto;"
-                src="{{ public_path('images/numero_vert.png') }}">
+                src="{{ url('images/green_number.png') }}">
         </div>
     </footer>
 </body>
