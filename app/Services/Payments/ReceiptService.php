@@ -23,7 +23,11 @@ class ReceiptService
         $pdf = Pdf::loadView('components.pdfs.transaction-success', [
             'transaction' => $transaction,
             'application' => $application,
-        ]);
+        ])
+            ->setOptions([
+                'isRemoteEnabled' => true,
+                'isHtml5ParserEnabled' => true,
+            ]);
 
         return $pdf->download('invoice.pdf');
     }
