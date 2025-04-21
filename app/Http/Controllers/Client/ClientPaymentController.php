@@ -153,10 +153,15 @@ class ClientPaymentController extends Controller
 
     public function emailPaymentReceipt(Request $request)
     {
-        $data = $request->validate([
+        $request->validate([
             'order_number' => 'required',
             'email' => 'required',
         ]);
+
+        $data = [
+            'orderNumber' => $request->order_number,
+            'email' => $request->email,
+        ];
 
         $appKey = $request->header('x-app-key');
         $secretKey = $request->header('x-secret-key');
@@ -164,8 +169,6 @@ class ClientPaymentController extends Controller
         $application = Application::where('app_key', $appKey)
             ->where('app_secret', $secretKey)
             ->first();
-
-            dd($data);
 
         $this->receiptService->emailPaymentReceipt($data, $application);
 
