@@ -28,7 +28,6 @@ class PaymentService
 
             $response = $this->initiator->execute($transaction);
 
-
         try {
 
             return [
