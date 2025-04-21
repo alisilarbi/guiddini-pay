@@ -4,6 +4,7 @@ namespace App\Services\Payments;
 
 use App\Models\Application;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\URL;
 use App\Exceptions\PaymentException;
 use App\Services\Payments\CredentialsService;
 use App\Services\Payments\TransactionUpdater;
@@ -85,4 +86,6 @@ class PaymentService
 
         return $orderNumber;
     }
+
+
 }
