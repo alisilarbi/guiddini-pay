@@ -38,7 +38,13 @@ class ClientPaymentController extends Controller
             $request->header('X-App-Key')
         );
 
-        dd($result);
+        return new PaymentResource([
+            'success' => true,
+            'code' => 'PAYMENT_INITIATED',
+            'message' => 'Payment initiated successfully',
+            'data' => $result,
+            'http_code' => 201
+        ]);
 
 
         try {
@@ -179,7 +185,6 @@ class ClientPaymentController extends Controller
                 'message' => 'Email send successfully'
             ]
         ], 200);
-
     }
 
     public function certification(string $slug)
