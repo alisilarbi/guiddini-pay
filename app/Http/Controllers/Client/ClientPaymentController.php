@@ -28,15 +28,19 @@ class ClientPaymentController extends Controller
 
     public function initiate(Request $request)
     {
-        try {
-            $validated = $request->validate([
-                'amount' => 'required|numeric|min:50|decimal:0,2',
-            ]);
 
-            $result = $this->paymentService->initiatePayment(
-                $validated,
-                $request->header('X-App-Key')
-            );
+        $validated = $request->validate([
+            'amount' => 'required|numeric|min:50|decimal:0,2',
+        ]);
+
+        $result = $this->paymentService->initiatePayment(
+            $validated,
+            $request->header('X-App-Key')
+        );
+
+
+        try {
+
 
             return new PaymentResource([
                 'success' => true,
