@@ -38,6 +38,8 @@ class ClientPaymentController extends Controller
             $request->header('X-App-Key')
         );
 
+        dd($result);
+
 
         try {
 
