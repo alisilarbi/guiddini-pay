@@ -28,27 +28,16 @@ class ClientPaymentController extends Controller
 
     public function initiate(Request $request)
     {
-
-        $validated = $request->validate([
-            'amount' => 'required|numeric|min:50|decimal:0,2',
-        ]);
-
-        $result = $this->paymentService->initiatePayment(
-            $validated,
-            $request->header('X-App-Key')
-        );
-
-        return new PaymentResource([
-            'success' => true,
-            'code' => 'PAYMENT_INITIATED',
-            'message' => 'Payment initiated successfully',
-            'data' => $result,
-            'http_code' => 201
-        ]);
-
-
         try {
 
+            $validated = $request->validate([
+                'amount' => 'required|numeric|min:50|decimal:0,2',
+            ]);
+
+            $result = $this->paymentService->initiatePayment(
+                $validated,
+                $request->header('X-App-Key')
+            );
 
             return new PaymentResource([
                 'success' => true,
@@ -175,6 +164,8 @@ class ClientPaymentController extends Controller
         $application = Application::where('app_key', $appKey)
             ->where('app_secret', $secretKey)
             ->first();
+
+            dd($data);
 
         $this->receiptService->emailPaymentReceipt($data, $application);
 
