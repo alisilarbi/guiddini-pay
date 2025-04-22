@@ -23,7 +23,6 @@ class PaymentService
 
     public function initiatePayment(array $data, string $appKey): array
     {
-
         try {
             $application = Application::where('app_key', $appKey)->firstOrFail();
             $transaction = $this->createTransaction($data, $application);

@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use App\Http\Resources\API\ErrorResource;
+use App\Http\Resources\Api\ErrorResource;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\User;
 

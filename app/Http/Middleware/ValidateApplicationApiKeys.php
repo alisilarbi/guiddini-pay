@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use App\Models\Application;
 use Illuminate\Http\Request;
-use App\Http\Resources\API\ErrorResource;
+use App\Http\Resources\Api\ErrorResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class ValidateApplicationApiKeys

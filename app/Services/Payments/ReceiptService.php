@@ -16,41 +16,146 @@ class ReceiptService
 
     public function downloadPaymentReceipt(string $orderNumber): \Illuminate\Http\Response
     {
-        $transaction = Transaction::where('order_number', $orderNumber)->first();
-        $application = $transaction->application;
+        try {
+            $transaction = Transaction::where('order_number', $orderNumber)->first();
 
-        // $pdf = Pdf::loadView('components.pdfs.transaction-success', compact('transaction'));
-        $pdf = Pdf::loadView('components.pdfs.transaction-success', [
-            'transaction' => $transaction,
-            'application' => $application,
-        ])
-            ->setOptions([
-                'isRemoteEnabled' => true,
-                'isHtml5ParserEnabled' => true,
-            ]);
+            if (!$transaction) {
+                throw new PaymentException(
+                    'Transaction not found',
+                    'TRANSACTION_NOT_FOUND',
+                    404
+                );
+            }
 
-        return $pdf->download('invoice.pdf');
+            $application = $transaction->application;
+            $pdf = Pdf::loadView('components.pdfs.transaction-success', [
+                'transaction' => $transaction,
+                'application' => $application,
+            ])
+                ->setOptions([
+                    'isRemoteEnabled' => true,
+                    'isHtml5ParserEnabled' => true,
+                ]);
+
+            return $pdf->download('invoice.pdf');
+        } catch (\Exception $e) {
+            if ($e instanceof PaymentException) {
+                throw $e;
+            }
+
+            throw new PaymentException(
+                'Failed to generate payment receipt',
+                'RECEIPT_GENERATION_FAILED',
+                500,
+                ['error_details' => $e->getMessage()]
+            );
+        }
     }
 
     public function generateDownloadLink(string $orderNumber)
     {
-        $signedUrl = URL::signedRoute('client.payment.pdf', ['order_number' => $orderNumber]);
+        try {
+            $transaction = Transaction::where('order_number', $orderNumber)->first();
 
-        return $signedUrl;
+            if (!$transaction) {
+                throw new PaymentException(
+                    'Transaction not found',
+                    'TRANSACTION_NOT_FOUND',
+                    404
+                );
+            }
+
+            $signedUrl = URL::signedRoute('client.payment.pdf', ['order_number' => $orderNumber]);
+
+            return $signedUrl;
+        } catch (\Exception $e) {
+            if ($e instanceof PaymentException) {
+                throw $e;
+            }
+
+            throw new PaymentException(
+                'Failed to generate download link',
+                'DOWNLOAD_LINK_GENERATION_FAILED',
+                500,
+                ['error_details' => $e->getMessage()]
+            );
+        }
     }
 
     public function emailPaymentReceipt(array $data, Application $application)
     {
-        $orderNumber = $data['orderNumber'];
-        $email = $data['email'];
+        try {
+            $orderNumber = $data['orderNumber'];
+            $email = $data['email'];
 
-        $transaction = Transaction::where('order_number', $orderNumber)->first();
+            $transaction = Transaction::where('order_number', $orderNumber)->first();
 
-        $receiptUrl = $this->generateDownloadLink($transaction->order_number);
-        Mail::to($email)->send(new TransactionReceipt($transaction, $application, $receiptUrl));
+            if (!$transaction) {
+                throw new PaymentException(
+                    'Transaction not found',
+                    'TRANSACTION_NOT_FOUND',
+                    404
+                );
+            }
 
-        return [
-            'message' => 'Email send successfully'
-        ];
+            $receiptUrl = $this->generateDownloadLink($transaction->order_number);
+            Mail::to($email)->send(new TransactionReceipt($transaction, $application, $receiptUrl));
+
+            return [
+                'message' => 'Email sent successfully'
+            ];
+        } catch (\Exception $e) {
+            if ($e instanceof PaymentException) {
+                throw $e;
+            }
+
+            throw new PaymentException(
+                'Failed to send payment receipt email',
+                'EMAIL_SENDING_FAILED',
+                500,
+                ['error_details' => $e->getMessage()]
+            );
+        }
     }
+
+
+
+    // public function downloadPaymentReceipt(string $orderNumber): \Illuminate\Http\Response
+    // {
+    //     $transaction = Transaction::where('order_number', $orderNumber)->first();
+    //     $application = $transaction->application;
+
+    //     $pdf = Pdf::loadView('components.pdfs.transaction-success', [
+    //         'transaction' => $transaction,
+    //         'application' => $application,
+    //     ])
+    //         ->setOptions([
+    //             'isRemoteEnabled' => true,
+    //             'isHtml5ParserEnabled' => true,
+    //         ]);
+
+    //     return $pdf->download('invoice.pdf');
+    // }
+
+    // public function generateDownloadLink(string $orderNumber)
+    // {
+    //     $signedUrl = URL::signedRoute('client.payment.pdf', ['order_number' => $orderNumber]);
+
+    //     return $signedUrl;
+    // }
+
+    // public function emailPaymentReceipt(array $data, Application $application)
+    // {
+    //     $orderNumber = $data['orderNumber'];
+    //     $email = $data['email'];
+
+    //     $transaction = Transaction::where('order_number', $orderNumber)->first();
+
+    //     $receiptUrl = $this->generateDownloadLink($transaction->order_number);
+    //     Mail::to($email)->send(new TransactionReceipt($transaction, $application, $receiptUrl));
+
+    //     return [
+    //         'message' => 'Email send successfully'
+    //     ];
+    // }
 }
