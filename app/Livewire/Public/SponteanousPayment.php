@@ -35,6 +35,7 @@ class SponteanousPayment extends Component
 
     public function mount($slug, $order_number = null)
     {
+        dd('hehe');
         try {
             $this->application = Application::where('slug', $slug)->firstOrFail();
             $this->orderNumber = $order_number;
