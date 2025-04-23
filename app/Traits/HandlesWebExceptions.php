@@ -2,72 +2,68 @@
 
 namespace App\Traits;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use App\Models\User;
+use App\Models\Application;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\Log;
+use App\Exceptions\PaymentException;
+use App\Exceptions\ReceiptException;
+use Filament\Notifications\Notification;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 trait HandlesWebExceptions
 {
     /**
-     * Handle exceptions for web routes and return an appropriate response.
+     * Handle exceptions for web routes and display Filament notifications.
      *
      * @param \Throwable $exception The thrown exception
-     * @param Request $request The current request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
+     * @return void
      */
-    protected function handleWebException(\Throwable $exception, Request $request)
+    protected function handleWebException(\Throwable $exception): void
     {
-        // Delegate to specific handlers based on exception type
-        if ($exception instanceof ModelNotFoundException) {
-            return $this->handleModelNotFound($exception, $request);
-        } elseif ($exception instanceof HttpException) {
-            return $this->handleHttpException($exception, $request);
-        } else {
-            return $this->handleGeneralException($exception, $request);
+        $message = 'An unexpected error occurred';
+        $notificationType = 'danger';
+        $logLevel = 'error';
+        $logContext = ['message' => $exception->getMessage(), 'type' => get_class($exception)];
+
+        if ($exception instanceof ReceiptException || $exception instanceof PaymentException) {
+            $message = $exception->getMessage();
+            $notificationType = 'danger';
+            $logContext = [
+                'message' => $message,
+                'error_code' => $exception->getErrorCode(),
+                'errors' => $exception->getErrors(),
+                'detail' => $exception->getDetail(),
+            ];
+        } elseif ($exception instanceof ModelNotFoundException) {
+            $logLevel = 'warning';
+            switch ($exception->getModel()) {
+                case User::class:
+                    $message = 'The user ID does not exist';
+                    break;
+                case Application::class:
+                    $message = 'The application ID does not exist';
+                    break;
+                case Transaction::class:
+                    $message = 'The transaction ID does not exist';
+                    break;
+                default:
+                    $message = 'Resource not found';
+                    break;
+            }
+            $logContext = ['message' => $message, 'model' => $exception->getModel()];
+        } elseif ($exception instanceof ValidationException) {
+            $logLevel = 'warning';
+            $message = 'Validation failed: ' . implode(', ', array_flatten($exception->errors()));
+            $logContext = ['message' => $message, 'errors' => $exception->errors()];
         }
-    }
 
-    /**
-     * Handle ModelNotFoundException with a user-friendly redirect.
-     */
-    protected function handleModelNotFound(ModelNotFoundException $exception, Request $request)
-    {
-        $message = 'The requested resource could not be found.';
-        Log::warning($message, ['exception' => $exception, 'request' => $request->all()]);
+        Log::$logLevel('Web Exception', $logContext);
 
-        return redirect()->back()
-            ->with('error', $message)
-            ->withInput();
-    }
-
-    /**
-     * Handle HTTP exceptions (e.g., 403, 404) with appropriate messaging.
-     */
-    protected function handleHttpException(HttpException $exception, Request $request)
-    {
-        $statusCode = $exception->getStatusCode();
-        $message = $exception->getMessage() ?: (Response::$statusTexts[$statusCode] ?? 'An error occurred');
-        Log::warning("HTTP Exception: {$statusCode}", ['exception' => $exception]);
-
-        return redirect()->back()
-            ->with('error', $message)
-            ->withInput();
-    }
-
-    /**
-     * Fallback for unhandled exceptions.
-     */
-    protected function handleGeneralException(\Throwable $exception, Request $request)
-    {
-        Log::error('Unexpected error in web route', [
-            'exception' => $exception,
-            'request' => $request->all(),
-        ]);
-
-        return redirect()->back()
-            ->with('error', 'Oops! Something went wrong. Please try again later.')
-            ->withInput();
+        Notification::make()
+            ->title($message)
+            ->{$notificationType}()
+            ->send();
     }
 }

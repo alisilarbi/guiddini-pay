@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use App\Services\Payments\ReceiptService;
 use App\Livewire\Public\SponteanousPayment;
 use App\Http\Controllers\Client\ClientPaymentController;
 
@@ -17,30 +18,16 @@ Route::prefix('payment')->group(function () {
 });
 
 Route::prefix('client/payment')->group(function () {
-    Route::get('/pdf/{order_number}', [ClientPaymentController::class, 'downloadPaymentReceipt'])
-        ->name('client.payment.pdf')
-        ->middleware('signed');
+
+    // Route::get('/pdf/{order_number}', [ClientPaymentController::class, 'downloadPaymentReceipt'])
+    // ->name('client.payment.pdf');
+
+    Route::get('/pdf/{order_number}', [ReceiptService::class, 'downloadPaymentReceipt'])
+        ->name('client.payment.pdf');
+
+    // Route::get('/pdf/{order_number}', [ReceiptService::class, 'downloadPaymentReceipt'])
+    //     ->name('client.payment.pdf')
+    //     ->middleware('signed');
 });
 
-// Route::get('/{slug}', [ClientPaymentController::class, 'certification'])->name('certification');
 Route::get('/{slug}/{order_number?}', SponteanousPayment::class)->name('certification');
-
-
-// Route::prefix('payment')->group(function () {
-//     Route::get('/receipt/{order_number}', [ClientPaymentController::class, 'getPaymentReceipt'])
-//         ->name('payment.receipt')
-//         ->middleware('signed'); // Enforces signature verification
-// });
-
-// Route::get('/media/{path}', function ($path) {
-//     $filePath = "private/{$path}";
-
-//     if (Storage::disk('private')->exists($filePath)) {
-//         return response()->file(Storage::disk('private')->path($filePath));
-//     }
-
-//     abort(404);
-// })->where('path', '.*');
-
-// Route::get('/failed/{order_number}', [ClientPaymentController::class, 'failed'])->name('payment.failed');
-

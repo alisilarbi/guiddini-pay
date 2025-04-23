@@ -41,20 +41,6 @@
             border-bottom: 1px solid #AAAAAA;
         }
 
-        #logo {
-            float: left;
-            margin-top: 8px;
-        }
-
-        #logo img {
-            height: 70px;
-        }
-
-        #company {
-            float: right;
-            text-align: right;
-        }
-
         #invoice-header {
             display: flex;
             flex-direction: row;
@@ -62,7 +48,6 @@
             justify-content: space-between;
             width: 100%
         }
-
 
         #details {
             margin-bottom: 30px;
@@ -76,7 +61,6 @@
 
         #Signature {
             padding-left: 6px;
-            /* // border-left: 4px solid #704cf5; */
             float: left;
         }
 
@@ -130,7 +114,6 @@
 
         table td {
             text-align: right;
-
         }
 
         table .desc {
@@ -171,7 +154,6 @@
 
         ul li {
             display: inline;
-
         }
 
         ul {
@@ -187,29 +169,20 @@
 <body>
     <header class="clearfix">
         <h2 style="text-align: center;">Reçu de paiement éléctronique</h2>
-
-        @if ($guiddiniIcon)
-            <div id="logo">
-                <img style="width: 100%; max-width: 140px; height: 50px;" src="data:image/png;base64,{{ $guiddiniIcon }}">
-            </div>
-        @endif
-
-        @if ($applicationLogo)
-            <img style="width: 100%; max-width: 75px; height: 75px; float: right;"
-                src="data:image/png;base64,{{ $applicationLogo }}">
-        @endif
-
     </header>
     <main>
         <div id="invoice-header">
             <div id="details" class="clearfix" style="float: left;">
                 <div id="Signature">
-                    <h3>L'entreprise: {{ $companyName }}</h3>
-                    <div>Téléphone: {{ $phone }}</div>
-                    <div>Email: {{ $email }}</div>
+                    <h3>L'entreprise: Dummy Company</h3>
+                    <div>Email: dummy@example.com</div>
                 </div>
             </div>
 
+            <div id="details" class="clearfix" style="float: right;">
+                <div id="Signature">
+                </div>
+            </div>
         </div>
 
         <br><br>
@@ -219,27 +192,27 @@
             <tbody>
                 <tr>
                     <td class="desc">Méthode de paiement</td>
-                    <td class="unit">{{ $paymentMethod }}</td>
+                    <td class="unit">CIB / Edahabia</td>
                 </tr>
                 <tr>
-                    <td class="desc">Numéro de commande</td>
-                    <td class="unit">{{ $orderId }}</td>
+                    <td class="desc">Numéro de commande </td>
+                    <td class="unit">123456</td>
                 </tr>
                 <tr>
-                    <td class="desc">ID de transaction</td>
-                    <td class="unit">{{ $orderNumber }}</td>
+                    <td class="desc">ID de transaction </td>
+                    <td class="unit">ABCDEF</td>
                 </tr>
                 <tr>
                     <td class="desc">Numéro d'autorisation</td>
-                    <td class="unit">{{ $approvalCode }}</td>
+                    <td class="unit">78910</td>
                 </tr>
                 <tr>
                     <td class="desc">Date et heure</td>
-                    <td class="unit">{{ $dateTime }}</td>
+                    <td class="unit">2025-01-01 12:00:00</td>
                 </tr>
                 <tr>
                     <td class="desc">Montant total</td>
-                    <td class="unit">{{ $amount }} DA</td>
+                    <td class="unit">1000 DA</td>
                 </tr>
             </tbody>
         </table>
@@ -247,16 +220,8 @@
 
     <footer class="clearfix" style="text-align: center;">
         <h5 style="text-align: center;">Si vous rencontrez un problème avec le paiement, Contactez la SATIM</h5>
-
-        @if ($greenNumberLogo)
-            <div style="text-align: center;">
-                <img style="width: 100%; max-width: 140px; height: 50px; display: block; margin: 0 auto;"
-                    src="data:image/png;base64,{{ $greenNumberLogo }}">
-            </div>
-        @endif
-
-
     </footer>
+
 </body>
 
 </html>

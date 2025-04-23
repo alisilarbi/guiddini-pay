@@ -142,12 +142,15 @@ class ClientPaymentController extends Controller
         $transaction = Transaction::where('order_number', $orderNumber)->first();
         $application = $transaction->application;
 
-        // $pdf = Pdf::loadView('components.pdfs.transaction-success', compact('transaction'));
+
+        $guiddiniLogo = base64_encode(file_get_contents(public_path('images/icon.png')));
+
         $pdf = Pdf::loadView('components.pdfs.transaction-success', [
             'transaction' => $transaction,
             'application' => $application,
+            'guiddiniLogo' => $guiddiniLogo,
         ])->setOptions([
-            'isRemoteEnabled' => true, // Enable remote images
+            'isRemoteEnabled' => true,
             'isHtml5ParserEnabled' => true,
         ]);
 
@@ -164,16 +167,11 @@ class ClientPaymentController extends Controller
         $data = [
             'orderNumber' => $request->order_number,
             'email' => $request->email,
+            'x-app-key' => $request->header('x-app-key'),
+            'x-secret-key' => $request->header('x-secret-key'),
         ];
 
-        $appKey = $request->header('x-app-key');
-        $secretKey = $request->header('x-secret-key');
-
-        $application = Application::where('app_key', $appKey)
-            ->where('app_secret', $secretKey)
-            ->first();
-
-        $this->receiptService->emailPaymentReceipt($data, $application);
+        $this->receiptService->emailPaymentReceipt($data);
 
         return response()->json([
             'data' => null,

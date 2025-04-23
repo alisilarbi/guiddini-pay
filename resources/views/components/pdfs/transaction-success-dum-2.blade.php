@@ -188,28 +188,34 @@
     <header class="clearfix">
         <h2 style="text-align: center;">Reçu de paiement éléctronique</h2>
 
-        @if ($guiddiniIcon)
-            <div id="logo">
-                <img style="width: 100%; max-width: 140px; height: 50px;" src="data:image/png;base64,{{ $guiddiniIcon }}">
-            </div>
-        @endif
 
-        @if ($applicationLogo)
-            <img style="width: 100%; max-width: 75px; height: 75px; float: right;"
-                src="data:image/png;base64,{{ $applicationLogo }}">
-        @endif
+        {{-- <div id="logo">
+            <img style="width: 100%; max-width: 140px ;height: 50px;" src="{{ url('images/icon.png') }}">
+        </div>
+
+        @if ($application->logo)
+            <img style="width: 100%; max-width: 75px ;height: 75px;float: right;" src="{{ url($application->logo) }}">
+        @endif --}}
 
     </header>
     <main>
         <div id="invoice-header">
             <div id="details" class="clearfix" style="float: left;">
                 <div id="Signature">
-                    <h3>L'entreprise: {{ $companyName }}</h3>
-                    <div>Téléphone: {{ $phone }}</div>
-                    <div>Email: {{ $email }}</div>
+                    <h3>L'entreprise: {{ $application->name }}</h3>
+                    {{-- <div>Télépone: {{ $application->user->phone }}</div> --}}
+                    <div>Email: {{ $application->user->email }} </div>
                 </div>
             </div>
 
+            <div id="details" class="clearfix" style="float: right;">
+                <div id="Signature">
+                    {{-- <h3>bénéficiaire : {{$entity['name']}}</h3>
+                    <div>Télépone: {{$entity['phone_number']}}</div>
+                    <div>Email: {{$entity['email']}}</div> --}}
+                </div>
+
+            </div>
         </div>
 
         <br><br>
@@ -219,27 +225,42 @@
             <tbody>
                 <tr>
                     <td class="desc">Méthode de paiement</td>
-                    <td class="unit">{{ $paymentMethod }}</td>
+                    <td class="unit">
+                        CIB / Edahabia
+                    </td>
                 </tr>
                 <tr>
-                    <td class="desc">Numéro de commande</td>
-                    <td class="unit">{{ $orderId }}</td>
+                    <td class="desc">Numéro de commande </td>
+                    <td class="unit">
+                        {{ $transaction->order_id }}
+                        {{ asset('images/cib_logotype.jpg') }}
+                    </td>
                 </tr>
                 <tr>
-                    <td class="desc">ID de transaction</td>
-                    <td class="unit">{{ $orderNumber }}</td>
+                    <td class="desc">ID de transaction </td>
+                    <td class="unit">
+                        {{ $transaction->order_number }}
+                    </td>
                 </tr>
                 <tr>
                     <td class="desc">Numéro d'autorisation</td>
-                    <td class="unit">{{ $approvalCode }}</td>
+                    <td class="unit">
+                        {{ $transaction->approval_code }}
+                    </td>
                 </tr>
+
                 <tr>
-                    <td class="desc">Date et heure</td>
-                    <td class="unit">{{ $dateTime }}</td>
+                    <td class="desc">Date et heure
+                    </td>
+                    <td class="unit">
+                        {{ $transaction->updated_at }}
+                    </td>
                 </tr>
                 <tr>
                     <td class="desc">Montant total</td>
-                    <td class="unit">{{ $amount }} DA</td>
+                    <td class="unit">
+                        {{ $transaction->amount }} DA
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -248,14 +269,10 @@
     <footer class="clearfix" style="text-align: center;">
         <h5 style="text-align: center;">Si vous rencontrez un problème avec le paiement, Contactez la SATIM</h5>
 
-        @if ($greenNumberLogo)
-            <div style="text-align: center;">
-                <img style="width: 100%; max-width: 140px; height: 50px; display: block; margin: 0 auto;"
-                    src="data:image/png;base64,{{ $greenNumberLogo }}">
-            </div>
-        @endif
-
-
+        <div style="text-align: center;">
+            <img style="width: 100%; max-width: 140px; height: 50px; display: block; margin: 0 auto;"
+                src="{{ asset('images/green_number.png') }}">
+        </div>
     </footer>
 </body>
 
