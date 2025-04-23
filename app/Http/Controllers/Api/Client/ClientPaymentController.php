@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Client;
+namespace App\Http\Controllers\Api\Client;
 
 use App\Models\User;
 use App\Models\Application;
@@ -51,35 +51,7 @@ class ClientPaymentController extends Controller
         }
     }
 
-    public function confirm(string $orderNumber)
-    {
-        $result = $this->paymentService->confirmPayment($orderNumber);
 
-        $transaction = $result['transaction'];
-        $gatewayResponse = $result['gateway_response'];
-
-        $redirectUrl = $transaction->application->redirect_url;
-
-        $queryParams = http_build_query([
-            'order_number' => $orderNumber,
-            // 'status' => $transaction->status,
-            // 'confirmation_status' => $transaction->confirmation_status,
-            // 'gateway_code' => $this->getGatewayErrorCode($gatewayResponse)
-        ]);
-
-        if ($transaction->origin === 'System')
-            return redirect()->route('certification', [
-                'slug' => $transaction->application->slug,
-                'order_number' => $transaction->order_number
-            ]);
-
-        return redirect()->to("$redirectUrl?$queryParams");
-
-        try {
-        } catch (\Throwable $e) {
-            return $this->handleApiException($e);
-        }
-    }
 
     private function getGatewayErrorCode(array $response): string
     {
@@ -142,7 +114,6 @@ class ClientPaymentController extends Controller
         $transaction = Transaction::where('order_number', $orderNumber)->first();
         $application = $transaction->application;
 
-
         $guiddiniLogo = base64_encode(file_get_contents(public_path('images/icon.png')));
 
         $pdf = Pdf::loadView('components.pdfs.transaction-success', [
@@ -171,7 +142,7 @@ class ClientPaymentController extends Controller
             'x-secret-key' => $request->header('x-secret-key'),
         ];
 
-        $this->receiptService->emailPaymentReceipt($data);
+        // $this->receiptService->emailPaymentReceipt($data);
 
         return response()->json([
             'data' => null,

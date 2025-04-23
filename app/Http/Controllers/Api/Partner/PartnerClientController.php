@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Partner;
+namespace App\Http\Controllers\Api\Partner;
 
 use App\Models\User;
 use App\Models\Prospect;
