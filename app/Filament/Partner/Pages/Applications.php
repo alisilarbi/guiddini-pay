@@ -239,7 +239,7 @@ class Applications extends Page implements HasForms, HasTable
                         Action::make('certification')
                             ->label('Certification')
                             ->icon('heroicon-o-arrow-top-right-on-square')
-                            ->url(fn(Application $record): string => route('certification', ['slug' => $record->slug]))
+                            ->url(fn(Application $record): string => route('certification', ['slug' => $record->slug], false))
                             ->openUrlInNewTab()
 
                     ])
