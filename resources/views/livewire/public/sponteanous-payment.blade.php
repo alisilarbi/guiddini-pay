@@ -32,6 +32,10 @@
                         </div>
                     @endif
 
+                    <div class="flex justify-center mb-6">
+                        <img src="{{ asset('test.jpg') }}" alt="Company Logo" class="h-16">
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Nom de l'entreprise</label>
