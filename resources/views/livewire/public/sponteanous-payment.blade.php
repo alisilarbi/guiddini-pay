@@ -28,7 +28,7 @@
                 <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 mb-10">
                     @if ($application->logo)
                         <div class="flex justify-center mb-6">
-                            <img src="{{ public_path($application->logo) }}" alt="Company Logo" class="h-16">
+                            <img src="{{ asset($application->logo) }}" alt="Company Logo" class="h-16">
                         </div>
                     @endif
 
