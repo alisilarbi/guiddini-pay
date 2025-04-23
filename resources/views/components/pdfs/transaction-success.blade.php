@@ -223,11 +223,11 @@
                 </tr>
                 <tr>
                     <td class="desc">Numéro de commande</td>
-                    <td class="unit">{{ $orderId }}</td>
+                    <td class="unit">{{ $orderNumber}}</td>
                 </tr>
                 <tr>
                     <td class="desc">ID de transaction</td>
-                    <td class="unit">{{ $orderNumber }}</td>
+                    <td class="unit">{{ $orderId }}</td>
                 </tr>
                 <tr>
                     <td class="desc">Numéro d'autorisation</td>
