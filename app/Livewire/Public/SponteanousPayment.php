@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Application;
 use App\Models\Transaction;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Exceptions\ReceiptException;
 use App\Traits\HandlesWebExceptions;
 use Filament\Notifications\Notification;
 use App\Services\Payments\PaymentService;
@@ -34,18 +35,31 @@ class SponteanousPayment extends Component
 
     public function mount($slug, $order_number = null)
     {
-        $this->application = Application::where('slug', $slug)->firstOrFail();
-        $this->orderNumber = $order_number;
+        try {
+            $this->application = Application::where('slug', $slug)->firstOrFail();
+            $this->orderNumber = $order_number;
 
-        if ($this->orderNumber) {
-            $this->transaction = Transaction::where('order_number', $this->orderNumber)->first();
-            $this->showTransaction = !!$this->transaction;
+            if ($this->orderNumber) {
+                $this->transaction = Transaction::where('order_number', $this->orderNumber)->first()
+                    ?: throw new ReceiptException(
+                        'Transaction not found',
+                        'TRANSACTION_NOT_FOUND',
+                        404
+                    );
+
+                if ($this->transaction->application_id !== $this->application->id) {
+                    throw new ReceiptException(
+                        'Transaction does not belong to the specified application',
+                        'APPLICATION_MISMATCH',
+                        400
+                    );
+                }
+
+                $this->showTransaction = true;
+            }
+        } catch (\Throwable $e) {
+            $this->handleWebException($e);
         }
-
-        // try {
-        // } catch (\Throwable $e) {
-        //     $this->handleWebException($e);
-        // }
     }
 
     public function render()
@@ -75,6 +89,8 @@ class SponteanousPayment extends Component
                 $data,
                 $this->application->app_key
             );
+
+            dd($result);
 
             Notification::make()
                 ->title('Paiement initié avec succès')

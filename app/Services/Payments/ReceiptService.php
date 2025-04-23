@@ -14,27 +14,6 @@ use App\Mail\User\TransactionReceipt;
 
 class ReceiptService
 {
-    // public function downloadPaymentReceipt(string $orderNumber)
-    // {
-    //     $transaction = Transaction::where('order_number', $orderNumber)->firstOrFail();
-    //     $application = $transaction->application;
-
-    //     $pdf = Pdf::loadView('components.pdfs.transaction-success', [
-    //         'transaction' => $transaction,
-    //         'application' => $application,
-    //     ])->setOptions([
-    //         'isRemoteEnabled' => true,
-    //         'isHtml5ParserEnabled' => true,
-    //     ]);
-
-    //     return response()->stream(function () use ($pdf) {
-    //         echo $pdf->output();
-    //     }, 200, [
-    //         'Content-Type' => 'application/pdf',
-    //         'Content-Disposition' => 'attachment; filename="Recu de paiement.pdf"',
-    //     ]);
-    // }
-
     public function downloadPaymentReceipt(string $orderNumber)
     {
         $transaction = Transaction::where('order_number', $orderNumber)->firstOrFail();

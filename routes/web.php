@@ -18,16 +18,9 @@ Route::prefix('payment')->group(function () {
 });
 
 Route::prefix('client/payment')->group(function () {
-
-    // Route::get('/pdf/{order_number}', [ClientPaymentController::class, 'downloadPaymentReceipt'])
-    // ->name('client.payment.pdf');
-
     Route::get('/pdf/{order_number}', [ReceiptService::class, 'downloadPaymentReceipt'])
-        ->name('client.payment.pdf');
-
-    // Route::get('/pdf/{order_number}', [ReceiptService::class, 'downloadPaymentReceipt'])
-    //     ->name('client.payment.pdf')
-    //     ->middleware('signed');
+        ->name('client.payment.pdf')
+        ->middleware('signed');
 });
 
 Route::get('/{slug}/{order_number?}', SponteanousPayment::class)->name('certification');
