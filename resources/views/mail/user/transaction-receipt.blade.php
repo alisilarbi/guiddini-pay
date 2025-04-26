@@ -178,12 +178,12 @@
                                                                         cliquant sur : <a href="{{ $receiptUrl }}">ce
                                                                             lien</a><br><br>Nous vous
                                                                         remercions pour votre confiance.</p>
-                                                                    <p style="margin: 0;"><br><br>Bien cordialement,</p>
+                                                                    {{-- <p style="margin: 0;"><br><br>Bien cordialement,</p> --}}
                                                                 </div>
                                                             </td>
                                                         </tr>
                                                     </table>
-                                                    <table class="paragraph_block block-5" width="100%" border="0"
+                                                    {{-- <table class="paragraph_block block-5" width="100%" border="0"
                                                         cellpadding="0" cellspacing="0" role="presentation"
                                                         style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
                                                         <tr>
@@ -195,7 +195,7 @@
                                                                 </div>
                                                             </td>
                                                         </tr>
-                                                    </table>
+                                                    </table> --}}
                                                 </td>
                                             </tr>
                                         </tbody>
