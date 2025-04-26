@@ -107,23 +107,48 @@ class SponteanousPayment extends Component
 
     public function sendEmail()
     {
-        $this->validate([
-            'orderNumber' => 'required|string',
-            'email' => 'required|email',
-        ], [
-            'orderNumber.required' => 'Le numéro de commande est requis.',
-            'email.required' => 'L\'adresse e-mail est requise.',
-            'email.email' => 'L\'adresse e-mail doit être valide.',
-        ]);
+        // $this->validate([
+        //     'orderNumber' => 'required|string',
+        //     'email' => 'required|email',
+        // ], [
+        //     'orderNumber.required' => 'Le numéro de commande est requis.',
+        //     'email.required' => 'L\'adresse e-mail est requise.',
+        //     'email.email' => 'L\'adresse e-mail doit être valide.',
+        // ]);
+
+        // $data = [
+        //     'orderNumber' => $this->orderNumber,
+        //     'email' => $this->email,
+        //     'x-app-key' => $this->application->app_key,
+        //     'x-secret-key' => $this->application->app_secret,
+        // ];
+
+        // $this->receiptService->emailPaymentReceipt($data, $this->application);
+
+        $transaction = Transaction::where('order_number', $this->orderNumber)->firstOrFail();
+        $application = $transaction->application;
+
+
+        $guiddiniIconPath = public_path('images/icon_guiddinipay_dark.png');
+        $guiddiniIconBase64 = file_exists($guiddiniIconPath) ? base64_encode(file_get_contents($guiddiniIconPath)) : null;
+
+        $greenNumberLogoPath = public_path('images/green_number.png');
+        $greenNumberLogoBase64 = file_exists($greenNumberLogoPath) ? base64_encode(file_get_contents($greenNumberLogoPath)) : null;
+
+        $applicationLogoBase64 = null;
+        if ($application->logo) {
+            $applicationLogoPath = public_path($application->logo);
+            $applicationLogoBase64 = file_exists($applicationLogoPath) ? base64_encode(file_get_contents($applicationLogoPath)) : null;
+        }
 
         $data = [
-            'orderNumber' => $this->orderNumber,
-            'email' => $this->email,
-            'x-app-key' => $this->application->app_key,
-            'x-secret-key' => $this->application->app_secret,
+
+            'greenNumberLogo' => $greenNumberLogoBase64,
+            'applicationLogo' => $applicationLogoBase64,
+            'guiddiniIcon' => $guiddiniIconBase64,
         ];
 
-        $this->receiptService->emailPaymentReceipt($data, $this->application);
+        dd($data);
 
         try {
 
