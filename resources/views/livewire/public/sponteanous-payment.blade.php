@@ -17,11 +17,11 @@
                 </div>
 
                 <h1 class="text-4xl md:text-5xl font-bold text-center text-guiddini-text mb-4">
-                    Paiement <span class="text-guiddini-accent">Spontané</span>
+                    Paiement <span class="text-guiddini-accent">en ligne</span>
                 </h1>
 
                 <p class="text-center text-guiddini-text mb-12 max-w-2xl mx-auto text-lg md:text-xl">
-                    Vous souhaitez nous régler via un <span class="text-guiddini-accent">paiement spontané</span> ?
+                    Vous souhaitez nous régler via un <span class="text-guiddini-accent">paiement en ligne</span> ?
                     Remplissez simplement le formulaire ci-dessous.
                 </p>
 
