@@ -25,5 +25,4 @@ Route::prefix('client/payment')->group(function () {
         ->middleware('signed');
 });
 
-Route::get('certif/{slug}/{order_number?}', SponteanousPayment::class)->name('certification');
-
+Route::get('pay/{slug}/{order_number?}', SponteanousPayment::class)->name('certification');
