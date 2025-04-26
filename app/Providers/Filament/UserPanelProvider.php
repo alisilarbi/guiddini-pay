@@ -30,7 +30,7 @@ class UserPanelProvider extends PanelProvider
             ->passwordReset()
             ->profile()
             ->colors([
-                'primary' => Color::Hex('#030427'),
+                'primary' => Color::Hex('#4f6ff6'),
 
             ])
             ->discoverResources(in: app_path('Filament/User/Resources'), for: 'App\\Filament\\User\\Resources')
@@ -58,6 +58,10 @@ class UserPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->maxContentWidth(MaxWidth::Full)
-            ->darkMode(false);
+            ->darkMode(false)
+            ->brandName('Guiddini Pay')
+            ->brandLogo(asset('images/logotype_guiddinipay.png'))
+            ->brandLogoHeight('3rem')
+            ->favicon(asset('images/icon_guiddinipay.png'));
     }
 }
