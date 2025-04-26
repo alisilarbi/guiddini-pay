@@ -24,10 +24,10 @@ class CreateApplication
             $tempPath = Storage::disk('public')->path($data['logo']);
             $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
 
-            Storage::disk('logos')->putFileAs(null, $tempPath, $newFileName);
+            Storage::disk('public')->putFileAs('logos', $tempPath, $newFileName);
             Storage::disk('public')->delete($data['logo']);
 
-            $path = 'logos/' . $newFileName;
+            $path = 'storage/logos/' . $newFileName;
             $application->update([
                 'logo' => $path,
             ]);
