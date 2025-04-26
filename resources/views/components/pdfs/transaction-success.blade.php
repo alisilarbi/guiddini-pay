@@ -187,7 +187,7 @@
 
         @if ($guiddiniIcon)
             <div id="logo">
-                <img style="width: 100%; max-width: 140px; height: 50px;" src="data:image/png;base64,{{ $guiddiniIcon }}">
+                <img style="width: 100%; max-width: 140px; height: 50px;" src="data:image/png;base64,{{ $guiddiniIcon ?? null}}">
             </div>
         @endif
 
