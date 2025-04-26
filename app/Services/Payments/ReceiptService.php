@@ -106,9 +106,9 @@ class ReceiptService
 
         $pdf = $this->generatePdf($application, $transaction);
 
-        // $receiptUrl = $this->generateDownloadLink($transaction->order_number);
+        $receiptUrl = $this->generateDownloadLink($transaction->order_number);
 
-        Mail::to($email)->send(new TransactionReceipt($transaction, $application, $pdf));
+        Mail::to($email)->send(new TransactionReceipt($transaction, $application, $pdf, $receiptUrl));
 
         return [
             'message' => 'Email sent successfully'

@@ -21,15 +21,17 @@ class TransactionReceipt extends Mailable
     public Transaction $transaction;
     public Application $application;
     public Pdf $pdf;
+    public string $receiptUrl;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(Transaction $transaction, Application $application, Pdf $pdf)
+    public function __construct(Transaction $transaction, Application $application, Pdf $pdf, string $receiptUrl)
     {
         $this->transaction = $transaction;
         $this->application = $application;
         $this->pdf = $pdf;
+        $this->receiptUrl = $receiptUrl;
     }
 
     /**
