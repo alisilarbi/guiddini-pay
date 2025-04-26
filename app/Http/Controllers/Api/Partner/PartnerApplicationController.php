@@ -165,7 +165,8 @@ class PartnerApplicationController extends Controller
             $application = Application::where('id', $request->id)
                 ->firstOrFail();
 
-            $application->update($request->only(['name', 'website_url', 'redirect_url', 'license_id', 'license_env']));
+            // $application->update($request->only(['name', 'website_url', 'redirect_url', 'license_id', 'license_env']));
+            $application->fill($request->only(['name', 'website_url', 'redirect_url', 'license_id', 'license_env']))->save();
 
             return new ApplicationResource([
                 'success' => true,
