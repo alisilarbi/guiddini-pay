@@ -63,7 +63,6 @@
             width: 100%
         }
 
-
         #details {
             margin-bottom: 30px;
         }
@@ -130,7 +129,6 @@
 
         table td {
             text-align: right;
-
         }
 
         table .desc {
@@ -171,7 +169,6 @@
 
         ul li {
             display: inline;
-
         }
 
         ul {
@@ -198,7 +195,6 @@
             <img style="width: 100%; max-width: 75px; height: 75px; float: right;"
                 src="data:image/png;base64,{{ $applicationLogo }}">
         @endif
-
     </header>
     <main>
         <div id="invoice-header">
@@ -209,7 +205,6 @@
                     <div>Email: {{ $email }}</div>
                 </div>
             </div>
-
         </div>
 
         <br><br>
@@ -223,7 +218,7 @@
                 </tr>
                 <tr>
                     <td class="desc">Numéro de commande</td>
-                    <td class="unit">{{ $orderNumber}}</td>
+                    <td class="unit">{{ $orderNumber }}</td>
                 </tr>
                 <tr>
                     <td class="desc">ID de transaction</td>
@@ -254,8 +249,6 @@
                     src="data:image/png;base64,{{ $greenNumberLogo }}">
             </div>
         @endif
-
-
     </footer>
 </body>
 
