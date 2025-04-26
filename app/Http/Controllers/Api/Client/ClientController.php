@@ -19,13 +19,12 @@ use App\Services\Payments\ReceiptService;
 use App\Http\Resources\Api\PaymentResource;
 use App\Http\Resources\Api\TransactionResource;
 
-class ClientPaymentController extends Controller
+class ClientController extends Controller
 {
     use HandlesApiExceptions;
     use HandlesWebExceptions;
 
     public function __construct(private PaymentService $paymentService, private ReceiptService $receiptService) {}
-
     public function initiate(Request $request)
     {
         try {
@@ -50,8 +49,6 @@ class ClientPaymentController extends Controller
             return $this->handleApiException($e);
         }
     }
-
-
 
     private function getGatewayErrorCode(array $response): string
     {
@@ -153,10 +150,4 @@ class ClientPaymentController extends Controller
         ], 200);
     }
 
-    public function certification(string $slug)
-    {
-        $application = Application::where('slug', $slug)->firstOrFail();
-
-        return view('public.user.payment')->with(['application' => $application]);
-    }
 }

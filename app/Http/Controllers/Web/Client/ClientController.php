@@ -55,31 +55,6 @@ class ClientController extends Controller
         return (string)($response['ErrorCode'] ?? $response['errorCode'] ?? 'UNKNOWN');
     }
 
-    public function getPaymentReceipt(Request $request)
-    {
-        try {
-            $request->validate([
-                'order_number' => 'required',
-            ]);
-
-            $transaction = Transaction::where('order_number', $request->order_number)->firstOrFail();
-            $receiptUrl = URL::signedRoute('client.payment.pdf', ['order_number' => $transaction->order_number]);
-
-            return response()->json([
-                'links' => [
-                    'self' => route('api.client.payment.receipt', ['order_number' => $request->order_number]) ?? null,
-                    'href' => $receiptUrl,
-                ],
-                'meta' => [
-                    'code' => 'RECEIPT_GENERATED',
-                    'message' => 'Receipt generated successfully'
-                ]
-            ], 200);
-        } catch (\Throwable $e) {
-            return $this->handleApiException($e);
-        }
-    }
-
     public function downloadPaymentReceipt(string $orderNumber): \Illuminate\Http\Response
     {
         $transaction = Transaction::where('order_number', $orderNumber)->first();
@@ -97,37 +72,5 @@ class ClientController extends Controller
         ]);
 
         return $pdf->download('invoice.pdf');
-    }
-
-    public function emailPaymentReceipt(Request $request)
-    {
-        $request->validate([
-            'order_number' => 'required',
-            'email' => 'required',
-        ]);
-
-        $data = [
-            'orderNumber' => $request->order_number,
-            'email' => $request->email,
-            'x-app-key' => $request->header('x-app-key'),
-            'x-secret-key' => $request->header('x-secret-key'),
-        ];
-
-        // $this->receiptService->emailPaymentReceipt($data);
-
-        return response()->json([
-            'data' => null,
-            'meta' => [
-                'code' => 'EMAIL_SENT',
-                'message' => 'Email send successfully'
-            ]
-        ], 200);
-    }
-
-    public function certification(string $slug)
-    {
-        $application = Application::where('slug', $slug)->firstOrFail();
-
-        return view('public.user.payment')->with(['application' => $application]);
     }
 }
