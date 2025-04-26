@@ -116,15 +116,17 @@ class SponteanousPayment extends Component
             'email.email' => 'L\'adresse e-mail doit être valide.',
         ]);
 
-        try {
-            $data = [
-                'orderNumber' => $this->orderNumber,
-                'email' => $this->email,
-                'x-app-key' => $this->application->app_key,
-                'x-secret-key' => $this->application->app_secret,
-            ];
+        $data = [
+            'orderNumber' => $this->orderNumber,
+            'email' => $this->email,
+            'x-app-key' => $this->application->app_key,
+            'x-secret-key' => $this->application->app_secret,
+        ];
 
-            $this->receiptService->emailPaymentReceipt($data, $this->application);
+        $this->receiptService->emailPaymentReceipt($data, $this->application);
+
+        try {
+
 
             Notification::make()
                 ->title('Email envoyé avec succès')
