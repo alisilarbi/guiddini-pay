@@ -58,6 +58,10 @@ class PartnerPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->maxContentWidth(MaxWidth::Full)
-            ->darkMode(false);
+            ->darkMode(false)
+            ->brandName('Guiddini Pay')
+            ->brandLogo(asset('images/logotype_guiddinipay.png'))
+            ->brandLogoHeight('3rem')
+            ->favicon(asset('images/icon_guiddinipay.png'));
     }
 }
