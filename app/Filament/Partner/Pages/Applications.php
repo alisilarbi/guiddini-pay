@@ -33,6 +33,9 @@ use Filament\Tables\Columns\ToggleColumn;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Infolists\Components\Fieldset;
 use Filament\Infolists\Components\TextEntry;
+use App\Actions\Application\CreateApplication;
+use App\Actions\Application\DeleteApplication;
+use App\Actions\Application\UpdateApplication;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
@@ -144,7 +147,7 @@ class Applications extends Page implements HasForms, HasTable
                             ->fillForm(function ($record) {
                                 return [
                                     'name' => $record->name,
-                                    'logo' => $record->logo,
+                                    'logo' => basename($record->logo),
                                     'website_url' => $record->website_url,
                                     'redirect_url' => $record->redirect_url,
                                     'license' => $record->license_id,
@@ -154,8 +157,7 @@ class Applications extends Page implements HasForms, HasTable
                             ->form([
 
                                 FileUpload::make('logo')
-                                    ->moveFiles()
-                                    ->image(),
+                                    ->previewable(true),
 
                                 Grid::make(2)
                                     ->schema([
@@ -206,34 +208,20 @@ class Applications extends Page implements HasForms, HasTable
 
 
                             ])
-                            ->action(function ($data, $record) {
+                            ->action(function ($data, $record, UpdateApplication $updateApplication) {
 
-                                $env = License::where('id', $data['license'])->first();
-                                $record->update([
-                                    'name' => $data['name'],
-                                    'website_url' => $data['website_url'],
-                                    'redirect_url' => $data['redirect_url'],
-                                    'license_env' => $data['license_env'],
-                                    'license_id' => $env->id,
-                                ]);
+                                $updateApplication->handle(
+                                    user: Auth::user(),
+                                    application: $record,
+                                    data: $data,
+                                );
 
-                                if ($data['logo'] && $data['logo'] !== $record->logo) {
-                                    $tempPath = Storage::disk('public')->path($data['logo']);
-                                    $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
+                                Notification::make()
+                                    ->title('Application updated')
+                                    ->success()
+                                    ->send();
 
-                                    Storage::disk('logos')->putFileAs(null, $tempPath, $newFileName);
-                                    Storage::disk('public')->delete($data['logo']);
-
-                                    $path = 'logos/' . $newFileName;
-                                    $record->update([
-                                        'logo' => $path,
-                                    ]);
-                                }
-
-                                if (is_null($data['logo']) && $record->logo) {
-                                    Storage::disk('logos')->delete(basename($record->logo));
-                                    $record->update(['logo' => null]);
-                                }
+                                $this->dispatch('refresh-table');
                             }),
 
                         Action::make('certification')
@@ -292,14 +280,19 @@ class Applications extends Page implements HasForms, HasTable
                     ])->dropdown(false),
 
                     ActionGroup::make([
+
                         Action::make('delete')
                             ->label('Delete')
                             ->color('danger')
                             ->icon('heroicon-o-x-circle')
                             ->requiresConfirmation()
-                            ->action(function ($record) {
-                                $record->delete();
+                            ->action(function ($record, DeleteApplication $deleteApplication) {
+                                $deleteApplication->handle(
+                                    user: Auth::user(),
+                                    application: $record,
+                                );
                             })
+
                     ])->dropdown(false),
 
                 ])->tooltip('Actions'),
@@ -367,34 +360,19 @@ class Applications extends Page implements HasForms, HasTable
 
 
                     ])
-                    ->action(function (array $data) {
+                    ->action(function (array $data, CreateApplication $createApplication) {
+                        $createApplication->handle(
+                            user: Auth::user(),
+                            partner: Auth::user(),
+                            data: $data,
+                        );
 
-                        $application = Application::create([
-                            'name' => $data['name'],
-                            'website_url' => $data['website_url'],
-                            'redirect_url' => $data['redirect_url'],
-                            'partner_id' => Auth::user()->id,
-                            'user_id' => Auth::user()->id,
-                        ]);
+                        Notification::make()
+                            ->title('Application created')
+                            ->success()
+                            ->send();
 
-                        if ($data['logo']) {
-                            $tempPath = Storage::disk('public')->path($data['logo']);
-                            $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
-
-                            Storage::disk('logos')->putFileAs(null, $tempPath, $newFileName);
-                            Storage::disk('public')->delete($data['logo']);
-
-                            $path = 'logos/' . $newFileName;
-                            $application->update([
-                                'logo' => $path,
-                            ]);
-                        }
-
-                        $env = License::where('id', $data['license'])->first();
-                        $application->update([
-                            'license_env' => $data['license_env'],
-                            'license_id' => $env->id,
-                        ]);
+                        $this->dispatch('refresh-table');
                     }),
             ]);
     }
