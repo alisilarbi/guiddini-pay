@@ -19,7 +19,7 @@ class ReceiptService
         $transaction = Transaction::where('order_number', $orderNumber)->firstOrFail();
         $application = $transaction->application;
 
-        $guiddiniIconPath = public_path('images/icon_guiddinipay.png');
+        $guiddiniIconPath = public_path('images/icon_guiddinipay_dark.png');
         $guiddiningIconBase64 = file_exists($guiddiniIconPath) ? base64_encode(file_get_contents($guiddiniIconPath)) : null;
 
         $greenNumberLogoPath = public_path('images/green_number.png');
