@@ -94,6 +94,8 @@ class SponteanousPayment extends Component
             $signedUrl = $this->receiptService->generateDownloadLink($this->orderNumber);
             $this->dispatch('download-receipt', url: $signedUrl);
 
+            $this->dispatch('close-modal', id: 'send-email');
+
             Notification::make()
                 ->title('Reçu téléchargé avec succès')
                 ->success()
