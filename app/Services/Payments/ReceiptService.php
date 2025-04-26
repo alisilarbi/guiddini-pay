@@ -90,6 +90,8 @@ class ReceiptService
             'amount' => $transaction->amount ?? 0.00,
         ];
 
+        dd($data);
+
         $pdf = Pdf::loadView('components.pdfs.transaction-success', $data)->setOptions([
             'isRemoteEnabled' => true,
             'isHtml5ParserEnabled' => true,
