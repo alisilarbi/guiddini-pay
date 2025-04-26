@@ -83,7 +83,7 @@ class ReceiptService
             'phone' => $application->user->phone,
             'email' => $application->user->email,
             'paymentMethod' => 'CIB / Edahabia',
-            'orderId' => $transaction->order_id twitter.com/X/status/null,
+            'orderId' => $transaction->order_id,
             'orderNumber' => $transaction->order_number ?? null,
             'approvalCode' => $transaction->approval_code ?? null,
             'dateTime' => $transaction->updated_at ?? null,
