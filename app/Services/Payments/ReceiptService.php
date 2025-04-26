@@ -14,55 +14,20 @@ use App\Mail\User\TransactionReceipt;
 
 class ReceiptService
 {
-    // public function downloadPaymentReceipt(string $orderNumber)
-    // {
-    //     $transaction = Transaction::where('order_number', $orderNumber)->firstOrFail();
-    //     $application = $transaction->application;
-
-    //     $guiddiniIconPath = public_path('images/icon_guiddinipay_dark.png');
-    //     $guiddiningIconBase64 = file_exists($guiddiniIconPath) ? base64_encode(file_get_contents($guiddiniIconPath)) : null;
-
-    //     $greenNumberLogoPath = public_path('images/green_number.png');
-    //     $greenNumberLogoBase64 = file_exists($greenNumberLogoPath) ? base64_encode(file_get_contents($greenNumberLogoPath)) : null;
-
-    //     $applicationLogoBase64 = null;
-    //     if ($application->logo) {
-    //         $applicationLogoPath = public_path($application->logo);
-    //         $applicationLogoBase64 = file_exists($applicationLogoPath) ? base64_encode(file_get_contents($applicationLogoPath)) : null;
-    //     }
-
-    //     $data = [
-    //         'transaction' => $transaction,
-    //         'application' => $application,
-    //         'greenNumberLogo' => $greenNumberLogoBase64,
-    //         'applicationLogo' => $applicationLogoBase64,
-    //         'guiddiniIcon' => $guiddiningIconBase64,
-    //         'companyName' => $application->name,
-    //         'phone' => $application->user->phone,
-    //         'email' => $application->user->email,
-    //         'paymentMethod' => 'CIB / Edahabia',
-    //         'orderId' => $transaction->order_id ?? null,
-    //         'orderNumber' => $transaction->order_number ?? null,
-    //         'approvalCode' => $transaction->approval_code ?? null,
-    //         'dateTime' => $transaction->updated_at ?? null,
-    //         'amount' => $transaction->amount ?? 0.00,
-    //     ];
-
-    //     $pdf = Pdf::loadView('components.pdfs.transaction-success', $data)->setOptions([
-    //         'isRemoteEnabled' => true,
-    //         'isHtml5ParserEnabled' => true,
-    //     ]);
-
-    //     return $pdf->download('invoice.pdf');
-    // }
-
     public function downloadPaymentReceipt(string $orderNumber)
     {
         $transaction = Transaction::where('order_number', $orderNumber)->firstOrFail();
         $application = $transaction->application;
 
-        $guiddiniIconPath = public_path('images/green_number.png');
-        $guiddiniIconBase64 = file_exists($guiddiniIconPath) ? base64_encode(file_get_contents($guiddiniIconPath)) : null;
+        $pdf = $this->generatePdf($application, $transaction);
+
+        return $pdf->download('invoice.pdf');
+    }
+
+    private function generatePdf(Application $application, Transaction $transaction){
+
+        $guiddiniIconPath = public_path('images/icon_guiddinipay_dark.png');
+        $guiddiningIconBase64 = file_exists($guiddiniIconPath) ? base64_encode(file_get_contents($guiddiniIconPath)) : null;
 
         $greenNumberLogoPath = public_path('images/green_number.png');
         $greenNumberLogoBase64 = file_exists($greenNumberLogoPath) ? base64_encode(file_get_contents($greenNumberLogoPath)) : null;
@@ -78,28 +43,23 @@ class ReceiptService
             'application' => $application,
             'greenNumberLogo' => $greenNumberLogoBase64,
             'applicationLogo' => $applicationLogoBase64,
-            'guiddiniIcon' => $guiddiniIconBase64,
+            'guiddiniIcon' => $guiddiningIconBase64,
             'companyName' => $application->name,
             'phone' => $application->user->phone,
             'email' => $application->user->email,
             'paymentMethod' => 'CIB / Edahabia',
-            'orderId' => $transaction->order_id,
+            'orderId' => $transaction->order_id ?? null,
             'orderNumber' => $transaction->order_number ?? null,
             'approvalCode' => $transaction->approval_code ?? null,
             'dateTime' => $transaction->updated_at ?? null,
             'amount' => $transaction->amount ?? 0.00,
         ];
 
-        dd($data);
-
-        $pdf = Pdf::loadView('components.pdfs.transaction-success', $data)->setOptions([
+        return Pdf::loadView('components.pdfs.transaction-success', $data)->setOptions([
             'isRemoteEnabled' => true,
             'isHtml5ParserEnabled' => true,
         ]);
-
-        return $pdf->download('invoice.pdf');
     }
-
 
     public function generateDownloadLink(string $orderNumber): string
     {
@@ -141,9 +101,14 @@ class ReceiptService
             );
         }
 
-        $receiptUrl = $this->generateDownloadLink($transaction->order_number);
+        $transaction = Transaction::where('order_number', $orderNumber)->firstOrFail();
+        $application = $transaction->application;
 
-        Mail::to($email)->send(new TransactionReceipt($transaction, $application, $receiptUrl));
+        $pdf = $this->generatePdf($application, $transaction);
+
+        // $receiptUrl = $this->generateDownloadLink($transaction->order_number);
+
+        Mail::to($email)->send(new TransactionReceipt($transaction, $application, $pdf));
 
         return [
             'message' => 'Email sent successfully'

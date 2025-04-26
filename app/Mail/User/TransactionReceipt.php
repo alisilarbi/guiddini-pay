@@ -7,7 +7,7 @@ use App\Models\Application;
 use App\Models\Transaction;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Barryvdh\DomPDF\Pdf;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
@@ -20,16 +20,16 @@ class TransactionReceipt extends Mailable
 
     public Transaction $transaction;
     public Application $application;
-    public string $receiptUrl;
+    public Pdf $pdf;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(Transaction $transaction, Application $application, string $receiptUrl)
+    public function __construct(Transaction $transaction, Application $application, Pdf $pdf)
     {
         $this->transaction = $transaction;
         $this->application = $application;
-        $this->receiptUrl = $receiptUrl;
+        $this->pdf = $pdf;
     }
 
     /**
@@ -60,17 +60,17 @@ class TransactionReceipt extends Mailable
     public function attachments(): array
     {
 
-        $pdf = Pdf::loadView('components.pdfs.transaction-success', [
-            'transaction' => $this->transaction,
-            'application' => $this->application,
-        ])->setOptions([
-            'isRemoteEnabled' => true,
-            'isHtml5ParserEnabled' => true,
-        ]);
+        // $pdf = Pdf::loadView('components.pdfs.transaction-success', [
+        //     'transaction' => $this->transaction,
+        //     'application' => $this->application,
+        // ])->setOptions([
+        //     'isRemoteEnabled' => true,
+        //     'isHtml5ParserEnabled' => true,
+        // ]);
 
         return [
             Attachment::fromData(
-                fn() => $pdf->output(),
+                fn() => $this->pdf->output(),
                 'invoice.pdf'
             )->withMime('application/pdf'),
         ];

@@ -185,9 +185,9 @@
     <header class="clearfix">
         <h2 style="text-align: center;">Reçu de paiement éléctronique</h2>
 
-        @if ($applicationLogo)
+        @if ($guiddiniIcon)
             <div id="logo">
-                <img style="width: 100%; max-width: 140px; height: 50px;" src="data:image/png;base64,{{ $applicationLogo ?? null}}">
+                <img style="width: 100%; max-width: 140px; height: 50px;" src="data:image/png;base64,{{ $guiddiniIcon }}">
             </div>
         @endif
 
