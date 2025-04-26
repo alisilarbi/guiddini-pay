@@ -256,18 +256,13 @@ class Applications extends Page implements HasForms, HasTable
                                     ->live()
                                     ->required()
                                     ->options(function () {
-
-
                                         return User::where('is_user', true)
                                             ->pluck('name', 'id')
+                                            ->mapWithKeys(function ($name, $id) {
+                                                $user = User::find($id);
+                                                return [$id => "{$name} ({$user->email})"];
+                                            })
                                             ->all();
-                                        // return User::where('is_user', true)
-                                        //     ->pluck('name', 'id')
-                                        //     ->mapWithKeys(function ($name, $id) {
-                                        //         $user = User::find($id);
-                                        //         return [$id => "{$name} ({$user->email})"];
-                                        //     })
-                                        //     ->all();
                                     }),
                             ])
                             ->action(function (array $data, Application $record) {

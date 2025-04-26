@@ -78,6 +78,7 @@ class PartnerClientController extends Controller
                 'partner_id' => $user->id,
                 'is_admin' => false,
                 'is_partner' => false,
+                'is_user' => true,
                 'partner_id' => $user->id,
                 'password' => $request->password,
                 'reset_password_flag' => true,
