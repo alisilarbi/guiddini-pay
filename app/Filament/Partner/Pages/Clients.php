@@ -10,6 +10,8 @@ use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Forms\Components\Grid;
 use Filament\Tables\Actions\Action;
+use App\Actions\Client\CreateClient;
+use App\Actions\Client\UpdateClient;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Contracts\HasForms;
@@ -69,21 +71,28 @@ class Clients extends Page implements HasForms, HasTable
                                 ->required()
                                 ->formatStateUsing(fn($record) => $record->email),
 
-                            CheckBox::make('is_admin')
-                                // ->required()
-                                ->formatStateUsing(function ($record) {
-                                    if ($record->is_admin)
-                                        return true;
-                                    else
-                                        return false;
-                                }),
+                            // CheckBox::make('is_admin')
+                            //     // ->required()
+                            //     ->formatStateUsing(function ($record) {
+                            //         if ($record->is_admin)
+                            //             return true;
+                            //         else
+                            //             return false;
+                            //     }),
                         ])
-                        ->action(function ($data, $record) {
-                            $record->update([
-                                'name' => $data['name'],
-                                'email' => $data['email'],
-                                'is_admin' => $data['is_admin'],
-                            ]);
+                        ->action(function ($data, $record, UpdateClient $updateClient) {
+
+                            $updateClient->handle(
+                                client: $record,
+                                data: $data
+                            );
+
+                            Notification::make()
+                                ->title('Client updated')
+                                ->success()
+                                ->send();
+
+                            $this->dispatch('refresh-table');
                         }),
 
                     Action::make('updatePassword')
@@ -115,10 +124,18 @@ class Clients extends Page implements HasForms, HasTable
                                 ])
 
                         ])
-                        ->action(function ($data, $record) {
-                            $record->update([
-                                'password' => Hash::make($data['new_password']),
-                            ]);
+                        ->action(function ($data, $record, UpdateClient $updateClient) {
+                            $updateClient->handle(
+                                client: $record,
+                                data: $data
+                            );
+
+                            Notification::make()
+                                ->title('Client password updated')
+                                ->success()
+                                ->send();
+
+                            $this->dispatch('refresh-table');
                         }),
 
                     Action::make('delete')
@@ -130,7 +147,7 @@ class Clients extends Page implements HasForms, HasTable
                             if ($record->is_admin)
                                 return true;
 
-                            return false;
+                            return true;
                         })
                         ->action(function ($record) {
                             $record->delete();
@@ -170,16 +187,18 @@ class Clients extends Page implements HasForms, HasTable
                             ]),
 
                     ])
-                    ->action(function ($data) {
-                        User::create([
-                            'name' => $data['name'],
-                            'email' => $data['email'],
-                            'password' => Hash::make($data['password']),
-                            'is_admin' => false,
-                            'is_partner' => false,
-                            'is_user' => true,
-                            'partner_id' => Auth::user()->id,
-                        ]);
+                    ->action(function ($data, CreateClient $createClient) {
+                        $createClient->handle(
+                            partner: Auth::user(),
+                            data: $data
+                        );
+
+                        Notification::make()
+                            ->title('Client created')
+                            ->success()
+                            ->send();
+
+                        $this->dispatch('refresh-table');
                     })
                     ->requiresConfirmation(),
 

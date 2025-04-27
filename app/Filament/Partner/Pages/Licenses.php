@@ -7,6 +7,8 @@ use Filament\Pages\Page;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\Action;
 use Illuminate\Support\Facades\Auth;
+use App\Actions\License\CreateLicense;
+use App\Actions\License\UpdateLicense;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Enums\FontWeight;
 use Filament\Forms\Components\Fieldset;
@@ -14,6 +16,7 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -66,7 +69,18 @@ class Licenses extends Page implements HasForms, HasTable
 
             ])
             ->actions([
-                EditAction::make('update')
+                Action::make('update')
+                    ->fillForm(function($record) {
+                        return [
+                            'name' => $record->name,
+                            'satim_development_username' => $record->satim_development_username,
+                            'satim_development_password' => $record->satim_development_password,
+                            'satim_development_terminal' => $record->satim_development_terminal,
+                            'satim_production_username' => $record->satim_production_username,
+                            'satim_production_password' => $record->satim_production_password,
+                            'satim_production_terminal' => $record->satim_production_terminal,
+                        ];
+                    })
                     ->form([
                         Fieldset::make('Information')
                             ->columns(2)
@@ -104,7 +118,20 @@ class Licenses extends Page implements HasForms, HasTable
                                     ->live()
                                     ->required(fn($get) => $get('satim_production_username') || $get('satim_production_password')),
                             ])
-                    ]),
+                    ])
+                    ->action(function($data, License $record, UpdateLicense $updateLicense) {
+                        $updateLicense->handle(
+                            license: $record,
+                            data: $data
+                        );
+
+                        Notification::make()
+                            ->title('License updated')
+                            ->success()
+                            ->send();
+
+                        $this->dispatch('refresh-table');
+                    }),
             ])
             ->headerActions([
                 Action::make('create')
@@ -143,21 +170,19 @@ class Licenses extends Page implements HasForms, HasTable
                                     ->live(),
                             ])
                     ])
-                    ->action(function ($data) {
-                        License::create([
-                            'user_id' => Auth::user()->id,
-                            'partner_id' => Auth::user()->id,
+                    ->action(function ($data, CreateLicense $createLicense) {
+                        $createLicense->handle(
+                            user: Auth::user(),
+                            partner: Auth::user(),
+                            data: $data
+                        );
 
-                            'name' => $data['name'],
+                        Notification::make()
+                            ->title('License created')
+                            ->success()
+                            ->send();
 
-                            'satim_development_username' => $data['satim_development_username'],
-                            'satim_development_password' => $data['satim_development_password'],
-                            'satim_development_terminal' => $data['satim_development_terminal'],
-
-                            'satim_production_username' => $data['satim_production_username'],
-                            'satim_production_password' => $data['satim_production_password'],
-                            'satim_production_terminal' => $data['satim_production_terminal'],
-                        ]);
+                        $this->dispatch('refresh-table');
                     })
 
             ]);

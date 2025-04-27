@@ -17,10 +17,10 @@ class ValidatePartnerApiKeys
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $appKey = $request->header('x-app-key');
-        $secretKey = $request->header('x-secret-key');
+        $partnerKey = $request->header('x-partner-key');
+        $partnerSecret = $request->header('x-partner-secret');
 
-        if (!$appKey || !$secretKey) {
+        if (!$partnerKey || !$partnerSecret) {
             return (new ErrorResource([
                 'http_code' => 401,
                 'code' => 'INVALID_API_KEYS',
@@ -30,8 +30,8 @@ class ValidatePartnerApiKeys
             ]))->response();
         }
 
-        $user = User::where('app_key', $appKey)
-            ->where('app_secret', $secretKey)
+        $user = User::where('partner_key', $partnerKey)
+            ->where('partner_secret', $partnerSecret)
             ->first();
 
         if (!$user) {

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 
 class CreateApplication
 {
-    public function handle(User $user, User $partner, array $data): void
+    public function handle(User $user, User $partner, array $data): Application
     {
         $application = Application::create([
             'name' => $data['name'],
@@ -20,7 +20,7 @@ class CreateApplication
             'user_id' => $user->id,
         ]);
 
-        if ($data['logo']) {
+        if (!empty($data['logo'])) {
             $tempPath = Storage::disk('public')->path($data['logo']);
             $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
 
@@ -38,5 +38,7 @@ class CreateApplication
             'license_env' => $data['license_env'],
             'license_id' => $env->id,
         ]);
+
+        return $application;
     }
 }

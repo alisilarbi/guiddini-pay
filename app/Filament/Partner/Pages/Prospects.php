@@ -18,7 +18,10 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Contracts\HasTable;
+use App\Actions\Prospect\DeleteProspect;
+use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
+use App\Actions\Prospect\ConvertProspect;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TernaryFilter;
@@ -123,39 +126,19 @@ class Prospects extends Page implements HasForms, HasTable
                         ->requiresConfirmation()
                         ->icon('heroicon-o-arrow-path')
                         ->disabled(fn(Prospect $prospect) => $prospect->converted)
-                        ->action(function (Prospect $prospect) {
-                            $partner = User::with('licenses')->find(Auth::id());
-                            $license = $partner->licenses->first();
+                        ->action(function (Prospect $prospect, ConvertProspect $convertProspect) {
 
-                            $application = Application::create([
-                                'name' => $prospect->company_name,
-                                'website_url' => $prospect->website_url,
-                                'redirect_url' => $prospect->website_url,
-                                'partner_id' => $partner->id,
-                                'license_id' => $license->id,
-                                'license_env' => 'development',
-                            ]);
+                            $convertProspect->handle(
+                                partner: Auth::user(),
+                                prospect: $prospect,
+                            );
 
-                            $user = User::where('email', $prospect->email)->first();
-                            if (!$user) {
-                                $user = User::create([
-                                    'name' => $prospect->name,
-                                    'email' => $prospect->email,
-                                    'password' => Hash::make(Str::random(12)),
-                                    'partner_id' => $partner->id,
-                                    'is_user' => true,
-                                ]);
-                            }
+                            Notification::make()
+                                ->title('prospect converted')
+                                ->success()
+                                ->send();
 
-                            $application->update([
-                                'user_id' => $user->id,
-                            ]);
-
-                            $prospect->update([
-                                'application_id' => $application->id,
-                                'user_id' => $user->id,
-                                'converted' => true,
-                            ]);
+                            $this->dispatch('refresh-table');
                         }),
 
                     Action::make('delete')
@@ -163,8 +146,15 @@ class Prospects extends Page implements HasForms, HasTable
                         ->color('danger')
                         ->icon('heroicon-o-x-circle')
                         ->requiresConfirmation()
-                        ->action(function (Prospect $prospect) {
-                            $prospect->delete();
+                        ->action(function (Prospect $prospect, DeleteProspect $deleteProspect) {
+
+                            $deleteProspect->handle($prospect);
+                            Notification::make()
+                                ->title('Prospect deleted')
+                                ->success()
+                                ->send();
+                            $this->dispatch('refresh-table');
+                            // $prospect->delete();
                         }),
 
                 ])

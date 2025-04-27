@@ -18,7 +18,7 @@ class ValidateApplicationApiKeys
     public function handle(Request $request, Closure $next): Response
     {
         $appKey = $request->header('x-app-key');
-        $secretKey = $request->header('x-secret-key');
+        $secretKey = $request->header('x-app-secret');
 
         if (!$appKey || !$secretKey) {
             return (new ErrorResource([
@@ -29,7 +29,6 @@ class ValidateApplicationApiKeys
                 'meta' => []
             ]))->response();
         }
-
 
         $application = Application::where('app_key', $appKey)
             ->where('app_secret', $secretKey)
@@ -46,7 +45,6 @@ class ValidateApplicationApiKeys
         }
 
         // $origin = $request->header('Origin') ?? $request->header('Referer');
-
         // if ($origin && rtrim($origin, '/') !== rtrim($application->website_url, '/')) {
         //     return (new ErrorResource([
         //         'http_code' => 403,

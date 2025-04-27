@@ -23,6 +23,7 @@ Route::prefix('client/payment')->middleware('validate_application_api_keys')->gr
 });
 
 Route::prefix('partner')->middleware('validate_partner_api_keys')->group(function () {
+
     Route::prefix('application')->group(function () {
         Route::get('index', [PartnerApplicationController::class, 'index']);
         Route::post('store', [PartnerApplicationController::class, 'store']);
@@ -58,4 +59,5 @@ Route::prefix('partner')->middleware('validate_partner_api_keys')->group(functio
         Route::patch('update', [PartnerClientController::class, 'update']);
         Route::delete('destroy', [PartnerClientController::class, 'destroy']);
     });
+
 });

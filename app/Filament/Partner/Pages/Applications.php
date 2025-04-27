@@ -35,6 +35,7 @@ use Filament\Infolists\Components\Fieldset;
 use Filament\Infolists\Components\TextEntry;
 use App\Actions\Application\CreateApplication;
 use App\Actions\Application\DeleteApplication;
+use App\Actions\Application\TransferOwnership;
 use App\Actions\Application\UpdateApplication;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -92,6 +93,7 @@ class Applications extends Page implements HasForms, HasTable
                 ActionGroup::make([
 
                     ActionGroup::make([
+
                         ViewAction::make('view')
                             ->icon('heroicon-o-eye')
                             ->infolist([
@@ -141,6 +143,8 @@ class Applications extends Page implements HasForms, HasTable
                     ])->dropdown(false),
 
                     ActionGroup::make([
+
+
                         Action::make('edit')
                             ->label('Edit')
                             ->icon('heroicon-o-pencil-square')
@@ -224,10 +228,10 @@ class Applications extends Page implements HasForms, HasTable
                                 $this->dispatch('refresh-table');
                             }),
 
-                        Action::make('certification')
-                            ->label('Certification')
+                        Action::make('online_payment')
+                            ->label('Online Payment')
                             ->icon('heroicon-o-arrow-top-right-on-square')
-                            ->url(fn(Application $record): string => route('certification', ['slug' => $record->slug], false))
+                            ->url(fn(Application $record): string => route('pay', ['slug' => $record->slug], false))
                             ->openUrlInNewTab()
 
                     ])
@@ -253,22 +257,37 @@ class Applications extends Page implements HasForms, HasTable
                                             ->all();
                                     }),
                             ])
-                            ->action(function (array $data, Application $record) {
-                                $user = User::where('id', $data['user'])->first();
+                            ->action(function (array $data, Application $record, TransferOwnership $transferOwnership) {
 
-                                $record->update([
-                                    'user_id' => $user->id,
-                                ]);
+                                $transferOwnership->handle(
+                                    newOwner: User::where('id', $data['user'])->first(),
+                                    application: $record,
+                                );
+
+                                Notification::make()
+                                    ->title('Ownership transferred')
+                                    ->success()
+                                    ->send();
+                                $this->dispatch('refresh-table');
                             }),
 
                         Action::make('recover')
                             ->label('Recover')
                             ->icon('heroicon-o-arrow-uturn-left')
                             ->requiresConfirmation()
-                            ->action(function (Application $record) {
-                                $record->update([
-                                    'user_id' => Auth::user()->id,
-                                ]);
+                            ->action(function (Application $record, TransferOwnership $transferOwnership) {
+
+                                $transferOwnership->handle(
+                                    newOwner: Auth::user(),
+                                    application: $record,
+                                );
+
+                                Notification::make()
+                                    ->title('Ownership recovered')
+                                    ->success()
+                                    ->send();
+
+                                $this->dispatch('refresh-table');
                             })
                             ->disabled(function (Application $record) {
                                 if ($record->user_id === Auth::user()->id)
@@ -288,7 +307,6 @@ class Applications extends Page implements HasForms, HasTable
                             ->requiresConfirmation()
                             ->action(function ($record, DeleteApplication $deleteApplication) {
                                 $deleteApplication->handle(
-                                    user: Auth::user(),
                                     application: $record,
                                 );
                             })

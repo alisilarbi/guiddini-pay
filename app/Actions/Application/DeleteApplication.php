@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 class DeleteApplication
 {
-    public function handle(User $user, Application $application): void
+    public function handle(Application $application): void
     {
         if ($application->logo) {
             Storage::disk('logos')->delete(basename($application->logo));

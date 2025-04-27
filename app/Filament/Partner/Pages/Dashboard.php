@@ -30,14 +30,14 @@ class Dashboard extends \Filament\Pages\Dashboard implements HasForms
         if(!$user->app_key OR !$user->app_secret)
         {
             $user->update([
-                'app_key' => 'APP-' . strtoupper(Str::random(18)),
-                'app_secret' => 'SEC-' . Str::random(32)
+                'user_key' => 'APP-' . strtoupper(Str::random(18)),
+                'user_secret' => 'SEC-' . Str::random(32)
             ]);
         }
 
         $this->form->fill([
-            'app_key' => $user->app_key,
-            'app_secret' => $user->app_secret,
+            'user_key' => $user->user_key,
+            'user_secret' => $user->user_secret,
         ]);
     }
 
@@ -50,9 +50,9 @@ class Dashboard extends \Filament\Pages\Dashboard implements HasForms
                     ->schema([
                         Grid::make(2)
                             ->schema([
-                                TextInput::make('app_key')
+                                TextInput::make('user_key')
                                     ->disabled(),
-                                TextInput::make('app_secret')
+                                TextInput::make('user_secret')
                                     ->disabled()
                             ]),
                     ])

@@ -22,11 +22,11 @@ class PartnerApplicationController extends Controller
     public function index(Request $request)
     {
         try {
-            $appKey = $request->header('x-app-key');
-            $secretKey = $request->header('x-secret-key');
+            $partnerKey = $request->header('x-partner-key');
+            $partnerSecret = $request->header('x-partner-secret');
 
-            $partner = User::where('app_key', $appKey)
-                ->where('app_secret', $secretKey)
+            $partner = User::where('partner_key', $partnerKey)
+                ->where('partner_secret', $partnerSecret)
                 ->first();
 
             if (!$partner) {
@@ -34,7 +34,6 @@ class PartnerApplicationController extends Controller
             }
 
             $applications = Application::where('partner_id', $partner->id)->get();
-
             return response()->json([
                 'data' => $applications->isEmpty() ? [] : $applications->map(fn($application) => [
                     'type' => 'application',
@@ -56,43 +55,44 @@ class PartnerApplicationController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|string',
+            'website_url' => 'required|string',
+            'redirect_url' => 'required|string',
+        ]);
+
+        $partnerKey = $request->header('x-partner-key');
+        $partnerSecret = $request->header('x-partner-secret');
+
+        $partner = User::where('partner_key', $partnerKey)
+            ->where('partner_secret', $partnerSecret)
+            ->first();
+
+        if (!$partner) {
+            throw new \Exception('Unauthorized', 401);
+        }
+
+        $license = $partner->licenses()->first();
+        $application = Application::create([
+            'name' => $request->name,
+            'website_url' => $request->website_url,
+            'redirect_url' => $request->redirect_url,
+            'user_id' => $partner->id,
+            'license_id' => $license->id,
+            'license_env' => 'development',
+            'partner_id' => $partner->id,
+        ]);
+
+        return new ApplicationResource([
+            'success' => true,
+            'code' => 'APPLICATION_CREATED',
+            'message' => 'Application savec successfully',
+            'data' => $application,
+            'http' => 201,
+        ]);
+
 
         try {
-            $request->validate([
-                'name' => 'required|string',
-                'website_url' => 'required|string',
-                'redirect_url' => 'required|string',
-            ]);
-
-            $appKey = $request->header('x-app-key');
-            $secretKey = $request->header('x-secret-key');
-
-            $partner = User::where('app_key', $appKey)
-                ->where('app_secret', $secretKey)
-                ->first();
-
-            if (!$partner) {
-                throw new \Exception('Unauthorized', 401);
-            }
-
-            $license = $partner->licenses()->first();
-            $application = Application::create([
-                'name' => $request->name,
-                'website_url' => $request->website_url,
-                'redirect_url' => $request->redirect_url,
-                'user_id' => $partner->id,
-                'license_id' => $license->id,
-                'license_env' => 'development',
-                'partner_id' => $partner->id,
-            ]);
-
-            return new ApplicationResource([
-                'success' => true,
-                'code' => 'APPLICATION_CREATED',
-                'message' => 'Application savec successfully',
-                'data' => $application,
-                'http' => 201,
-            ]);
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
         }
@@ -109,11 +109,11 @@ class PartnerApplicationController extends Controller
                 'id' => 'required|string',
             ]);
 
-            $appKey = $request->header('x-app-key');
-            $secretKey = $request->header('x-secret-key');
+            $partnerKey = $request->header('x-partner-key');
+            $partnerSecret = $request->header('x-partner-secret');
 
-            $user = User::where('app_key', $appKey)
-                ->where('app_secret', $secretKey)
+            $user = User::where('partner_key', $partnerKey)
+                ->where('partner_secret', $partnerSecret)
                 ->first();
 
             if (!$user) {
@@ -151,11 +151,11 @@ class PartnerApplicationController extends Controller
                 'license_env' => 'sometimes|required|string',
             ]);
 
-            $appKey = $request->header('x-app-key');
-            $secretKey = $request->header('x-secret-key');
+            $partnerKey = $request->header('x-partner-key');
+            $partnerSecret = $request->header('x-partner-secret');
 
-            $user = User::where('app_key', $appKey)
-                ->where('app_secret', $secretKey)
+            $user = User::where('partner_key', $partnerKey)
+                ->where('partner_secret', $partnerSecret)
                 ->first();
 
             if (!$user) {
@@ -175,7 +175,6 @@ class PartnerApplicationController extends Controller
                 'data' => $application,
                 'http' => 200,
             ]);
-
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
         }
@@ -187,11 +186,11 @@ class PartnerApplicationController extends Controller
     public function destroy(Request $request)
     {
         try {
-            $appKey = $request->header('x-app-key');
-            $secretKey = $request->header('x-secret-key');
+            $partnerKey = $request->header('x-partner-key');
+            $partnerSecret = $request->header('x-partner-secret');
 
-            $user = User::where('app_key', $appKey)
-                ->where('app_secret', $secretKey)
+            $user = User::where('partner_key', $partnerKey)
+                ->where('partner_secret', $partnerSecret)
                 ->first();
 
             if (!$user) {
@@ -200,7 +199,6 @@ class PartnerApplicationController extends Controller
 
             $application = Application::where('id', $request->id)
                 ->firstOrFail();
-
             $application->delete();
 
             return response()->json([
@@ -227,11 +225,11 @@ class PartnerApplicationController extends Controller
                 'license_env' => 'required|string|in:development,production',
             ]);
 
-            $appKey = $request->header('x-app-key');
-            $secretKey = $request->header('x-secret-key');
+            $partnerKey = $request->header('x-partner-key');
+            $partnerSecret = $request->header('x-partner-secret');
 
-            $partner = User::where('app_key', $appKey)
-                ->where('app_secret', $secretKey)
+            $partner = User::where('partner_key', $partnerKey)
+                ->where('partner_secret', $partnerSecret)
                 ->first();
 
             if (!$partner) {
@@ -268,41 +266,42 @@ class PartnerApplicationController extends Controller
      */
     public function transferOwnership(Request $request)
     {
+        $request->validate([
+            'application_id' => 'required|string|exists:applications,id',
+            'new_user_id' => 'required|string|exists:users,id'
+        ]);
+
+        $partnerKey = $request->header('x-partner-key');
+        $partnerSecret = $request->header('x-partner-secret');
+
+        $partner = User::where('partner_key', $partnerKey)
+            ->where('partner_secret', $partnerSecret)
+            ->first();
+
+        if (!$partner) {
+            throw new \Exception('Unauthorized', 401);
+        }
+
+        $application = Application::where('id', $request->application_id)
+            ->where('partner_id', $partner->id)
+            ->firstOrFail();
+
+        $newUser = User::findOrFail($request->new_user_id);
+
+        $application->update([
+            'user_id' => $newUser->id,
+            // 'partner_id' => $newUser->isPartner() ? $newUser->id : null,
+        ]);
+
+        return new ApplicationResource([
+            'success' => true,
+            'code' => 'OWNERSHIP_TRANSFERRED',
+            'message' => 'Application ownership transferred successfully',
+            'data' => $application,
+            'http' => 200,
+        ]);
         try {
-            $request->validate([
-                'application_id' => 'required|string|exists:applications,id',
-                'new_user_id' => 'required|string|exists:users,id'
-            ]);
 
-            $appKey = $request->header('x-app-key');
-            $secretKey = $request->header('x-secret-key');
-
-            $partner = User::where('app_key', $appKey)
-                ->where('app_secret', $secretKey)
-                ->first();
-
-            if (!$partner) {
-                throw new \Exception('Unauthorized', 401);
-            }
-
-            $application = Application::where('id', $request->application_id)
-                ->where('partner_id', $partner->id)
-                ->firstOrFail();
-
-            $newUser = User::findOrFail($request->new_user_id);
-
-            $application->update([
-                'user_id' => $newUser->id,
-                // 'partner_id' => $newUser->isPartner() ? $newUser->id : null,
-            ]);
-
-            return new ApplicationResource([
-                'success' => true,
-                'code' => 'OWNERSHIP_TRANSFERRED',
-                'message' => 'Application ownership transferred successfully',
-                'data' => $application,
-                'http' => 200,
-            ]);
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
         }

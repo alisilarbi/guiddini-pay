@@ -388,4 +388,5 @@ class PartnerProspectController extends Controller
             return $this->handleApiException($e);
         }
     }
+
 }
