@@ -23,4 +23,4 @@ Route::prefix('client/payment')->group(function () {
         ->middleware('signed');
 });
 
-Route::get('pay/{slug}/{order_number?}', SponteanousPayment::class)->name('pay')->header('X-Frame-Options', 'ALLOWALL');
+Route::get('pay/{slug}/{order_number?}', SponteanousPayment::class)->name('pay');
