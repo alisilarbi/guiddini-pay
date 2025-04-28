@@ -2,10 +2,10 @@
 /node_modules
 /public/hot
 /public/storage
-/public/logos
 /storage/*.key
 /storage/pail
 /storage/app/
+/storage/app/*
 /vendor
 .env
 .env.backup
