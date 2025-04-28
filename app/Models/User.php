@@ -70,11 +70,6 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Application::class);
     }
 
-    // public function canAccessPanel(Panel $panel): bool
-    // {
-    //     return true;
-    // }
-
     public function canAccessPanel(Panel $panel): bool
     {
         return match ($panel->getId()) {
@@ -90,32 +85,9 @@ class User extends Authenticatable implements FilamentUser
         return $this->belongsTo(User::class);
     }
 
-    public static function generateAppKey(): string
-    {
-        return 'APP-' . strtoupper(Str::random(18));
-    }
-
-    public static function generateSecretKey(): string
-    {
-        return 'SEC-' . Str::random(32);
-    }
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($user) {
-            $user->app_key = self::generateAppKey();
-            $user->app_secret = self::generateSecretKey();
-        });
-
-        // static::deleting(function ($application) {
-        //     $application->info()->delete();
-        // });
-    }
-
     public function licenses()
     {
         return $this->hasMany(License::class);
     }
+
 }

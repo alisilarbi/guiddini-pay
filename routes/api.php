@@ -2,8 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\Client\ClientController;
-use App\Http\Controllers\Api\Client\ClientPaymentController;
+use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\Partner\PartnerClientController;
 use App\Http\Controllers\Api\Partner\PartnerLicenseController;
 use App\Http\Controllers\Api\Partner\PartnerProspectController;
@@ -14,12 +13,12 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::prefix('client/payment')->middleware('validate_application_api_keys')->group(function () {
-    Route::post('/initiate', [ClientController::class, 'initiate']);
+Route::prefix('payment')->middleware('validate_application_api_keys')->group(function () {
+    Route::post('/initiate', [PaymentController::class, 'initiate']);
 
-    Route::get('/show', [ClientController::class, 'getTransaction'])->name('api.client.payment.show');
-    Route::get('/receipt', [ClientController::class, 'getPaymentReceipt'])->name('api.client.payment.receipt');
-    Route::post('/email', [ClientController::class, 'emailPaymentReceipt'])->name('api.client.payment.email');
+    Route::get('/show', [PaymentController::class, 'getTransaction'])->name('api.client.payment.show');
+    Route::get('/receipt', [PaymentController::class, 'getPaymentReceipt'])->name('api.client.payment.receipt');
+    Route::post('/email', [PaymentController::class, 'emailPaymentReceipt'])->name('api.client.payment.email');
 });
 
 Route::prefix('partner')->middleware('validate_partner_api_keys')->group(function () {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Web\Client;
+namespace App\Http\Controllers\Web;
 
 use App\Models\Application;
 use App\Models\Transaction;
@@ -13,7 +13,7 @@ use App\Traits\HandlesWebExceptions;
 use App\Services\Payments\PaymentService;
 use App\Services\Payments\ReceiptService;
 
-class ClientController extends Controller
+class PaymentConfirmationController extends Controller
 {
     use HandlesApiExceptions;
     use HandlesWebExceptions;

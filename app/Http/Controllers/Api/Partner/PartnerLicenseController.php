@@ -20,11 +20,11 @@ class PartnerLicenseController extends Controller
     public function index(Request $request)
     {
         try {
-            $appKey = $request->header('x-app-key');
-            $secretKey = $request->header('x-secret-key');
+            $partnerKey = $request->header('x-partner-key');
+            $partnerSecret = $request->header('x-partner-secret');
 
-            $user = User::where('app_key', $appKey)
-                ->where('app_secret', $secretKey)
+            $user = User::where('partner_key', $partnerKey)
+                ->where('partner_secret', $partnerSecret)
                 ->first();
 
             if (!$user) {
@@ -101,12 +101,11 @@ class PartnerLicenseController extends Controller
 
             $validator->validate();
 
+            $partnerKey = $request->header('x-partner-key');
+            $partnerSecret = $request->header('x-partner-secret');
 
-            $appKey = $request->header('x-app-key');
-            $secretKey = $request->header('x-secret-key');
-
-            $user = User::where('app_key', $appKey)
-                ->where('app_secret', $secretKey)
+            $user = User::where('partner_key', $partnerKey)
+                ->where('partner_secret', $partnerSecret)
                 ->first();
 
             $license = $user->licenses()->first();
@@ -149,11 +148,11 @@ class PartnerLicenseController extends Controller
                 'id' => 'required|string',
             ]);
 
-            $appKey = $request->header('x-app-key');
-            $secretKey = $request->header('x-secret-key');
+            $partnerKey = $request->header('x-partner-key');
+            $partnerSecret = $request->header('x-partner-secret');
 
-            $user = User::where('app_key', $appKey)
-                ->where('app_secret', $secretKey)
+            $user = User::where('partner_key', $partnerKey)
+                ->where('partner_secret', $partnerSecret)
                 ->first();
 
             if (!$user) {
@@ -233,11 +232,11 @@ class PartnerLicenseController extends Controller
 
             $validator->validate();
 
-            $appKey = $request->header('x-app-key');
-            $secretKey = $request->header('x-secret-key');
+            $partnerKey = $request->header('x-partner-key');
+            $partnerSecret = $request->header('x-partner-secret');
 
-            $user = User::where('app_key', $appKey)
-                ->where('app_secret', $secretKey)
+            $user = User::where('partner_key', $partnerKey)
+                ->where('partner_secret', $partnerSecret)
                 ->first();
 
             if (!$user) {
@@ -276,11 +275,11 @@ class PartnerLicenseController extends Controller
     public function destroy(Request $request)
     {
         try {
-            $appKey = $request->header('x-app-key');
-            $secretKey = $request->header('x-secret-key');
+            $partnerKey = $request->header('x-partner-key');
+            $partnerSecret = $request->header('x-partner-secret');
 
-            $user = User::where('app_key', $appKey)
-                ->where('app_secret', $secretKey)
+            $user = User::where('partner_key', $partnerKey)
+                ->where('partner_secret', $partnerSecret)
                 ->first();
 
             if (!$user) {
@@ -340,11 +339,11 @@ class PartnerLicenseController extends Controller
                 'new_user_id' => 'required|string|exists:users,id'
             ]);
 
-            $appKey = $request->header('x-app-key');
-            $secretKey = $request->header('x-secret-key');
+            $partnerKey = $request->header('x-partner-key');
+            $partnerSecret = $request->header('x-partner-secret');
 
-            $partner = User::where('app_key', $appKey)
-                ->where('app_secret', $secretKey)
+            $partner = User::where('partner-key', $partnerKey)
+                ->where('partner_secret', $partnerSecret)
                 ->first();
 
             if (!$partner) {

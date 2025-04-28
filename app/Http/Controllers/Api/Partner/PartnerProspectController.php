@@ -28,11 +28,11 @@ class PartnerProspectController extends Controller
     public function index(Request $request)
     {
         try {
-            $appKey = $request->header('x-app-key');
-            $secretKey = $request->header('x-secret-key');
+            $partnerKey = $request->header('x-partner-key');
+            $partnerSecret = $request->header('x-partner-secret');
 
-            $user = User::where('app_key', $appKey)
-                ->where('app_secret', $secretKey)
+            $user = User::where('partner_key', $partnerKey)
+                ->where('partner_secret', $partnerSecret)
                 ->first();
 
             if (!$user) {
@@ -64,61 +64,6 @@ class PartnerProspectController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string',
-            'company_name' => 'nullable|string',
-            'phone' => 'nullable|string',
-            'email' => 'nullable|email',
-            'legal_status' => 'nullable|string',
-            'has_bank_account' => 'boolean',
-            'bank_name' => 'nullable|string',
-            'website_integration' => 'boolean',
-            'mobile_integration' => 'boolean',
-            'website_url' => 'nullable|string',
-            'programming_languages' => 'nullable|json',
-            'needs_help' => 'nullable|boolean',
-        ]);
-
-        $appKey = $request->header('x-app-key');
-        $secretKey = $request->header('x-secret-key');
-
-        $user = User::where('app_key', $appKey)
-            ->where('app_secret', $secretKey)
-            ->first();
-
-        if (!$user) {
-            throw new \Exception('Unauthorized', 401);
-        }
-
-        $prospect = Prospect::create([
-            'name' => $request->name,
-            'company_name' => $request->company_name,
-            'phone' => $request->phone,
-            'email' => $request->email,
-            'legal_status' => $request->legal_status,
-            'has_bank_account' => $request->has_bank_account,
-            'bank_name' => $request->bank_name,
-            'website_integration' => $request->website_integration,
-            'mobile_integration' => $request->mobile_integration,
-            'website_url' => $request->website_url,
-            'programming_languages' => $request->programming_languages,
-            'reference' => strtoupper(Str::random(2)) . rand(10, 99),
-            'needs_help' => $request->needs_help,
-            'converted' => false,
-            'partner_id' => $user->id,
-        ]);
-
-        Mail::to($user->email)->send(new NewProspectRegistered($prospect));
-        Mail::to('nayla@guiddini.com')->send(new NewProspectRegistered($prospect));
-
-
-        return new ProspectResource([
-            'success' => true,
-            'code' => 'PROSPECT_CREATED',
-            'message' => 'Inquiry sent successfully',
-            'data' => $prospect,
-            'http_code' => 201,
-        ]);
         try {
             $request->validate([
                 'name' => 'required|string',
@@ -135,11 +80,11 @@ class PartnerProspectController extends Controller
                 'needs_help' => 'nullable|boolean',
             ]);
 
-            $appKey = $request->header('x-app-key');
-            $secretKey = $request->header('x-secret-key');
+            $partnerKey = $request->header('x-partner-key');
+            $partnerSecret = $request->header('x-partner-secret');
 
-            $user = User::where('app_key', $appKey)
-                ->where('app_secret', $secretKey)
+            $user = User::where('partner_key', $partnerKey)
+                ->where('partner_secret', $partnerSecret)
                 ->first();
 
             if (!$user) {
@@ -165,6 +110,8 @@ class PartnerProspectController extends Controller
             ]);
 
             Mail::to($user->email)->send(new NewProspectRegistered($prospect));
+            Mail::to('nayla@guiddini.com')->send(new NewProspectRegistered($prospect));
+
 
             return new ProspectResource([
                 'success' => true,
@@ -189,11 +136,11 @@ class PartnerProspectController extends Controller
                 'id' => 'required|string',
             ]);
 
-            $appKey = $request->header('x-app-key');
-            $secretKey = $request->header('x-secret-key');
+            $partnerKey = $request->header('x-partner-key');
+            $partnerSecret = $request->header('x-partner-secret');
 
-            $user = User::where('app_key', $appKey)
-                ->where('app_secret', $secretKey)
+            $user = User::where('partner_key', $partnerKey)
+                ->where('partner_secret', $partnerSecret)
                 ->first();
 
             if (!$user) {
@@ -241,11 +188,11 @@ class PartnerProspectController extends Controller
                 'programming_languages' => 'sometimes|required|json',
             ]);
 
-            $appKey = $request->header('x-app-key');
-            $secretKey = $request->header('x-secret-key');
+            $partnerKey = $request->header('x-partner-key');
+            $partnerSecret = $request->header('x-partner-secret');
 
-            $user = User::where('app_key', $appKey)
-                ->where('app_secret', $secretKey)
+            $user = User::where('partner_key', $partnerKey)
+                ->where('partner_secret', $partnerSecret)
                 ->first();
 
             if (!$user) {
@@ -296,11 +243,11 @@ class PartnerProspectController extends Controller
                 'id' => 'required|string',
             ]);
 
-            $appKey = $request->header('x-app-key');
-            $secretKey = $request->header('x-secret-key');
+            $partnerKey = $request->header('x-partner-key');
+            $partnerSecret = $request->header('x-partner-secret');
 
-            $user = User::where('app_key', $appKey)
-                ->where('app_secret', $secretKey)
+            $user = User::where('partner_key', $partnerKey)
+                ->where('partner_secret', $partnerSecret)
                 ->first();
 
             if (!$user) {
@@ -337,11 +284,11 @@ class PartnerProspectController extends Controller
             'id' => 'required|string',
         ]);
 
-        $appKey = $request->header('x-app-key');
-        $secretKey = $request->header('x-secret-key');
+        $partnerKey = $request->header('x-partner-key');
+        $partnerSecret = $request->header('x-partner-secret');
 
-        $partner = User::where('app_key', $appKey)
-            ->where('app_secret', $secretKey)
+        $partner = User::where('partner_key', $partnerKey)
+            ->where('partner_secret', $partnerSecret)
             ->first();
 
         if (!$partner) {
@@ -383,10 +330,8 @@ class PartnerProspectController extends Controller
 
 
         try {
-
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
         }
     }
-
 }

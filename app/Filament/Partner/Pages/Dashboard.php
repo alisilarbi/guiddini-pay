@@ -27,18 +27,19 @@ class Dashboard extends \Filament\Pages\Dashboard implements HasForms
     {
         $user = Auth::user();
 
-        if(!$user->app_key OR !$user->app_secret)
-        {
-            $user->update([
-                'user_key' => 'APP-' . strtoupper(Str::random(18)),
-                'user_secret' => 'SEC-' . Str::random(32)
+        if ($user->is_partner) {
+            if (!$user->partner_key or !$user->partner_secret) {
+                $user->update([
+                    'partner_key' => 'APP-' . strtoupper(Str::random(18)),
+                    'partner_secret' => 'SEC-' . Str::random(32)
+                ]);
+            }
+
+            $this->form->fill([
+                'partner_key' => $user->partner_key,
+                'partner_secret' => $user->partner_secret,
             ]);
         }
-
-        $this->form->fill([
-            'user_key' => $user->user_key,
-            'user_secret' => $user->user_secret,
-        ]);
     }
 
     public function form(Form $form): Form
@@ -50,15 +51,13 @@ class Dashboard extends \Filament\Pages\Dashboard implements HasForms
                     ->schema([
                         Grid::make(2)
                             ->schema([
-                                TextInput::make('user_key')
+                                TextInput::make('partner_key')
                                     ->disabled(),
-                                TextInput::make('user_secret')
+                                TextInput::make('partner_secret')
                                     ->disabled()
                             ]),
                     ])
             ])
             ->statePath('data');
     }
-
-
 }

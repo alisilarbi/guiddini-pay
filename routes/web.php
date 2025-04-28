@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use App\Services\Payments\ReceiptService;
 use App\Livewire\Public\SponteanousPayment;
-use App\Http\Controllers\Web\Client\ClientController;
-use App\Http\Controllers\Client\ClientPaymentController;
-use App\Http\Controllers\Web\Client\ClientController as WebClientController;
+use App\Http\Controllers\Web\PaymentConfirmationController;
 
 
 Route::get('/', function () {
@@ -16,7 +14,7 @@ Route::get('/', function () {
 });
 
 Route::prefix('payment')->group(function () {
-    Route::get('/confirm/{order_number}', [WebClientController::class, 'confirm'])->name('payment.confirm');
+    Route::get('/confirm/{order_number}', [PaymentConfirmationController::class, 'confirm'])->name('payment.confirm');
 });
 
 Route::prefix('client/payment')->group(function () {
