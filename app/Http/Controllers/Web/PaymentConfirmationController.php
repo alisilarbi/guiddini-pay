@@ -54,23 +54,4 @@ class PaymentConfirmationController extends Controller
     {
         return (string)($response['ErrorCode'] ?? $response['errorCode'] ?? 'UNKNOWN');
     }
-
-    public function downloadPaymentReceipt(string $orderNumber): \Illuminate\Http\Response
-    {
-        $transaction = Transaction::where('order_number', $orderNumber)->first();
-        $application = $transaction->application;
-
-        $guiddiniLogo = base64_encode(file_get_contents(public_path('images/icon.png')));
-
-        $pdf = Pdf::loadView('components.pdfs.transaction-success', [
-            'transaction' => $transaction,
-            'application' => $application,
-            'guiddiniLogo' => $guiddiniLogo,
-        ])->setOptions([
-            'isRemoteEnabled' => true,
-            'isHtml5ParserEnabled' => true,
-        ]);
-
-        return $pdf->download('invoice.pdf');
-    }
 }

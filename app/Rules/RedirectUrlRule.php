@@ -21,6 +21,10 @@ class RedirectUrlRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
+        if (app()->environment() !== 'production') {
+            return;
+        }
+
         if (empty($this->websiteUrl)) {
             $fail('The website URL must be set before validating the redirect URL.');
             return;

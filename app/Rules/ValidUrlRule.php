@@ -14,6 +14,10 @@ class ValidUrlRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
+        if (app()->environment() !== 'production') {
+            return;
+        }
+
         $urlParts = parse_url($value);
 
         if (!$urlParts || empty($urlParts['scheme']) || empty($urlParts['host'])) {

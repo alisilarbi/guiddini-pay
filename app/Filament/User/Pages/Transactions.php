@@ -27,10 +27,18 @@ class Transactions extends Page implements HasForms, HasTable
 
     protected static string $view = 'filament.user.pages.transactions';
 
+    public $applicationIds = [];
+
+    public function mount():void
+    {
+        $user = Auth::user();
+        $this->applicationIds = $user->applications->pluck('id');
+    }
+
     public function table(Table $table): Table
     {
         return $table
-            ->query(Transaction::where('partner_id', Auth::user()->id))
+            ->query(Transaction::whereIn('application_id', $this->applicationIds))
             ->columns([
                 TextColumn::make('application.name')
                     ->label('Application')

@@ -15,7 +15,7 @@ class CreateClient
             'password' => Hash::make($data['password']),
             'is_admin' => false,
             'is_partner' => false,
-            'is_user' => false,
+            'is_user' => true,
             'partner_id' => $partner->id,
         ]);
 

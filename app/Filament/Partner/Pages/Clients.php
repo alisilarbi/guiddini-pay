@@ -71,14 +71,6 @@ class Clients extends Page implements HasForms, HasTable
                                 ->required()
                                 ->formatStateUsing(fn($record) => $record->email),
 
-                            // CheckBox::make('is_admin')
-                            //     // ->required()
-                            //     ->formatStateUsing(function ($record) {
-                            //         if ($record->is_admin)
-                            //             return true;
-                            //         else
-                            //             return false;
-                            //     }),
                         ])
                         ->action(function ($data, $record, UpdateClient $updateClient) {
 

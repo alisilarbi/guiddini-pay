@@ -3,9 +3,10 @@
 namespace App\Filament\User\Pages;
 
 use App\Models\License;
+use Filament\Forms\Get;
 use Filament\Pages\Page;
-use Filament\Tables\Table;
 
+use Filament\Tables\Table;
 use App\Models\Application;
 use App\Rules\ValidUrlRule;
 use App\Rules\RedirectUrlRule;
@@ -18,10 +19,13 @@ use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Infolists\Components\Fieldset;
 use Filament\Infolists\Components\TextEntry;
+use App\Actions\Application\UpdateApplication;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
@@ -38,7 +42,6 @@ class Applications extends Page implements HasForms, HasTable
     {
         $user = Auth::user();
         $app = $user->applications()->first();
-        // dd($app->license->name);
     }
 
     public function table(Table $table): Table
@@ -88,123 +91,117 @@ class Applications extends Page implements HasForms, HasTable
             ])
             ->actions([
                 ActionGroup::make([
+
+
                     ActionGroup::make([
 
 
-                        ViewAction::make('view')
-                            ->icon('heroicon-o-eye')
-                            ->infolist([
+                        ActionGroup::make([
+                            ViewAction::make('view')
+                                ->icon('heroicon-o-eye')
+                                ->infolist([
 
-                                Fieldset::make('General Information')
-                                    ->schema([
+                                    Fieldset::make('General Information')
+                                        ->schema([
 
-                                        TextEntry::make('name')
-                                            ->label('Name'),
+                                            TextEntry::make('name')
+                                                ->label('Name'),
 
-                                        TextEntry::make('app_key')
-                                            ->label('App Key'),
+                                            TextEntry::make('app_key')
+                                                ->label('App Key'),
 
-                                        TextEntry::make('app_secret')
-                                            ->label('App Secret'),
+                                            TextEntry::make('app_secret')
+                                                ->label('App Secret'),
 
-                                        TextEntry::make('website_url')
-                                            ->label('Website URL'),
+                                            TextEntry::make('website_url')
+                                                ->label('Website URL'),
 
-                                        TextEntry::make('redirect_url')
-                                            ->label('Redirect URL'),
+                                            TextEntry::make('redirect_url')
+                                                ->label('Redirect URL'),
 
 
-                                    ]),
-                            ]),
+                                        ]),
+                                ]),
 
-                        ViewAction::make('view_keys')
-                            ->label('Keys')
-                            ->icon('heroicon-o-key')
-                            ->form([
+                            ViewAction::make('view_keys')
+                                ->label('Keys')
+                                ->icon('heroicon-o-key')
+                                ->form([
 
-                                Grid::make(2)
-                                    ->schema([
-                                        TextInput::make('app_key')
-                                            ->label('Application Key')
-                                            ->formatStateUsing(fn($record) => $record->app_key),
+                                    Grid::make(2)
+                                        ->schema([
+                                            TextInput::make('app_key')
+                                                ->label('Application Key')
+                                                ->formatStateUsing(fn($record) => $record->app_key),
 
-                                        TextInput::make('app_secret')
-                                            ->label('Application Secret')
-                                            ->formatStateUsing(fn($record) => $record->app_secret)
-                                            ->password()
-                                            ->revealable(),
-                                    ]),
+                                            TextInput::make('app_secret')
+                                                ->label('Application Secret')
+                                                ->formatStateUsing(fn($record) => $record->app_secret)
+                                                ->password()
+                                                ->revealable(),
+                                        ]),
 
-                            ]),
+                                ]),
+                        ])->dropdown(false),
 
-                        Action::make('edit')
-                            ->label('Edit')
-                            ->icon('heroicon-o-pencil-square')
-                            ->fillForm(function ($record) {
-                                return [
-                                    'name' => $record->name,
-                                    'logo' => $record->logo,
-                                    'website_url' => $record->website_url,
-                                    'redirect_url' => $record->redirect_url,
-                                ];
-                            })
-                            ->form([
-                                TextInput::make('name')
-                                    ->required(),
+                        ActionGroup::make([
+                            Action::make('edit')
+                                ->label('Edit')
+                                ->icon('heroicon-o-pencil-square')
+                                ->fillForm(function ($record) {
+                                    return [
+                                        'name' => $record->name,
+                                        'logo' => basename($record->logo),
+                                        'website_url' => $record->website_url,
+                                        'redirect_url' => $record->redirect_url,
+                                    ];
+                                })
+                                ->form([
 
-                                // FileUpload::make('logo')
-                                //     ->image(),
+                                    FileUpload::make('logo')
+                                        ->previewable(true),
 
-                                TextInput::make('website_url')
-                                    ->label('Lien du site web')
-                                    ->required()
-                                    ->url()
-                                    ->rule(new ValidUrlRule())
-                                    ->live(),
+                                    Grid::make(2)
+                                        ->schema([
+                                            TextInput::make('name')
+                                                ->required(),
 
-                                TextInput::make('redirect_url')
-                                    ->label('Lien de redirection')
-                                    ->required()
-                                    ->url()
-                                    ->rule(fn($get) => $get('website_url') ? new RedirectUrlRule($get('website_url')) : 'nullable')
-                                    ->live(),
-                            ])
-                            ->action(function ($data, $record) {
+                                            TextInput::make('website_url')
+                                                ->label('Lien du site web')
+                                                ->required()
+                                                ->url()
+                                                ->rule(new ValidUrlRule())
+                                                ->live(),
 
-                                $record->update([
-                                    'name' => $data['name'],
-                                    'website_url' => $data['website_url'],
-                                    'redirect_url' => $data['redirect_url'],
-                                ]);
+                                            TextInput::make('redirect_url')
+                                                ->label('Lien de redirection')
+                                                ->required()
+                                                ->url()
+                                                ->rule(fn($get) => $get('website_url') ? new RedirectUrlRule($get('website_url')) : 'nullable')
+                                                ->live(),
+                                        ]),
+                                ])
+                                ->action(function ($data, $record, UpdateApplication $updateApplication) {
 
-                                // $application = Application::create([
-                                //     'name' => $data['name'],
-                                //     'website_url' => $data['website_url'],
-                                //     'redirect_url' => $data['redirect_url'],
-                                // ]);
+                                    $updateApplication->handle(
+                                        user: Auth::user(),
+                                        application: $record,
+                                        data: $data,
+                                    );
 
-                                // if ($data['logo']) {
-                                //     $tempPath = Storage::disk('public')->path($data['logo']);
-                                //     $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
-                                //     $destination = 'applications/' . $application->id;
+                                    Notification::make()
+                                        ->title('Application updated')
+                                        ->success()
+                                        ->send();
 
-                                //     Storage::disk('private')->putFileAs($destination, $tempPath, $newFileName);
-                                //     Storage::disk('public')->delete($tempPath);
+                                    $this->dispatch('refresh-table');
+                                }),
+                        ])->dropdown(false),
 
-                                //     $path = $destination . '/' . $newFileName;
-                                //     $application->update([
-                                //         'logo' => $path,
-                                //     ]);
-                                // }
 
-                                // $env = License::where('id', $data['license'])->first();
-                                // $application->update([
-                                //     'license_env' => $data['license_env'],
-                                //     'license_id' => $env->id,
-                                // ]);
-                            }),
 
                     ])->dropdown(false),
+
                 ])->tooltip('Actions'),
             ])
             ->headerActions([]);

@@ -12,14 +12,15 @@ class UpdateApplication
 {
     public function handle(User $user, Application $application, array $data): void
     {
-        $env = License::where('id', $data['license'])->first();
-        $application->update([
-            'name' => $data['name'],
-            'website_url' => $data['website_url'],
-            'redirect_url' => $data['redirect_url'],
-            'license_env' => $data['license_env'],
-            'license_id' => $env->id,
-        ]);
+        $updatableFields = ['name', 'website_url', 'redirect_url', 'license_env'];
+        $updateData = array_intersect_key($data, array_flip($updatableFields));
+
+        // Handle license assignment
+        if (array_key_exists('license', $data)) {
+            $updateData['license_id'] = !is_null($data['license']) && ($license = License::find($data['license']))
+                ? $license->id
+                : null;
+        }
 
         if ($data['logo'] && $data['logo'] !== $application->logo) {
             $tempPath = Storage::disk('public')->path($data['logo']);
@@ -38,5 +39,7 @@ class UpdateApplication
             Storage::disk('public')->delete(basename($application->logo));
             $application->update(['logo' => null]);
         }
+
+        $application->update($updateData);
     }
 }
