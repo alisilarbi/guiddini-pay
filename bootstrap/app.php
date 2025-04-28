@@ -12,10 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // $middleware->alias([
-        //     'validate_application_api_keys' => \App\Http\Middleware\ValidateApplicationApiKeys::class,
-        //     'validate_partner_api_keys' => \App\Http\Middleware\ValidatePartnerApiKeys::class,
-        // ]);
+        $middleware->alias([
+            'validate_application_api_keys' => \App\Http\Middleware\ValidateApplicationApiKeys::class,
+            'validate_partner_api_keys' => \App\Http\Middleware\ValidatePartnerApiKeys::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
