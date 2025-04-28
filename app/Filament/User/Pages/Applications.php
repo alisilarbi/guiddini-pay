@@ -159,6 +159,9 @@ class Applications extends Page implements HasForms, HasTable
                                 ->form([
 
                                     FileUpload::make('logo')
+                                        ->image()
+                                        ->imageEditor()
+                                        ->imageResizeMode('cover')
                                         ->previewable(true),
 
                                     Grid::make(2)
