@@ -48,18 +48,6 @@ trait HandlesApiExceptions
                     break;
             }
         }
-
-        // elseif ($exception instanceof ModelNotFoundException) {
-        //     $statusCode = 404;
-        //     $errorCode = 'NOT_FOUND';
-        //     $message = $exception->getModel() === User::class
-        //         ? 'The new user ID does not exist'
-        //         : ($exception->getModel() === Application::class
-        //             ? 'The application ID does not exist'
-        //             : 'Resource not found');
-        // }
-
-
         elseif ($exception instanceof ValidationException) {
             $statusCode = 422;
             $errorCode = 'VALIDATION_ERROR';

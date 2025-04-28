@@ -17,6 +17,7 @@ class ValidatePartnerApiKeys
      */
     public function handle(Request $request, Closure $next): Response
     {
+
         $partnerKey = $request->header('x-partner-key');
         $partnerSecret = $request->header('x-partner-secret');
 
@@ -30,11 +31,12 @@ class ValidatePartnerApiKeys
             ]))->response();
         }
 
-        $user = User::where('partner_key', $partnerKey)
+        $partner = User::where('partner_key', $partnerKey)
             ->where('partner_secret', $partnerSecret)
+            ->where('is_partner', true)
             ->first();
 
-        if (!$user) {
+        if (!$partner) {
             return (new ErrorResource([
                 'http_code' => 401,
                 'code' => 'INVALID_API_KEYS',
@@ -44,18 +46,60 @@ class ValidatePartnerApiKeys
             ]))->response();
         }
 
-        // $origin = $request->header('Origin') ?? $request->header('Referer');
+        if (app()->environment('production')) {
+            $origin = $request->header('Origin') ?? $request->header('Referer');
 
-        // if ($origin && rtrim($origin, '/') !== rtrim($user->website_url, '/')) {
-        //     return (new ErrorResource([
-        //         'http_code' => 403,
-        //         'code' => 'UNAUTHORIZED_ORIGIN',
-        //         'message' => 'Unauthorized origin',
-        //         'detail' => null,
-        //         'meta' => []
-        //     ]))->response();
-        // }
+            if ($origin && rtrim($origin, '/') !== rtrim($partner->website_url, '/')) {
+                return (new ErrorResource([
+                    'http_code' => 403,
+                    'code' => 'UNAUTHORIZED_ORIGIN',
+                    'message' => 'Unauthorized origin',
+                    'detail' => null,
+                    'meta' => []
+                ]))->response();
+            }
+        }
 
+        $request->attributes->add(['partner' => $partner]);
         return $next($request);
     }
+
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     */
+    // public function handle(Request $request, Closure $next): Response
+    // {
+    //     $partnerKey = $request->header('x-partner-key');
+    //     $partnerSecret = $request->header('x-partner-secret');
+
+    //     if (!$partnerKey || !$partnerSecret) {
+    //         return (new ErrorResource([
+    //             'http_code' => 401,
+    //             'code' => 'INVALID_API_KEYS',
+    //             'message' => 'Invalid API keys',
+    //             'detail' => null,
+    //             'meta' => []
+    //         ]))->response();
+    //     }
+
+    //     $user = User::where('partner_key', $partnerKey)
+    //         ->where('partner_secret', $partnerSecret)
+    //         ->first();
+
+    //     if (!$user) {
+    //         return (new ErrorResource([
+    //             'http_code' => 401,
+    //             'code' => 'INVALID_API_KEYS',
+    //             'message' => 'Invalid API keys',
+    //             'detail' => null,
+    //             'meta' => []
+    //         ]))->response();
+    //     }
+
+
+
+    //     return $next($request);
+    // }
 }

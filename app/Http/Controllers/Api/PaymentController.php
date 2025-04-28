@@ -25,6 +25,7 @@ class PaymentController extends Controller
     use HandlesWebExceptions;
 
     public function __construct(private PaymentService $paymentService, private ReceiptService $receiptService) {}
+
     public function initiate(Request $request)
     {
         try {

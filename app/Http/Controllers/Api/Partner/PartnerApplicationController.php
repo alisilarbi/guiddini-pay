@@ -22,16 +22,7 @@ class PartnerApplicationController extends Controller
     public function index(Request $request)
     {
         try {
-            $partnerKey = $request->header('x-partner-key');
-            $partnerSecret = $request->header('x-partner-secret');
-
-            $partner = User::where('partner_key', $partnerKey)
-                ->where('partner_secret', $partnerSecret)
-                ->first();
-
-            if (!$partner) {
-                throw new \Exception('Unauthorized', 401);
-            }
+            $partner = $request->attributes->get('partner');
 
             $applications = Application::where('partner_id', $partner->id)->get();
             return response()->json([
