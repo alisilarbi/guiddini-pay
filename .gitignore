@@ -6,6 +6,7 @@
 /storage/pail
 /storage/app/
 /storage/app/*
+/storage/*
 /vendor
 .env
 .env.backup
