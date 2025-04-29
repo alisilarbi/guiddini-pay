@@ -11,7 +11,7 @@ class DeleteApplication
     public function handle(Application $application): void
     {
         if ($application->logo) {
-            Storage::disk('logos')->delete(basename($application->logo));
+            Storage::disk('public')->delete(basename($application->logo));
         }
 
         $application->delete();

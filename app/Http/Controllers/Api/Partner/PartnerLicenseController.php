@@ -7,8 +7,12 @@ use App\Models\License;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Traits\HandlesApiExceptions;
+use App\Actions\License\CreateLicense;
+use App\Actions\License\UpdateLicense;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\Api\LicenseResource;
+use App\Http\Requests\Api\License\StoreLicenseRequest;
+use App\Http\Requests\Api\License\UpdateLicenseRequest;
 
 class PartnerLicenseController extends Controller
 {
@@ -20,18 +24,8 @@ class PartnerLicenseController extends Controller
     public function index(Request $request)
     {
         try {
-            $partnerKey = $request->header('x-partner-key');
-            $partnerSecret = $request->header('x-partner-secret');
-
-            $user = User::where('partner_key', $partnerKey)
-                ->where('partner_secret', $partnerSecret)
-                ->first();
-
-            if (!$user) {
-                throw new \Exception('Unauthorized', 401);
-            }
-
-            $licenses = License::where('user_id', $user->id)->get();
+            $partner = $request->attributes->get('partner');
+            $licenses = License::where('partner_id', $partner->id)->get();
 
             return response()->json([
                 'data' => $licenses->isEmpty() ? [] : $licenses->map(fn($license) => [
@@ -52,78 +46,17 @@ class PartnerLicenseController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreLicenseRequest $request, CreateLicense $action)
     {
         try {
-            $validator = Validator::make($request->all(), [
-                'name' => 'required|string',
-                'satim_development_username' => 'nullable|string',
-                'satim_development_password' => 'nullable|string',
-                'satim_development_terminal' => 'nullable|string',
-                'satim_production_username' => 'nullable|string',
-                'satim_production_password' => 'nullable|string',
-                'satim_production_terminal' => 'nullable|string',
-            ]);
+            $partner = $request->attributes->get('partner');
+            $license = $partner->licenses()->first();
 
-            $validator->after(function ($validator) use ($request) {
-                $devMissing = [];
-                if (!$request->filled('satim_development_username')) {
-                    $devMissing[] = 'satim_development_username';
-                }
-                if (!$request->filled('satim_development_password')) {
-                    $devMissing[] = 'satim_development_password';
-                }
-                if (!$request->filled('satim_development_terminal')) {
-                    $devMissing[] = 'satim_development_terminal';
-                }
-                if (count($devMissing) > 0 && count($devMissing) < 3) {
-                    $validator->errors()->add('satim_development_credentials', 'All development credentials are required together. You are missing ' . implode(', ', $devMissing) . '.');
-                }
-
-                $prodMissing = [];
-                if (!$request->filled('satim_production_username')) {
-                    $prodMissing[] = 'satim_production_username';
-                }
-                if (!$request->filled('satim_production_password')) {
-                    $prodMissing[] = 'satim_production_password';
-                }
-                if (!$request->filled('satim_production_terminal')) {
-                    $prodMissing[] = 'satim_production_terminal';
-                }
-                if (count($prodMissing) > 0 && count($prodMissing) < 3) {
-                    $validator->errors()->add('satim_production_credentials', 'All production credentials are required together. You are missing ' . implode(', ', $prodMissing) . '.');
-                }
-
-                if (!$request->filled('satim_development_username') && !$request->filled('satim_production_username')) {
-                    $validator->errors()->add('environment', 'At least one environment (development or production) must be provided.');
-                }
-            });
-
-            $validator->validate();
-
-            $partnerKey = $request->header('x-partner-key');
-            $partnerSecret = $request->header('x-partner-secret');
-
-            $user = User::where('partner_key', $partnerKey)
-                ->where('partner_secret', $partnerSecret)
-                ->first();
-
-            $license = $user->licenses()->first();
-
-            $license = License::create([
-                'name' => $request->name,
-
-                'satim_development_username' => $request->satim_development_username,
-                'satim_development_password' => $request->satim_development_password,
-                'satim_development_terminal' => $request->satim_development_terminal,
-
-                'satim_production_username' => $request->satim_production_username,
-                'satim_production_password' => $request->satim_production_password,
-                'satim_production_terminal' => $request->satim_production_terminal,
-
-                'user_id' => $user->id,
-                'partner_id' => $user->id,
-            ]);
+            $license = $action->handle(
+                user: $partner,
+                partner: $partner,
+                data: $request->validated()
+            );
 
             return new LicenseResource([
                 'success' => true,
@@ -148,19 +81,9 @@ class PartnerLicenseController extends Controller
                 'id' => 'required|string',
             ]);
 
-            $partnerKey = $request->header('x-partner-key');
-            $partnerSecret = $request->header('x-partner-secret');
-
-            $user = User::where('partner_key', $partnerKey)
-                ->where('partner_secret', $partnerSecret)
-                ->first();
-
-            if (!$user) {
-                throw new \Exception('Unauthorized', 401);
-            }
-
+            $partner = $request->attributes->get('partner');
             $license = License::where('id', $request->id)
-                ->where('user_id', $user->id)
+                ->where('partner_id', $partner->id)
                 ->firstOrFail();
 
             return new LicenseResource([
@@ -178,84 +101,18 @@ class PartnerLicenseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function update(UpdateLicenseRequest $request, UpdateLicense $action)
     {
         try {
-            $validator = Validator::make($request->all(), [
-                'id' => 'required|string',
-                'name' => 'nullable|string',
-                'satim_development_username' => 'nullable|string',
-                'satim_development_password' => 'nullable|string',
-                'satim_development_terminal' => 'nullable|string',
-                'satim_production_username' => 'nullable|string',
-                'satim_production_password' => 'nullable|string',
-                'satim_production_terminal' => 'nullable|string',
-            ]);
-
-            $validator->after(function ($validator) use ($request) {
-                $devMissing = [];
-                if ($request->hasAny(['satim_development_username', 'satim_development_password', 'satim_development_terminal'])) {
-                    if (!$request->filled('satim_development_username')) {
-                        $devMissing[] = 'satim_development_username';
-                    }
-                    if (!$request->filled('satim_development_password')) {
-                        $devMissing[] = 'satim_development_password';
-                    }
-                    if (!$request->filled('satim_development_terminal')) {
-                        $devMissing[] = 'satim_development_terminal';
-                    }
-                    if (count($devMissing) > 0 && count($devMissing) < 3) {
-                        $validator->errors()->add('satim_development_credentials', 'All development credentials are required together. You are missing ' . implode(', ', $devMissing) . '.');
-                    }
-                }
-
-                $prodMissing = [];
-                if ($request->hasAny(['satim_production_username', 'satim_production_password', 'satim_production_terminal'])) {
-                    if (!$request->filled('satim_production_username')) {
-                        $prodMissing[] = 'satim_production_username';
-                    }
-                    if (!$request->filled('satim_production_password')) {
-                        $prodMissing[] = 'satim_production_password';
-                    }
-                    if (!$request->filled('satim_production_terminal')) {
-                        $prodMissing[] = 'satim_production_terminal';
-                    }
-                    if (count($prodMissing) > 0 && count($prodMissing) < 3) {
-                        $validator->errors()->add('satim_production_credentials', 'All production credentials are required together. You are missing ' . implode(', ', $prodMissing) . '.');
-                    }
-                }
-
-                if (!$request->filled('satim_development_username') && !$request->filled('satim_production_username')) {
-                    $validator->errors()->add('environment', 'At least one environment (development or production) must be provided.');
-                }
-            });
-
-            $validator->validate();
-
-            $partnerKey = $request->header('x-partner-key');
-            $partnerSecret = $request->header('x-partner-secret');
-
-            $user = User::where('partner_key', $partnerKey)
-                ->where('partner_secret', $partnerSecret)
-                ->first();
-
-            if (!$user) {
-                throw new \Exception('Unauthorized', 401);
-            }
-
+            $partner = $request->attributes->get('partner');
             $license = License::where('id', $request->id)
-                ->where('user_id', $user->id)
+                ->where('partner_id', $partner->id)
                 ->firstOrFail();
 
-            $license->update([
-                'name' => $request->name ?? $license->name,
-                'satim_development_username' => $request->satim_development_username,
-                'satim_development_password' => $request->satim_development_password,
-                'satim_development_terminal' => $request->satim_development_terminal,
-                'satim_production_username' => $request->satim_production_username,
-                'satim_production_password' => $request->satim_production_password,
-                'satim_production_terminal' => $request->satim_production_terminal,
-            ]);
+            $license = $action->handle(
+                license: $license,
+                data: $request->validated()
+            );
 
             return new LicenseResource([
                 'success' => true,
@@ -264,6 +121,7 @@ class PartnerLicenseController extends Controller
                 'data' => $license,
                 'http' => 200,
             ]);
+
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
         }
@@ -275,19 +133,14 @@ class PartnerLicenseController extends Controller
     public function destroy(Request $request)
     {
         try {
-            $partnerKey = $request->header('x-partner-key');
-            $partnerSecret = $request->header('x-partner-secret');
 
-            $user = User::where('partner_key', $partnerKey)
-                ->where('partner_secret', $partnerSecret)
-                ->first();
+            $request->validate([
+                'id' => 'required|string',
+            ]);
 
-            if (!$user) {
-                throw new \Exception('Unauthorized', 401);
-            }
-
+            $partner = $request->attributes->get('partner');
             $license = License::where('id', $request->id)
-                ->where('user_id', $user->id)
+                ->where('partner_id', $partner->id)
                 ->firstOrFail();
 
             $apps = [];
@@ -339,19 +192,10 @@ class PartnerLicenseController extends Controller
                 'new_user_id' => 'required|string|exists:users,id'
             ]);
 
-            $partnerKey = $request->header('x-partner-key');
-            $partnerSecret = $request->header('x-partner-secret');
-
-            $partner = User::where('partner-key', $partnerKey)
-                ->where('partner_secret', $partnerSecret)
-                ->first();
-
-            if (!$partner) {
-                throw new \Exception('Unauthorized', 401);
-            }
+            $partner = $request->attributes->get('partner');
 
             $license = License::where('id', $request->license_id)
-                ->where('user_id', $partner->id)
+                ->where('partner_id', $partner->id)
                 ->firstOrFail();
 
             $newUser = User::findOrFail($request->new_user_id);
@@ -367,7 +211,6 @@ class PartnerLicenseController extends Controller
                 'data' => $license,
                 'http' => 200,
             ]);
-
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
         }

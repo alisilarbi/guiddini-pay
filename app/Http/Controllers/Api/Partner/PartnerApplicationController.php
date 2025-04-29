@@ -8,6 +8,11 @@ use App\Models\Application;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Traits\HandlesApiExceptions;
+use Illuminate\Support\Facades\Auth;
+use App\Actions\Application\CreateApplication;
+use App\Actions\Application\DeleteApplication;
+use App\Actions\Application\TransferOwnership;
+use App\Actions\Application\UpdateApplication;
 use App\Http\Resources\Api\ApplicationResource;
 use App\Http\Resources\ApplicationResponseResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -44,40 +49,26 @@ class PartnerApplicationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, CreateApplication $action)
     {
         $request->validate([
             'name' => 'required|string',
             'website_url' => 'required|string',
             'redirect_url' => 'required|string',
+            'license_id' => 'nullable|string|exists:licenses,id',
+            'license_env' => 'nullable|string|in:development,production',
         ]);
 
-        $partnerKey = $request->header('x-partner-key');
-        $partnerSecret = $request->header('x-partner-secret');
-
-        $partner = User::where('partner_key', $partnerKey)
-            ->where('partner_secret', $partnerSecret)
-            ->first();
-
-        if (!$partner) {
-            throw new \Exception('Unauthorized', 401);
-        }
-
-        $license = $partner->licenses()->first();
-        $application = Application::create([
-            'name' => $request->name,
-            'website_url' => $request->website_url,
-            'redirect_url' => $request->redirect_url,
-            'user_id' => $partner->id,
-            'license_id' => $license->id,
-            'license_env' => 'development',
-            'partner_id' => $partner->id,
-        ]);
+        $application = $action->handle(
+            user: $request->attributes->get('partner'),
+            partner: $request->attributes->get('partner'),
+            data: $request->only(['name', 'website_url', 'redirect_url', 'license_id', 'license_env'])
+        );
 
         return new ApplicationResource([
             'success' => true,
             'code' => 'APPLICATION_CREATED',
-            'message' => 'Application savec successfully',
+            'message' => 'Application saved successfully',
             'data' => $application,
             'http' => 201,
         ]);
@@ -95,24 +86,13 @@ class PartnerApplicationController extends Controller
     public function show(Request $request)
     {
         try {
-
             $request->validate([
                 'id' => 'required|string',
             ]);
 
-            $partnerKey = $request->header('x-partner-key');
-            $partnerSecret = $request->header('x-partner-secret');
-
-            $user = User::where('partner_key', $partnerKey)
-                ->where('partner_secret', $partnerSecret)
-                ->first();
-
-            if (!$user) {
-                throw new \Exception('Unauthorized', 401);
-            }
-
+            $partner = $request->attributes->get('partner');
             $application = Application::where('id', $request->id)
-                ->where('user_id', $user->id)
+                ->where('partner_id', $partner->id)
                 ->firstOrFail();
 
             return new ApplicationResource([
@@ -130,42 +110,37 @@ class PartnerApplicationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function update(Request $request, UpdateApplication $action)
     {
+        $request->validate([
+            'id' => 'required|string',
+            'name' => 'sometimes|required|string',
+            'website_url' => 'sometimes|required|string',
+            'redirect_url' => 'sometimes|required|string',
+            'license_id' => 'sometimes|required|string',
+            'license_env' => 'sometimes|required|string',
+        ]);
+
+        $application = Application::where('id', $request->id)
+            ->firstOrFail();
+
+        $action->handle(
+            user: $request->attributes->get('partner'),
+            application: $application,
+            data: $request->only(['name', 'website_url', 'redirect_url', 'license_id', 'license_env'])
+        );
+
+        $application->fill($request->only(['name', 'website_url', 'redirect_url', 'license_id', 'license_env']))->save();
+
+        return new ApplicationResource([
+            'success' => true,
+            'code' => 'APPLICATION_UPDATED',
+            'message' => 'Application updated successfully',
+            'data' => $application,
+            'http' => 200,
+        ]);
+
         try {
-            $request->validate([
-                'id' => 'required|string',
-                'name' => 'sometimes|required|string',
-                'website_url' => 'sometimes|required|string',
-                'redirect_url' => 'sometimes|required|string',
-                'license_id' => 'sometimes|required|string',
-                'license_env' => 'sometimes|required|string',
-            ]);
-
-            $partnerKey = $request->header('x-partner-key');
-            $partnerSecret = $request->header('x-partner-secret');
-
-            $user = User::where('partner_key', $partnerKey)
-                ->where('partner_secret', $partnerSecret)
-                ->first();
-
-            if (!$user) {
-                throw new \Exception('Unauthorized', 401);
-            }
-
-            $application = Application::where('id', $request->id)
-                ->firstOrFail();
-
-            // $application->update($request->only(['name', 'website_url', 'redirect_url', 'license_id', 'license_env']));
-            $application->fill($request->only(['name', 'website_url', 'redirect_url', 'license_id', 'license_env']))->save();
-
-            return new ApplicationResource([
-                'success' => true,
-                'code' => 'APPLICATION_UPDATED',
-                'message' => 'Application updated successfully',
-                'data' => $application,
-                'http' => 200,
-            ]);
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
         }
@@ -174,23 +149,13 @@ class PartnerApplicationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, DeleteApplication $action)
     {
         try {
-            $partnerKey = $request->header('x-partner-key');
-            $partnerSecret = $request->header('x-partner-secret');
-
-            $user = User::where('partner_key', $partnerKey)
-                ->where('partner_secret', $partnerSecret)
-                ->first();
-
-            if (!$user) {
-                throw new \Exception('Unauthorized', 401);
-            }
-
-            $application = Application::where('id', $request->id)
-                ->firstOrFail();
-            $application->delete();
+            $action->handle(
+                application: Application::where('id', $request->id)
+                    ->firstOrFail()
+            );
 
             return response()->json([
                 'data' => null,
@@ -216,23 +181,13 @@ class PartnerApplicationController extends Controller
                 'license_env' => 'required|string|in:development,production',
             ]);
 
-            $partnerKey = $request->header('x-partner-key');
-            $partnerSecret = $request->header('x-partner-secret');
-
-            $partner = User::where('partner_key', $partnerKey)
-                ->where('partner_secret', $partnerSecret)
-                ->first();
-
-            if (!$partner) {
-                throw new \Exception('Unauthorized', 401);
-            }
-
+            $partner = $request->attributes->get('partner');
             $application = Application::where('id', $request->id)
                 ->where('partner_id', $partner->id)
                 ->firstOrFail();
 
             $license = License::where('id', $request->license_id)
-                ->where('user_id', $partner->id)
+                ->where('partner_id', $partner->id)
                 ->firstOrFail();
 
             $application->update([
@@ -255,44 +210,35 @@ class PartnerApplicationController extends Controller
     /**
      * Transfer ownership to another user
      */
-    public function transferOwnership(Request $request)
+    public function transferOwnership(Request $request, TransferOwnership $action)
     {
-        $request->validate([
-            'application_id' => 'required|string|exists:applications,id',
-            'new_user_id' => 'required|string|exists:users,id'
-        ]);
 
-        $partnerKey = $request->header('x-partner-key');
-        $partnerSecret = $request->header('x-partner-secret');
-
-        $partner = User::where('partner_key', $partnerKey)
-            ->where('partner_secret', $partnerSecret)
-            ->first();
-
-        if (!$partner) {
-            throw new \Exception('Unauthorized', 401);
-        }
-
-        $application = Application::where('id', $request->application_id)
-            ->where('partner_id', $partner->id)
-            ->firstOrFail();
-
-        $newUser = User::findOrFail($request->new_user_id);
-
-        $application->update([
-            'user_id' => $newUser->id,
-            // 'partner_id' => $newUser->isPartner() ? $newUser->id : null,
-        ]);
-
-        return new ApplicationResource([
-            'success' => true,
-            'code' => 'OWNERSHIP_TRANSFERRED',
-            'message' => 'Application ownership transferred successfully',
-            'data' => $application,
-            'http' => 200,
-        ]);
         try {
+            $request->validate([
+                'application_id' => 'required|string|exists:applications,id',
+                'new_user_id' => 'required|string|exists:users,id'
+            ]);
 
+            $partner = $request->attributes->get('partner');
+
+            $application = Application::where('id', $request->application_id)
+                ->where('partner_id', $partner->id)
+                ->firstOrFail();
+
+            $newUser = User::findOrFail($request->new_user_id);
+
+            $application = $action->handle(
+                newOwner: $newUser,
+                application: $application
+            );
+
+            return new ApplicationResource([
+                'success' => true,
+                'code' => 'OWNERSHIP_TRANSFERRED',
+                'message' => 'Application ownership transferred successfully',
+                'data' => $application,
+                'http' => 200,
+            ]);
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
         }

@@ -7,20 +7,23 @@ use App\Models\License;
 
 class CreateLicense
 {
-    public function handle(User $user, User $partner, array $data)
+    public function handle(User $user, User $partner, array $data): License
     {
-        License::create([
+
+        $license = License::create([
             'user_id' => $user->id,
             'partner_id' => $partner->id,
-            'name' => $data['name'],
+            'name' => $data['name'] ?? null,
 
-            'satim_development_username' => $data['satim_development_username'],
-            'satim_development_password' => $data['satim_development_password'],
-            'satim_development_terminal' => $data['satim_development_terminal'],
+            'satim_development_username' => $data['satim_development_username'] ?? null,
+            'satim_development_password' => $data['satim_development_password'] ?? null,
+            'satim_development_terminal' => $data['satim_development_terminal'] ?? null,
 
-            'satim_production_username' => $data['satim_production_username'],
-            'satim_production_password' => $data['satim_production_password'],
-            'satim_production_terminal' => $data['satim_production_terminal'],
+            'satim_production_username' => $data['satim_production_username'] ?? null,
+            'satim_production_password' => $data['satim_production_password'] ?? null,
+            'satim_production_terminal' => $data['satim_production_terminal'] ?? null,
         ]);
+
+        return $license;
     }
 }

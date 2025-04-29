@@ -9,17 +9,16 @@ class CreateClient
 {
     public function handle(User $partner, array $data): User
     {
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+        $client = User::create([
+            'name' => $data['name'] ?? null,
+            'email' => $data['email'] ?? null,
+            'password' => Hash::make($data['password']) ?? null,
             'is_admin' => false,
             'is_partner' => false,
             'is_user' => true,
             'partner_id' => $partner->id,
         ]);
 
-        return $user;
-
+        return $client;
     }
 }

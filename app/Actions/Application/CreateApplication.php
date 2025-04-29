@@ -33,12 +33,27 @@ class CreateApplication
             ]);
         }
 
-        $env = License::where('id', $data['license'])->first();
-        $application->update([
-            'license_env' => $data['license_env'],
-            'license_id' => $env->id,
-        ]);
+        if (isset($data['license'])) {
+            $env = License::where('id', $data['license'])->first();
+            $application->update([
+                'license_env' => $data['license_env'],
+                'license_id' => $env->id,
+            ]);
+        }else{
+            $license = $partner->licenses()->first();
+            $application->update([
+                'license_env' => 'development',
+                'license_id' => $license->id,
+            ]);
+        }
+
+        // else{
+            //put code where to get default license
+        // }
+
+
 
         return $application;
     }
+
 }

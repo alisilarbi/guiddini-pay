@@ -35,7 +35,7 @@ trait HandlesApiExceptions
 
             switch ($exception->getModel()) {
                 case User::class:
-                    $message = 'The new user ID does not exist';
+                    $message = 'The user ID does not exist';
                     break;
                 case Application::class:
                     $message = 'The application ID does not exist';

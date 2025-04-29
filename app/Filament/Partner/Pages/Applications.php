@@ -211,7 +211,6 @@ class Applications extends Page implements HasForms, HasTable
 
                             ])
                             ->action(function ($data, $record, UpdateApplication $updateApplication) {
-
                                 $updateApplication->handle(
                                     user: Auth::user(),
                                     application: $record,

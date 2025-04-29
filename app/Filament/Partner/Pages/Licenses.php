@@ -39,9 +39,6 @@ class Licenses extends Page implements HasForms, HasTable
         return $table
             ->query(License::where('partner_id', Auth::user()->id)->with(['user']))
             ->columns([
-
-
-
                 Split::make([
 
                     Stack::make([

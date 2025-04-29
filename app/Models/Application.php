@@ -87,12 +87,5 @@ class Application extends Model
                 $application->user_id = Auth::user()->id;
             }
         });
-
-        static::deleting(function ($application) {
-            if ($application->logo) {
-                Storage::disk('logos')->delete(basename($application->logo));
-                $application->update(['logo' => null]);
-            }
-        });
     }
 }

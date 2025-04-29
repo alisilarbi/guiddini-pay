@@ -12,11 +12,16 @@ use App\Traits\HandlesApiExceptions;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use App\Actions\Prospect\CreateProspect;
+use App\Actions\Prospect\DeleteProspect;
+use App\Actions\Prospect\UpdateProspect;
 use App\Http\Resources\Api\ClientResource;
 use App\Http\Resources\ProspectApiResource;
 use App\Mail\Partner\NewProspectRegistered;
 use App\Http\Resources\Api\ProspectResource;
+use App\Http\Requests\Api\Prospect\StoreProspectRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Http\Requests\Api\Prospect\UpdateProspectRequest;
 
 class PartnerProspectController extends Controller
 {
@@ -28,19 +33,9 @@ class PartnerProspectController extends Controller
     public function index(Request $request)
     {
         try {
-            $partnerKey = $request->header('x-partner-key');
-            $partnerSecret = $request->header('x-partner-secret');
-
-            $user = User::where('partner_key', $partnerKey)
-                ->where('partner_secret', $partnerSecret)
-                ->first();
-
-            if (!$user) {
-                throw new \Exception('Unauthorized', 401);
-            }
-
+            $partner = $request->attributes->get('partner');
             $prospects = Prospect::where('converted', false)
-                ->where('partner_id', $user->id)
+                ->where('partner_id', $partner->id)
                 ->get();
 
             return response()->json([
@@ -62,56 +57,14 @@ class PartnerProspectController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreProspectRequest $request, CreateProspect $action)
     {
         try {
-            $request->validate([
-                'name' => 'required|string',
-                'company_name' => 'nullable|string',
-                'phone' => 'nullable|string',
-                'email' => 'nullable|email',
-                'legal_status' => 'nullable|string',
-                'has_bank_account' => 'boolean',
-                'bank_name' => 'nullable|string',
-                'website_integration' => 'boolean',
-                'mobile_integration' => 'boolean',
-                'website_url' => 'nullable|string',
-                'programming_languages' => 'nullable|json',
-                'needs_help' => 'nullable|boolean',
-            ]);
-
-            $partnerKey = $request->header('x-partner-key');
-            $partnerSecret = $request->header('x-partner-secret');
-
-            $user = User::where('partner_key', $partnerKey)
-                ->where('partner_secret', $partnerSecret)
-                ->first();
-
-            if (!$user) {
-                throw new \Exception('Unauthorized', 401);
-            }
-
-            $prospect = Prospect::create([
-                'name' => $request->name,
-                'company_name' => $request->company_name,
-                'phone' => $request->phone,
-                'email' => $request->email,
-                'legal_status' => $request->legal_status,
-                'has_bank_account' => $request->has_bank_account,
-                'bank_name' => $request->bank_name,
-                'website_integration' => $request->website_integration,
-                'mobile_integration' => $request->mobile_integration,
-                'website_url' => $request->website_url,
-                'programming_languages' => $request->programming_languages,
-                'reference' => strtoupper(Str::random(2)) . rand(10, 99),
-                'needs_help' => $request->needs_help,
-                'converted' => false,
-                'partner_id' => $user->id,
-            ]);
-
-            Mail::to($user->email)->send(new NewProspectRegistered($prospect));
-            Mail::to('nayla@guiddini.com')->send(new NewProspectRegistered($prospect));
-
+            $partner = $request->attributes->get('partner');
+            $prospect = $action->handle(
+                partner: $partner,
+                data: $request->validated()
+            );
 
             return new ProspectResource([
                 'success' => true,
@@ -136,20 +89,11 @@ class PartnerProspectController extends Controller
                 'id' => 'required|string',
             ]);
 
-            $partnerKey = $request->header('x-partner-key');
-            $partnerSecret = $request->header('x-partner-secret');
-
-            $user = User::where('partner_key', $partnerKey)
-                ->where('partner_secret', $partnerSecret)
-                ->first();
-
-            if (!$user) {
-                throw new \Exception('Unauthorized', 401);
-            }
+            $partner = $request->attributes->get('partner');
 
             $prospect = Prospect::where('id', $request->id)
                 ->where('converted', false)
-                ->where('partner_id', $user->id)
+                ->where('partner_id', $partner->id)
                 ->firstOrFail();
 
             return new ProspectResource([
@@ -167,65 +111,26 @@ class PartnerProspectController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function update(UpdateProspectRequest $request, UpdateProspect $action)
     {
         try {
-            $request->validate([
-                'id' => 'required|string',
-                'name' => 'sometimes|required|string',
-                'company_name' => 'sometimes|required|string',
-                'phone' => 'sometimes|required|string',
-                'email' => 'sometimes|required|string',
-                'legal_status' => 'sometimes|required|string',
-                'has_bank_account' => 'sometimes|required|boolean',
-                'bank_name' => 'sometimes|required|string',
-                'converted' => 'sometimes|required|boolean',
-                'website_integration' => 'sometimes|required|boolean',
-                'mobile_integration' => 'sometimes|required|boolean',
-                'needs_help' => 'sometimes|required|string',
-                'reference' => 'sometimes|required|string',
-                'website_url' => 'sometimes|required|string',
-                'programming_languages' => 'sometimes|required|json',
-            ]);
-
-            $partnerKey = $request->header('x-partner-key');
-            $partnerSecret = $request->header('x-partner-secret');
-
-            $user = User::where('partner_key', $partnerKey)
-                ->where('partner_secret', $partnerSecret)
-                ->first();
-
-            if (!$user) {
-                throw new \Exception('Unauthorized', 401);
-            }
+            $partner = $request->attributes->get('partner');
 
             $prospect = Prospect::where('id', $request->id)
-                ->where('partner_id', $user->id)
+                ->where('partner_id', $partner->id)
                 ->where('converted', false)
                 ->firstOrFail();
 
-            $prospect->update($request->only([
-                'name',
-                'company_name',
-                'phone',
-                'email',
-                'legal_status',
-                'has_bank_account',
-                'bank_name',
-                'converted',
-                'website_integration',
-                'mobile_integration',
-                'needs_help',
-                'reference',
-                'website_url',
-                'programming_languages'
-            ]));
+            $updatedProspect = $action->handle(
+                prospect: $prospect,
+                data: $request->validated()
+            );
 
             return new ProspectResource([
                 'success' => true,
                 'code' => 'PROSPECT_UPDATED',
                 'message' => 'Prospect updated successfully',
-                'data' => $prospect,
+                'data' => $updatedProspect,
                 'http' => 200,
             ]);
         } catch (\Throwable $e) {
@@ -236,26 +141,17 @@ class PartnerProspectController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, DeleteProspect $action)
     {
         try {
             $request->validate([
                 'id' => 'required|string',
             ]);
 
-            $partnerKey = $request->header('x-partner-key');
-            $partnerSecret = $request->header('x-partner-secret');
-
-            $user = User::where('partner_key', $partnerKey)
-                ->where('partner_secret', $partnerSecret)
-                ->first();
-
-            if (!$user) {
-                throw new \Exception('Unauthorized', 401);
-            }
+            $partner = $request->attributes->get('partner');
 
             $prospect = Prospect::where('id', $request->id)
-                ->where('partner_id', $user->id)
+                ->where('partner_id', $partner->id)
                 ->where('converted', false)
                 ->firstOrFail();
 
@@ -263,7 +159,9 @@ class PartnerProspectController extends Controller
                 throw new \Exception('PROSPECT_CONVERTED');
             }
 
-            $prospect->delete();
+            $action->handle(
+                prospect: $prospect
+            );
 
             return response()->json([
                 'data' => null,
@@ -277,59 +175,63 @@ class PartnerProspectController extends Controller
         }
     }
 
+
+    /**
+     * Convert the prospect to client + app
+     *
+     */
     public function convert(Request $request)
     {
-
-        $request->validate([
-            'id' => 'required|string',
-        ]);
-
-        $partnerKey = $request->header('x-partner-key');
-        $partnerSecret = $request->header('x-partner-secret');
-
-        $partner = User::where('partner_key', $partnerKey)
-            ->where('partner_secret', $partnerSecret)
-            ->first();
-
-        if (!$partner) {
-            throw new \Exception('Unauthorized', 401);
-        }
-
-        $prospect = Prospect::where('id', $request->id)
-            ->where('partner_id', $partner->id)
-            ->firstOrFail();
-
-        $user = User::where('email', $prospect->email)->first();
-        if (!$user) {
-            $user = User::create([
-                'name' => $prospect->name,
-                'email' => $prospect->email,
-                'password' => Hash::make(Str::random(12)),
-                'partner_id' => $partner->id,
-                'is_user' => false,
-            ]);
-        }
-
-        $application = Application::create([
-            'name' => $prospect->name,
-            'website_url' => $prospect->website_url,
-            'redirect_url' => $prospect->website_url,
-            'user_id' => $user->id,
-            'partner_id' => $partner->id,
-            'license_id' => $partner->licenses()->first()->id,
-            'license_env' => 'development',
-        ]);
-
-        return new ClientResource([
-            'success' => true,
-            'code' => 'PROSPECT_CONVERTED',
-            'message' => 'Converted to client successfully',
-            'data' => $user,
-            'http' => 201,
-        ]);
-
-
         try {
+
+            $request->validate([
+                'id' => 'required|string',
+            ]);
+
+            $partner = $request->attributes->get('partner');
+
+            $prospect = Prospect::where('id', $request->id)
+                ->where('partner_id', $partner->id)
+                ->firstOrFail();
+
+            if ($prospect->converted) {
+                throw new \Exception('PROSPECT_CONVERTED');
+            }
+
+            $user = User::where('email', $prospect->email)->first();
+            if (!$user) {
+                $user = User::create([
+                    'name' => $prospect->name,
+                    'email' => $prospect->email,
+                    'password' => Hash::make(Str::random(12)),
+                    'partner_id' => $partner->id,
+                    'is_user' => false,
+                ]);
+            }
+
+            $application = Application::create([
+                'name' => $prospect->name,
+                'website_url' => $prospect->website_url,
+                'redirect_url' => $prospect->website_url,
+                'user_id' => $user->id,
+                'partner_id' => $partner->id,
+                'license_id' => $partner->licenses()->first()->id,
+                'license_env' => 'development',
+            ]);
+
+            $prospect->update([
+                'converted' => true,
+                'user_id' => $user->id,
+                'application_id' => $application->id,
+            ]);
+
+            return new ClientResource([
+                'success' => true,
+                'code' => 'PROSPECT_CONVERTED',
+                'message' => 'Converted to client successfully',
+                'data' => $user,
+                'http' => 201,
+            ]);
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
         }

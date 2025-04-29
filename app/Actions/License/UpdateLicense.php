@@ -2,9 +2,11 @@
 
 namespace App\Actions\License;
 
+use App\Models\License;
+
 class UpdateLicense
 {
-    public function handle($license, array $data)
+    public function handle(License $license, array $data): License
     {
         $allowedFields = [
             'name',
@@ -21,5 +23,7 @@ class UpdateLicense
         if (!empty($updateData)) {
             $license->update($updateData);
         }
+
+        return $license;
     }
 }

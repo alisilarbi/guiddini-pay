@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use Filament\Forms\Components\Grid;
 use Filament\Tables\Actions\Action;
 use App\Actions\Client\CreateClient;
+use App\Actions\Client\DeleteClient;
 use App\Actions\Client\UpdateClient;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -39,7 +40,7 @@ class Clients extends Page implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(User::query()->with(['applications', 'partner'])->where('partner_id', Auth::user()->id))
+            ->query(User::query()->with(['applications', 'partner'])->where('partner_id', Auth::user()->id)->where('is_user', true))
             ->columns([
                 TextColumn::make('name'),
                 TextColumn::make('email'),
@@ -135,17 +136,19 @@ class Clients extends Page implements HasForms, HasTable
                         ->color('danger')
                         ->icon('heroicon-o-x-circle')
                         ->requiresConfirmation()
-                        ->disabled(function ($record) {
-                            if ($record->is_admin)
-                                return true;
+                        ->action(function ($record, DeleteClient $deleteAction) {
+                            $deleteAction->handle(
+                                client: $record,
+                                partner: Auth::user(),
+                            );
 
-                            return true;
-                        })
-                        ->action(function ($record) {
-                            $record->delete();
+                            Notification::make()
+                                ->title('Client deleted')
+                                ->success()
+                                ->send();
+                            $this->dispatch('refresh-table');
+
                         }),
-
-
 
                 ]),
 

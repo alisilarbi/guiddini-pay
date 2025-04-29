@@ -22,23 +22,29 @@ class UpdateApplication
                 : null;
         }
 
-        if ($data['logo'] && $data['logo'] !== $application->logo) {
-            $tempPath = Storage::disk('public')->path($data['logo']);
-            $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
+        if (isset($data['logo'])) {
+            if ($data['logo'] && $data['logo'] !== $application->logo) {
+                $tempPath = Storage::disk('public')->path($data['logo']);
+                $newFileName = Str::random(40) . '.' . pathinfo($tempPath, PATHINFO_EXTENSION);
 
-            Storage::disk('public')->putFileAs(null, $tempPath, $newFileName);
-            Storage::disk('public')->delete($data['logo']);
+                Storage::disk('public')->putFileAs(null, $tempPath, $newFileName);
+                Storage::disk('public')->delete($data['logo']);
 
-            $path = 'storage/' . $newFileName;
-            $application->update([
-                'logo' => $path,
-            ]);
+                $path = 'storage/' . $newFileName;
+                $application->update([
+                    'logo' => $path,
+                ]);
+            }
+
+            if (is_null($data['logo']) && $application->logo) {
+                Storage::disk('public')->delete(basename($application->logo));
+                $application->update(['logo' => null]);
+            }
         }
 
-        if (is_null($data['logo']) && $application->logo) {
-            Storage::disk('public')->delete(basename($application->logo));
-            $application->update(['logo' => null]);
-        }
+
+
+
 
         $application->update($updateData);
     }

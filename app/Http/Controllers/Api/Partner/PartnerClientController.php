@@ -6,9 +6,13 @@ use App\Models\User;
 use App\Models\Prospect;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Actions\Client\CreateClient;
+use App\Actions\Client\DeleteClient;
+use App\Actions\Client\UpdateClient;
 use App\Http\Controllers\Controller;
 use App\Traits\HandlesApiExceptions;
 use App\Http\Resources\Api\ClientResource;
+use App\Http\Requests\Api\Client\UpdateClientRequest;
 
 class PartnerClientController extends Controller
 {
@@ -20,18 +24,8 @@ class PartnerClientController extends Controller
     public function index(Request $request)
     {
         try {
-            $partnerKey = $request->header('x-partner-key');
-            $partnerSecret = $request->header('x-partner-secret');
-
-            $user = User::where('partner_key', $partnerKey)
-                ->where('partner_secret', $partnerSecret)
-                ->first();
-
-            if (!$user) {
-                throw new \Exception('Unauthorized', 401);
-            }
-
-            $clients = User::where('partner_id', $user->id)->get();
+            $partner = $request->attributes->get('partner');
+            $clients = User::where('partner_id', $partner->id)->get();
 
             return response()->json([
                 'data' => $clients->isEmpty() ? [] : $clients->map(fn($client) => [
@@ -52,7 +46,7 @@ class PartnerClientController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, CreateClient $action)
     {
         try {
             $request->validate([
@@ -61,28 +55,15 @@ class PartnerClientController extends Controller
                 'password' => 'required|string',
             ]);
 
-            $partnerKey = $request->header('x-partner-key');
-            $partnerSecret = $request->header('x-partner-secret');
-
-            $user = User::where('partner_key', $partnerKey)
-                ->where('partner_secret', $partnerSecret)
-                ->first();
-
-            if (!$user) {
-                throw new \Exception('Unauthorized', 401);
-            }
-
-            $client = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'partner_id' => $user->id,
-                'is_admin' => false,
-                'is_partner' => false,
-                'is_user' => true,
-                'partner_id' => $user->id,
-                'password' => $request->password,
-                'reset_password_flag' => true,
-            ]);
+            $partner = $request->attributes->get('partner');
+            $client = $action->handle(
+                partner: $partner,
+                data: [
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => $request->password,
+                ]
+            );
 
             return new ClientResource([
                 'success' => true,
@@ -106,19 +87,9 @@ class PartnerClientController extends Controller
                 'id' => 'required|string',
             ]);
 
-            $partnerKey = $request->header('x-partner-key');
-            $partnerSecret = $request->header('x-partner-secret');
-
-            $user = User::where('partner_key', $partnerKey)
-                ->where('partner_secret', $partnerSecret)
-                ->first();
-
-            if (!$user) {
-                throw new \Exception('Unauthorized', 401);
-            }
-
+            $partner = $request->attributes->get('partner');
             $client = User::where('id', $request->id)
-                // ->where('partner_id', $user->id)
+                ->where('partner_id', $partner->id)
                 ->firstOrFail();
 
             return new ClientResource([
@@ -136,31 +107,19 @@ class PartnerClientController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function update(UpdateClientRequest $request, UpdateClient $action)
     {
+
         try {
-            $request->validate([
-                'id' => 'required|string',
-                'name' => 'sometimes|required|string',
-                'email' => 'sometimes|required|email'
-            ]);
-
-            $partnerKey = $request->header('x-partner-key');
-            $partnerSecret = $request->header('x-partner-secret');
-
-            $user = User::where('partner_key', $partnerKey)
-                ->where('partner_secret', $partnerSecret)
-                ->first();
-
-            if (!$user) {
-                throw new \Exception('Unauthorized', 401);
-            }
-
+            $partner = $request->attributes->get('partner');
             $client = User::where('id', $request->id)
-                ->where('partner_id', $user->id)
+                ->where('partner_id', $partner->id)
                 ->firstOrFail();
 
-            $client->update($request->only(['name', 'email',]));
+            $action->handle(
+                client: $client,
+                data: $request->validated(),
+            );
 
             return new ClientResource([
                 'success' => true,
@@ -177,48 +136,22 @@ class PartnerClientController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, DeleteClient $action)
     {
         try {
             $request->validate([
                 'id' => 'required|string',
             ]);
 
-            $partnerKey = $request->header('x-partner-key');
-            $partnerSecret = $request->header('x-partner-secret');
-
-            $user = User::where('partner_key', $partnerKey)
-                ->where('partner_secret', $partnerSecret)
-                ->first();
-
-            if (!$user) {
-                throw new \Exception('Unauthorized', 401);
-            }
-
+            $partner = $request->attributes->get('partner');
             $client = User::where('id', $request->id)
-                ->where('partner_id', $user->id)
+                ->where('partner_id', $partner->id)
                 ->firstOrFail();
 
-            $apps = [];
-            if ($client->applications->isNotEmpty()) {
-                foreach ($client->applications as $app) {
-                    $app->update([
-                        'user_id' =>  $user->id
-                    ]);
-
-                    $apps[] = [
-                        'type' => 'application',
-                        'id' => $app->id,
-                    'attributes' => [
-                            'name' => $app->name,
-                            'license_id' => $app->license_id,
-                            'license_env' => $app->license_env
-                        ]
-                    ];
-                }
-            }
-
-            $client->delete();
+            $apps = $action->handle(
+                client: $client,
+                partner: $partner,
+            );
 
             return response()->json([
                 'data' => $apps ? [
