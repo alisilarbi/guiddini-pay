@@ -36,7 +36,7 @@ class CreateApplication
             'partner_id' => $partner->id,
             'user_id' => $user->id,
             'quota_transaction_id' => $data['quota_transaction_id'] ?? null,
-            'is_paid' => $data['is_paid'] ?? null,
+            'is_paid' => $data['is_paid'] ?? $partner->default_is_paid,
         ]);
 
         if (!empty($data['logo'])) {
