@@ -15,9 +15,9 @@ class CreateApplication
 
         if ($partner->partner_mode === 'quota') {
 
-            // if (!$partner->canCreateApplication()) {
-            //     throw new \Exception('ALLOWANCE_DEPLETED', 403);
-            // }
+            if (!$partner->canCreateApplication()) {
+                throw new \Exception('ALLOWANCE_DEPLETED', 403);
+            }
 
             $latestTransaction = $partner->quotaTransactions()->latest()->first();
             if (!$latestTransaction) {
