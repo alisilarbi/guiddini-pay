@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('Users', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->decimal('application_price', 8, 2)->nullable()->default(null);
             $table->string('partner_mode')->default('quota');
             $table->integer('remaining_allowance')->nullable()->default(0);
