@@ -397,14 +397,14 @@ class Applications extends Page implements HasForms, HasTable
                             $this->handleWebException($e);
                         }
                     })
-                    // ->disabled(function(){
-                    //     $partner = User::where('id', Auth::user()->id)->first();
+                    ->disabled(function(){
+                        $partner = User::where('id', Auth::user()->id)->first();
 
-                    //     if($partner->canCreateApplication()){
-                    //         return false;
-                    //     }
-                    //     return true;
-                    // }),
+                        if($partner->canCreateApplication()){
+                            return false;
+                        }
+                        return true;
+                    }),
             ]);
     }
 }
