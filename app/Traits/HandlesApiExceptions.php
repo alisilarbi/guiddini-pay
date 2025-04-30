@@ -59,7 +59,7 @@ trait HandlesApiExceptions
             $errorCode = 'NOT_FOUND';
             $message = 'Resource not found';
             $detail = 'The prospect must not be converted';
-        } else if ($exception->getMessage() === 'NO_ALLOWANCE') {
+        } else if ($exception->getMessage() === 'ALLOWANCE_DEPLETED') {
             $statusCode = 403;
             $errorCode = 'CREATION_LIMIT_REACHED';
             $message = 'Cannot create application';

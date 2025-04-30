@@ -58,6 +58,13 @@ trait HandlesWebExceptions
             $message = 'Validation failed: ' . implode(', ', array_flatten($exception->errors()));
             $logContext = ['message' => $message, 'errors' => $exception->errors()];
         }
+        else if ($exception->getMessage() === 'ALLOWANCE_DEPLETED') {
+            $logLevel = 'warning';
+            $message = 'Cannot create application';
+        } elseif ($exception->getMessage() === 'NO_QUOTA_TRANSACTION') {
+            $logLevel = 'warning';
+            $message = 'No quota transaction available.';
+        };
 
         Log::$logLevel('Web Exception', $logContext);
 

@@ -12,11 +12,14 @@ class CreateApplication
 {
     public function handle(User $user, User $partner, array $data): Application
     {
+
         if ($partner->partner_mode === 'quota') {
 
+            if (!$partner->canCreateApplication()) {
+                throw new \Exception('ALLOWANCE_DEPLETED', 403);
+            }
 
             $latestTransaction = $partner->quotaTransactions()->latest()->first();
-
             if (!$latestTransaction) {
                 throw new \Exception('NO_QUOTA_TRANSACTION', 400);
             }

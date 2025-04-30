@@ -15,6 +15,7 @@ use Livewire\Attributes\Url;
 use App\Rules\RedirectUrlRule;
 use Filament\Forms\Components\Grid;
 use Filament\Tables\Actions\Action;
+use App\Traits\HandlesWebExceptions;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Contracts\HasForms;
@@ -44,6 +45,7 @@ class Applications extends Page implements HasForms, HasTable
 {
     use InteractsWithTable;
     use InteractsWithForms;
+    use HandlesWebExceptions;
 
     protected static ?string $navigationIcon = 'heroicon-o-cube';
 
@@ -376,27 +378,33 @@ class Applications extends Page implements HasForms, HasTable
 
                     ])
                     ->action(function (array $data, CreateApplication $createApplication) {
-                        $createApplication->handle(
-                            user: Auth::user(),
-                            partner: Auth::user(),
-                            data: $data,
-                        );
 
-                        Notification::make()
-                            ->title('Application created')
-                            ->success()
-                            ->send();
+                        try {
+                            $createApplication->handle(
+                                user: Auth::user(),
+                                partner: Auth::user(),
+                                data: $data,
+                            );
 
-                        $this->dispatch('refresh-table');
-                    })
-                    ->disabled(function(){
-                        $partner = User::where('id', Auth::user()->id)->first();
+                            Notification::make()
+                                ->title('Application created')
+                                ->success()
+                                ->send();
 
-                        if($partner->canCreateApplication()){
-                            return false;
+                            $this->dispatch('refresh-table');
+
+                        } catch (\Throwable $e) {
+                            $this->handleWebException($e);
                         }
-                        return true;
-                    }),
+                    })
+                    // ->disabled(function(){
+                    //     $partner = User::where('id', Auth::user()->id)->first();
+
+                    //     if($partner->canCreateApplication()){
+                    //         return false;
+                    //     }
+                    //     return true;
+                    // }),
             ]);
     }
 }
