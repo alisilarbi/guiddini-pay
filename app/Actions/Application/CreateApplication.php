@@ -26,7 +26,6 @@ class CreateApplication
 
             $data['quota_transaction_id'] = $latestTransaction->id;
             $data['is_paid'] = $latestTransaction->is_paid;
-
         }
 
         $application = Application::create([
@@ -66,7 +65,9 @@ class CreateApplication
             ]);
         }
 
-        $partner->decrement('remaining_allowance');
+        if ($partner->partner_mode === 'quota' || ($partner->partner_mode === 'unlimited' && !($partner->default_is_paid ?? false))) {
+            $partner->decrement('remaining_allowance');
+        }
 
         // else{
         //put code where to get default license
