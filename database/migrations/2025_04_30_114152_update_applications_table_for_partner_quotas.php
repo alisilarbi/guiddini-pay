@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('Applications', function (Blueprint $table) {
+        Schema::table('applications', function (Blueprint $table) {
             $table->uuid('quota_transaction_id')->nullable();
             $table->foreign('quota_transaction_id')->references('id')->on('quota_transactions');
 
