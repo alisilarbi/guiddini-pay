@@ -51,21 +51,22 @@ class PartnerApplicationController extends Controller
      */
     public function store(Request $request, CreateApplication $action)
     {
-        $request->validate([
-            'name' => 'required|string',
-            'website_url' => 'required|string',
-            'redirect_url' => 'required|string',
-            'license_id' => 'nullable|string|exists:licenses,id',
-            'license_env' => 'nullable|string|in:development,production',
-        ]);
 
-        $application = $action->handle(
-            user: $request->attributes->get('partner'),
-            partner: $request->attributes->get('partner'),
-            data: $request->only(['name', 'website_url', 'redirect_url', 'license_id', 'license_env'])
-        );
         try {
+            $request->validate([
+                'name' => 'required|string',
+                'website_url' => 'required|string',
+                'redirect_url' => 'required|string',
+                'license_id' => 'nullable|string|exists:licenses,id',
+                'license_env' => 'nullable|string|in:development,production',
+            ]);
 
+
+            $application = $action->handle(
+                user: $request->attributes->get('partner'),
+                partner: $request->attributes->get('partner'),
+                data: $request->only(['name', 'website_url', 'redirect_url', 'license_id', 'license_env'])
+            );
 
             return new ApplicationResource([
                 'success' => true,
