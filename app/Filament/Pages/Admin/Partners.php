@@ -227,7 +227,7 @@ class Partners extends Page implements HasForms, HasTable
                             ])
                             ->action(fn(User $record, array $data) => $record->update([
                                 'partner_mode' => 'unlimited',
-                                'default_is_paid' => !$data['default_is_paid'],
+                                'default_is_paid' => $data['default_is_paid'],
                             ]))
                             ->visible(fn(User $record) => $record->partner_mode === 'quota' && !$record->is_admin && !$record->is_super_admin)
                             ->color('success'),
