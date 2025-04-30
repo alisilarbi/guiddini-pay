@@ -388,6 +388,14 @@ class Applications extends Page implements HasForms, HasTable
                             ->send();
 
                         $this->dispatch('refresh-table');
+                    })
+                    ->disabled(function(){
+                        $partner = User::where('id', Auth::user()->id)->first();
+
+                        if($partner->canCreateApplication()){
+                            return false;
+                        }
+                        return true;
                     }),
             ]);
     }

@@ -40,6 +40,11 @@ class User extends Authenticatable implements FilamentUser
         'created_by',
         'reset_password_flag',
         'partner_id',
+
+        'application_price',
+        'partner_mode',
+        'remaining_allowance',
+        'default_is_paid',
     ];
 
     /**
@@ -89,5 +94,22 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasMany(License::class);
     }
+
+    public function quotaTransactions()
+    {
+        return $this->hasMany(QuotaTransaction::class, 'partner_id');
+    }
+
+    public function canCreateApplication()
+    {
+        if(!$this->is_partner)
+            return false;
+
+        if($this->partner_mode == 'unlimited')
+            return true;
+
+        return $this->remaining_allowance > 0;
+    }
+
 
 }

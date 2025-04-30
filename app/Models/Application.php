@@ -33,6 +33,9 @@ class Application extends Model
         'license_env',
 
         'partner_id',
+
+        'quota_transaction_id',
+        'is_paid',
     ];
 
     public static function generateAppKey(): string
@@ -88,4 +91,12 @@ class Application extends Model
             }
         });
     }
+
+    public function quotaTransaction()
+    {
+        return $this->belongsTo(QuotaTransaction::class, 'quota_transaction_id');
+    }
+
+
+
 }

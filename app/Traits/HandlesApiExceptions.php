@@ -27,9 +27,7 @@ trait HandlesApiExceptions
             $message = $exception->getMessage();
             $errors = $exception->getErrors();
             $detail = $exception->getDetail();
-        }
-
-        elseif ($exception instanceof ModelNotFoundException) {
+        } elseif ($exception instanceof ModelNotFoundException) {
             $statusCode = 404;
             $errorCode = 'NOT_FOUND';
 
@@ -47,8 +45,7 @@ trait HandlesApiExceptions
                     $message = 'Resource not found';
                     break;
             }
-        }
-        elseif ($exception instanceof ValidationException) {
+        } elseif ($exception instanceof ValidationException) {
             $statusCode = 422;
             $errorCode = 'VALIDATION_ERROR';
             $message = 'Validation failed';
@@ -62,7 +59,17 @@ trait HandlesApiExceptions
             $errorCode = 'NOT_FOUND';
             $message = 'Resource not found';
             $detail = 'The prospect must not be converted';
-        }
+        } else if ($exception->getMessage() === 'NO_ALLOWANCE') {
+            $statusCode = 403;
+            $errorCode = 'CREATION_LIMIT_REACHED';
+            $message = 'Cannot create application';
+            $detail = 'The partner has reached the maximum number of applications allowed.';
+        } elseif ($exception->getMessage() === 'NO_QUOTA_TRANSACTION') {
+            $statusCode = 400;
+            $errorCode = 'NO_QUOTA_TRANSACTION';
+            $message = 'No quota transaction available.';
+            $detail = 'The partner has no quota transaction available.';
+        };
 
         return $this->jsonApiErrorResponse(
             $message,
