@@ -214,7 +214,40 @@ class Partners extends Page implements HasForms, HasTable
                             ->action(fn(array $data, User $record) => $record->update([
                                 'application_price' => $data['application_price'],
                             ]))
-                            ->visible(fn(User $record) => $record->partner_mode === 'quota')
+                            ->visible(fn(User $record) => $record->partner_mode === 'quota'),
+
+                        Action::make('migrate_to_unlimited')
+                            ->label('Migrate to Unlimited')
+                            ->icon('heroicon-o-arrow-right')
+                            ->form([
+                                Toggle::make('default_is_paid')
+                                    ->label('Default is Paid')
+                                    ->onIcon('heroicon-o-check')
+                                    ->offIcon('heroicon-o-x-mark'),
+                            ])
+                            ->action(fn(User $record) => $record->update([
+                                'partner_mode' => 'unlimited',
+                                'default_is_paid' => false,
+                            ]))
+                            ->visible(fn(User $record) => $record->partner_mode === 'quota' && !$record->is_admin && !$record->is_super_admin)
+                            ->color('success'),
+
+                        Action::make('migrate_to_quota')
+                            ->label('Migrate to Quota')
+                            ->icon('heroicon-o-arrow-left')
+                            ->form([
+                                TextInput::make('application_price')
+                                    ->label('Application Price')
+                                    ->numeric()
+                                    ->default(fn($record) => $record->application_price)
+                                    ->required(),
+                            ])
+                            ->action(fn(User $record, array $data) => $record->update([
+                                'partner_mode' => 'quota',
+                                'application_price' => $data['application_price'],
+                            ]))
+                            ->visible(fn(User $record) => $record->partner_mode === 'unlimited' && !$record->is_admin && !$record->is_super_admin)
+
                     ])
                         ->dropdown(false),
                 ]),
