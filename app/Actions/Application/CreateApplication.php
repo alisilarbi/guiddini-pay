@@ -65,7 +65,7 @@ class CreateApplication
             ]);
         }
 
-        if ($partner->partner_mode === 'quota' || ($partner->partner_mode === 'unlimited' && !($partner->default_is_paid ?? false))) {
+        if ($partner->partner_mode === 'quota' || ($partner->partner_mode === 'unlimited' && !$partner->default_is_paid)) {
             $partner->decrement('remaining_allowance');
         }
 
