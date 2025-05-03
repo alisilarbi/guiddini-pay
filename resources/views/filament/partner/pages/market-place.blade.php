@@ -47,6 +47,9 @@
         Modal content
     </x-filament::modal>
 
+
+
+
     {{ $this->table }}
 
 </x-filament-panels::page>
