@@ -21,7 +21,6 @@
 </head>
 
 <body class="antialiased">
-
     {{ $slot }}
     @livewire('notifications')
 

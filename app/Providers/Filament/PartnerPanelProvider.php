@@ -4,14 +4,20 @@ namespace App\Providers\Filament;
 
 use Filament\Pages;
 use Filament\Panel;
+use App\Models\User;
 use Filament\Widgets;
+use Livewire\Livewire;
 use Filament\PanelProvider;
+use Filament\Facades\Filament;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Filament\Support\Enums\MaxWidth;
+use Illuminate\Support\Facades\Auth;
 use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Filament\Http\Middleware\AuthenticateSession;
+use App\Livewire\Hooks\ApplicationsAllowanceOverview;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -23,6 +29,7 @@ class PartnerPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        $this->registerRenderHooks($panel);
         return $panel
             ->id('partner')
             ->path('partner')
@@ -63,5 +70,15 @@ class PartnerPanelProvider extends PanelProvider
             ->brandLogo(asset('images/logotype_guiddinipay.png'))
             ->brandLogoHeight('3rem')
             ->favicon(asset('images/icon_guiddinipay.png'));
+    }
+
+    public function registerRenderHooks(Panel $panel): void
+    {
+
+        $panel->renderHook(
+            'panels::global-search.after',
+            fn() => Livewire::mount(ApplicationsAllowanceOverview::class)
+        );
+
     }
 }

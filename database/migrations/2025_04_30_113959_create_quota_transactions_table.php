@@ -21,6 +21,7 @@ return new class extends Migration
             $table->boolean('is_paid');
 
             $table->decimal('application_price', 8, 2)->nullable()->default(null);
+            $table->integer('quantity')->default(0);
             $table->decimal('total', 10, 2)->nullable()->default(null);
 
             $table->timestamps();

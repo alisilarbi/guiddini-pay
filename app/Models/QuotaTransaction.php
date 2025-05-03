@@ -15,6 +15,7 @@ class QuotaTransaction extends Model
         'is_paid',
 
         'application_price',
+        'quantity',
         'total',
     ];
 

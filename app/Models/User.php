@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Panel;
+use Livewire\Livewire;
 use App\Models\License;
 use App\Models\Application;
 use Illuminate\Support\Str;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use App\Livewire\Hooks\ApplicationsAllowanceOverview;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -109,6 +111,11 @@ class User extends Authenticatable implements FilamentUser
             return true;
 
         return $this->remaining_allowance > 0;
+    }
+
+    public function registerRenderHooks(Panel $panel)
+    {
+
     }
 
 
