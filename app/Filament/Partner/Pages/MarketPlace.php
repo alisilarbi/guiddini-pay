@@ -40,13 +40,13 @@ class MarketPlace extends Page implements HasForms, HasTable
         $this->applicationPrice = $this->partner->application_price;
 
         // Calculate application stats
-        $this->totalApplications = Application::where('user_id', $this->partner->id)->count();
-        $this->paidApplications = Application::where('user_id', $this->partner->id)
-            ->where('payment_status', 'paid')
-            ->count();
-        $this->unpaidApplications = $this->totalApplications - $this->paidApplications;
-        $this->remainingAllowance = $this->partner->remaining_allowance;
-        $this->newAllowance = 1;
+        // $this->totalApplications = Application::where('user_id', $this->partner->id)->count();
+        // $this->paidApplications = Application::where('user_id', $this->partner->id)
+        //     ->where('payment_status', 'paid')
+        //     ->count();
+        // $this->unpaidApplications = $this->totalApplications - $this->paidApplications;
+        // $this->remainingAllowance = $this->partner->remaining_allowance;
+        // $this->newAllowance = 1;
     }
 
     public function table(Table $table): Table
