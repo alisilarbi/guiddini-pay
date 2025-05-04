@@ -12,11 +12,13 @@ class QuotaTransaction extends Model
     protected $fillable = [
         'partner_id',
         'type',
-        'is_paid',
+        'payment_status',
 
         'application_price',
         'quantity',
         'total',
+
+        'remaining_quantity',
     ];
 
     public function partner()

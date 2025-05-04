@@ -51,6 +51,7 @@ class PartnerApplicationController extends Controller
      */
     public function store(Request $request, CreateApplication $action)
     {
+
         try {
             $request->validate([
                 'name' => 'required|string',

@@ -15,8 +15,18 @@ return new class extends Migration
             $table->uuid('quota_transaction_id')->nullable();
             $table->foreign('quota_transaction_id')->references('id')->on('quota_transactions');
 
-            $table->boolean('is_paid')->default(false);
+            $table->string('payment_status')->nullable();
         });
     }
 
+
+    public function down(): void
+    {
+        Schema::table('applications', function (Blueprint $table) {
+            $table->dropForeign('quota_transaction_id');
+            $table->dropColumn('quota_transaction_id');
+            $table->dropColumn('payment_status');
+
+        });
+    }
 };

@@ -18,11 +18,14 @@ return new class extends Migration
             $table->foreign('partner_id')->references('id')->on('users');
 
             $table->string('type');
-            $table->boolean('is_paid');
+            $table->string('payment_status')->nullable();
+            $table->string('status')->default('active');
 
             $table->decimal('application_price', 8, 2)->nullable()->default(null);
             $table->integer('quantity')->default(0);
             $table->decimal('total', 10, 2)->nullable()->default(null);
+
+            $table->unsignedInteger('remaining_quantity')->default(0);
 
             $table->timestamps();
         });

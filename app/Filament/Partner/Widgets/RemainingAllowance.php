@@ -16,22 +16,27 @@ class RemainingAllowance extends BaseWidget
 
     protected function getStats(): array
     {
-        $user = Auth::user();
+        $partner = Auth::user();
+        $remaining = $partner->available_quota;
+        $used = $partner->used_quota;
 
-        $totalApplications = Application::where('user_id', $user->id)->count();
-        $paidApplications = Application::where('user_id', $user->id)
-            ->where('is_paid', true)
-            ->count();
-        $unpaidApplications = $totalApplications - $paidApplications;
+        $color = 'success';
+        if ($partner->partner_mode !== 'unlimited') {
+            if ($remaining === 0) {
+                $color = 'danger';
+            } elseif ($remaining <= 5) {
+                $color = 'warning';
+            }
+        }
+
         return [
-            Stat::make('Quota restant', $user->partner_mode === 'unlimited' ? '∞' : $user->remaining_allowance)
-                ->description($user->partner_mode === 'unlimited'
+            Stat::make('Quota restant', $partner->partner_mode === 'unlimited' ? '∞' : $remaining)
+                ->description($partner->partner_mode === 'unlimited'
                     ? 'Mode illimité activé'
                     : 'Applications restantes à créer')
-                ->color($user->partner_mode === 'unlimited' || $user->remaining_allowance > 0
-                    ? 'info'
-                    : 'danger')
-                ->icon('heroicon-m-bolt'),
+                ->color($color)
+                ->icon('heroicon-m-bolt')
+                ->chart([$used, $remaining]),
         ];
     }
 }

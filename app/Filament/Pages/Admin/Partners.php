@@ -54,22 +54,7 @@ class Partners extends Page implements HasForms, HasTable
                     ->sortable()
                     ->icon('heroicon-o-envelope'),
 
-                TextColumn::make('applications_count')
-                    ->label('Applications Count')
-                    ->badge()
-                    ->color(function (User $record) {
-                        $remaining = $record->remaining_allowance;
-                        if ($record->partner_mode === 'quota' && $remaining <= 0) {
-                            return 'danger';
-                        }
-                        return 'success';
-                    })
-                    ->state(function (User $record) {
-                        $count = $record->applications()->count();
-                        return $record->partner_mode === 'quota'
-                            ? $count . ' (' . $record->remaining_allowance . ' left)'
-                            : (string) $count;
-                    }),
+
 
                 TextColumn::make('partner_mode')
                     ->label('Partner Mode')
@@ -80,6 +65,38 @@ class Partners extends Page implements HasForms, HasTable
                             ? 'Quota (' . number_format($record->application_price, 2) . ' DA)'
                             : 'Unlimited';
                     }),
+
+                TextColumn::make('total_apps')
+                    ->label('Total Apps')
+                    ->badge()
+                    ->color('success'),
+
+                TextColumn::make('available_quota')
+                    ->label('Apps Restante')
+                    ->badge()
+                    ->color(function (User $record) {
+                        $remaining = $record->remaining_allowance;
+                        if ($record->partner_mode === 'quota' && $remaining <= 0) {
+                            return 'danger';
+                        }
+                        return 'success';
+                    }),
+
+                TextColumn::make('used_quota')
+                    ->label('Utilisé')
+                    ->badge()
+                    ->color('primary'),
+
+                TextColumn::make('total_paid')
+                    ->label('Payé')
+                    ->badge()
+                    ->color('success'),
+
+                TextColumn::make('total_unpaid')
+                    ->label('Non Payé')
+                    ->badge()
+                    ->color(fn(User $r) => $r->total_unpaid > 0 ? 'danger' : 'gray'),
+
             ])
             ->filters([
                 // Future filters

@@ -9,7 +9,7 @@
             </x-filament::button>
         </div>
         <div>
-            @livewire(\App\Filament\Partner\Widgets\PaidVsUnpaidApplications::class)
+            @livewire(\App\Filament\Partner\Widgets\UnpaidApplications::class)
             <x-filament::button class="w-full justify-center mt-3" outlined
                 x-on:click="$dispatch('open-modal', { id: 'pay-debts' })" size="xs">
                 Pay debts

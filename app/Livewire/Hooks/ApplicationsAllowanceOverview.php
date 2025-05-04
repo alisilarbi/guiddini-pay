@@ -23,12 +23,10 @@ class ApplicationsAllowanceOverview extends Component
         $this->applicationPrice = $this->partner->application_price;
 
         // Calculate application stats
-        $this->totalApplications = Application::where('user_id', $this->partner->id)->count();
-        $this->paidApplications = Application::where('user_id', $this->partner->id)
-            ->where('is_paid', true)
-            ->count();
-        $this->unpaidApplications = $this->totalApplications - $this->paidApplications;
-        $this->remainingAllowance = $this->partner->remaining_allowance;
+        $this->totalApplications = $this->partner->total_apps;
+        $this->paidApplications = $this->partner->total_paid;
+        $this->unpaidApplications =  $this->partner->total_unpaid;
+        $this->remainingAllowance = $this->partner->available_quota;
         $this->newAllowance = 1;
     }
 

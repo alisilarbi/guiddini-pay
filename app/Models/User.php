@@ -47,6 +47,13 @@ class User extends Authenticatable implements FilamentUser
         'partner_mode',
         'remaining_allowance',
         'default_is_paid',
+
+        'total_apps',
+        'total_paid',
+        'total_unpaid',
+
+        'used_quota',
+        'available_quota',
     ];
 
     /**
@@ -104,19 +111,14 @@ class User extends Authenticatable implements FilamentUser
 
     public function canCreateApplication()
     {
-        if(!$this->is_partner)
+        if (!$this->is_partner)
             return false;
 
-        if($this->partner_mode == 'unlimited')
+        if ($this->partner_mode == 'unlimited')
             return true;
 
         return $this->remaining_allowance > 0;
     }
 
-    public function registerRenderHooks(Panel $panel)
-    {
-
-    }
-
-
+    public function registerRenderHooks(Panel $panel) {}
 }
