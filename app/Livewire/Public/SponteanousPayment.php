@@ -144,7 +144,7 @@ class SponteanousPayment extends Component
     public function tryAgain()
     {
         try {
-            return redirect()->route('certification', [
+            return redirect()->route('pay', [
                 'slug' => $this->application->slug,
             ]);
         } catch (\Throwable $e) {
