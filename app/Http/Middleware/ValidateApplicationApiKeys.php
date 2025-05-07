@@ -34,8 +34,6 @@ class ValidateApplicationApiKeys
             ->where('app_secret', $secretKey)
             ->first();
 
-        // $request->attributes->add(['application' => $application]);
-        $request->merge(['application' => $application]);
         if (!$application) {
             return (new ErrorResource([
                 'http_code' => 401,
@@ -45,6 +43,9 @@ class ValidateApplicationApiKeys
                 'meta' => []
             ]))->response();
         }
+        // $request->attributes->add(['application' => $application]);
+        $request->merge(['application' => $application]);
+
 
         return $next($request);
     }
