@@ -10,7 +10,8 @@ use App\Http\Controllers\Web\PaymentConfirmationController;
 
 
 Route::get('/', function () {
-    return redirect()->to('user');
+    // return redirect()->to('user');
+    return view('lisa');
 });
 
 Route::prefix('payment')->group(function () {

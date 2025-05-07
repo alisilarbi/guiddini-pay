@@ -67,21 +67,21 @@ class MarketPlace extends Page implements HasForms, HasTable
                             return 'success';
                     }),
 
-                TextColumn::make('action')
-                    ->label('')
-                    // ->badge()
-                    ->formatStateUsing(function ($record) {
-                        if ($record->event_code === 'application_creation')
-                            return $record->application->name;
-                        else if ($record->event_code === 'quota_creation')
-                            return $record->action;
-                    })
-                    ->color(function ($record) {
-                        if ($record->event_type === 'application')
-                            return 'info';
-                        else if ($record->event_type === 'quota')
-                            return 'success';
-                    }),
+                // TextColumn::make('action')
+                //     ->label('')
+                //     // ->badge()
+                //     ->formatStateUsing(function ($record) {
+                //         if ($record->event_code === 'application_creation')
+                //             return $record->application->name;
+                //         else if ($record->event_code === 'quota_creation')
+                //             return $record->action;
+                //     })
+                //     ->color(function ($record) {
+                //         if ($record->event_type === 'application')
+                //             return 'info';
+                //         else if ($record->event_type === 'quota')
+                //             return 'success';
+                //     }),
 
                 // TextColumn::make('payment_status')
                 //     ->label('')
