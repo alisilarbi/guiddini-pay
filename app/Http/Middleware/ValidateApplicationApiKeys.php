@@ -46,7 +46,7 @@ class ValidateApplicationApiKeys
 
         $origin = $request->header('Origin') ?? $request->header('Referer');
         dd([
-            'origin' => $origin,
+            'origin' => $request->header('Origin'),
             'app' => rtrim($application->website_url, '/')
         ]);
 
