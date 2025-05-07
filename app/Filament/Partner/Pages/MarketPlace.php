@@ -34,6 +34,11 @@ class MarketPlace extends Page implements HasForms, HasTable
     public $newAllowance;
     public $applicationPrice;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
     public function mount(): void
     {
         $this->partner = Auth::user();
