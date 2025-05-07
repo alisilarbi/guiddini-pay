@@ -34,11 +34,7 @@ class ValidateApplicationApiKeys
             ->where('app_secret', $secretKey)
             ->first();
 
-            dd($application);
-
         $request->attributes->add(['application' => $application]);
-
-
         if (!$application) {
             return (new ErrorResource([
                 'http_code' => 401,
