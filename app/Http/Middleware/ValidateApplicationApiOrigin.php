@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Log;
 use Closure;
 use Illuminate\Http\Request;
 use App\Http\Resources\Api\ErrorResource;
@@ -16,7 +17,7 @@ class ValidateApplicationApiOrigin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        dd('lisa');
+        Log::info('ValidateApplicationApiKeys passed', ['app_key' => 'hjehe']);
         $application = $request->application;
 
         if ($application->license_env === 'production') {
