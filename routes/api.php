@@ -13,13 +13,23 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::prefix('payment')->middleware(['validate_application_api_keys', 'validate_application_api_origin'])->group(function () {
-    Route::post('/initiate', [PaymentController::class, 'initiate']);
+// Route::prefix('payment')->middleware(['validate_application_api_keys', 'validate_application_api_origin'])->group(function () {
+//     Route::post('/initiate', [PaymentController::class, 'initiate']);
 
-    Route::get('/show', [PaymentController::class, 'getTransaction'])->name('api.client.payment.show');
-    Route::get('/receipt', [PaymentController::class, 'getPaymentReceipt'])->name('api.client.payment.receipt');
-    Route::post('/email', [PaymentController::class, 'emailPaymentReceipt'])->name('api.client.payment.email');
+//     Route::get('/show', [PaymentController::class, 'getTransaction'])->name('api.client.payment.show');
+//     Route::get('/receipt', [PaymentController::class, 'getPaymentReceipt'])->name('api.client.payment.receipt');
+//     Route::post('/email', [PaymentController::class, 'emailPaymentReceipt'])->name('api.client.payment.email');
+// });
+
+Route::prefix('payment')->group(function () {
+    Route::middleware(['validate_application_api_keys', 'validate_application_api_origin'])->group(function () {
+        Route::post('/initiate', [PaymentController::class, 'initiate']);
+        Route::get('/show', [PaymentController::class, 'getTransaction'])->name('api.client.payment.show');
+        Route::get('/receipt', [PaymentController::class, 'getPaymentReceipt'])->name('api.client.payment.receipt');
+        Route::post('/email', [PaymentController::class, 'emailPaymentReceipt'])->name('api.client.payment.email');
+    });
 });
+
 
 Route::prefix('partner')->middleware('validate_partner_api_keys')->group(function () {
 
@@ -58,5 +68,4 @@ Route::prefix('partner')->middleware('validate_partner_api_keys')->group(functio
         Route::patch('update', [PartnerClientController::class, 'update']);
         Route::delete('destroy', [PartnerClientController::class, 'destroy']);
     });
-
 });
