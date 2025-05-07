@@ -34,6 +34,8 @@ class ValidateApplicationApiKeys
             ->where('app_secret', $secretKey)
             ->first();
 
+            dd($application);
+
         $request->attributes->add(['application' => $application]);
 
 
