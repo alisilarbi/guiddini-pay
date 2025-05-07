@@ -18,18 +18,13 @@ class ValidateApplicationApiOrigin
     public function handle(Request $request, Closure $next): Response
     {
         $application = $request->application;
-        dd($application);
 
         if ($application->license_env === 'production') {
             $origin = $request->header('Origin') ?? $request->header('Referer');
-            // dd($origin && rtrim($origin, '/') !== rtrim($application->website_url, '/'));
 
+            dd($origin);
 
-            dd([
-                'origin' => $origin,
-                'app' => rtrim($application->website_url, '/')
-            ]);
-
+            // Check if origin is present and does not match the application's website URL
             if ($origin && rtrim($origin, '/') !== rtrim($application->website_url, '/')) {
                 return (new ErrorResource([
                     'http_code' => 403,
@@ -37,7 +32,7 @@ class ValidateApplicationApiOrigin
                     'message' => 'Unauthorized origin',
                     'detail' => null,
                     'meta' => []
-                ]))->response();
+                ]))->response()->setStatusCode(403);
             }
         }
 
