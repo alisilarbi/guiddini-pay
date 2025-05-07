@@ -17,6 +17,7 @@ class ValidateApplicationApiOrigin
      */
     public function handle(Request $request, Closure $next): Response
     {
+        dd('hehe');
         $application = $request->application;
 
         if ($application->license_env === 'production') {
