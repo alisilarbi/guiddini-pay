@@ -13,7 +13,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::prefix('payment')->middleware('validate_application_api_keys')->group(function () {
+Route::prefix('payment')->middleware(['validate_application_api_keys', 'validate_application_api_origin'])->group(function () {
     Route::post('/initiate', [PaymentController::class, 'initiate']);
 
     Route::get('/show', [PaymentController::class, 'getTransaction'])->name('api.client.payment.show');
