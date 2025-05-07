@@ -17,27 +17,27 @@ class ValidateApplicationApiOrigin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $application = $request->application;
+        // $application = $request->application;
 
-        if ($application->license_env === 'production') {
-            $origin = $request->header('Origin') ?? $request->header('Referer');
+        // if ($application->license_env === 'production') {
+        //     // $origin = $request->header('Origin') ?? $request->header('Referer');
 
-            dd([
-                'origin' => $request->header('Origin'),
-                'referer' => $request->header('Referer'),
-            ]);
+        //     // dd([
+        //     //     'origin' => $request->header('Origin'),
+        //     //     'referer' => $request->header('Referer'),
+        //     // ]);
 
-            // Check if origin is present and does not match the application's website URL
-            if ($origin && rtrim($origin, '/') !== rtrim($application->website_url, '/')) {
-                return (new ErrorResource([
-                    'http_code' => 403,
-                    'code' => 'UNAUTHORIZED_ORIGIN',
-                    'message' => 'Unauthorized origin',
-                    'detail' => null,
-                    'meta' => []
-                ]))->response()->setStatusCode(403);
-            }
-        }
+        //     // Check if origin is present and does not match the application's website URL
+        //     if ($origin && rtrim($origin, '/') !== rtrim($application->website_url, '/')) {
+        //         return (new ErrorResource([
+        //             'http_code' => 403,
+        //             'code' => 'UNAUTHORIZED_ORIGIN',
+        //             'message' => 'Unauthorized origin',
+        //             'detail' => null,
+        //             'meta' => []
+        //         ]))->response()->setStatusCode(403);
+        //     }
+        // }
 
         return $next($request);
     }
