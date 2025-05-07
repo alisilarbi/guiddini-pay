@@ -22,7 +22,10 @@ class ValidateApplicationApiOrigin
         if ($application->license_env === 'production') {
             $origin = $request->header('Origin') ?? $request->header('Referer');
 
-            dd($origin);
+            dd([
+                'origin' => $request->header('Origin'),
+                'referer' => $request->header('Referer'),
+            ]);
 
             // Check if origin is present and does not match the application's website URL
             if ($origin && rtrim($origin, '/') !== rtrim($application->website_url, '/')) {
