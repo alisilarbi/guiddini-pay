@@ -43,8 +43,24 @@
         </div>
     </div>
 
-    <x-filament::modal id="pay-debts">
-        Modal content
+    <x-filament::modal id="pay-debts" width="3xl">
+        @livewire('filament-tables.unpaid-applications')
+        <div class="flex items justify-between">
+            <span class="text-md font-bold ">Total amount :
+            </span>
+            <div class="text-md flex items-center fond-bold">
+                {{ number_format(40000, 2) }} DA
+            </div>
+        </div>
+        <x-slot name="footer" style="margin-top: -20px;">
+            <x-filament::button wire:click="buyAllowance" size="lg" color="guiddini-primary"
+                class="flex justify-center items-center gap-2 mt-4 w-full">
+                <span class="flex flex-row gap-2">
+                    Procéder au paiement
+                    <img src="{{ asset('images/cib_logotype.jpg') }}" alt="CIB" class="h-5 rounded-md">
+                </span>
+            </x-filament::button>
+        </x-slot>
     </x-filament::modal>
 
 
