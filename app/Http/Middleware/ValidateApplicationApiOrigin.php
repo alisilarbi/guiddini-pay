@@ -21,7 +21,14 @@ class ValidateApplicationApiOrigin
 
         if ($application->license_env === 'production') {
             $origin = $request->header('Origin') ?? $request->header('Referer');
-            dd($origin && rtrim($origin, '/') !== rtrim($application->website_url, '/'));
+            // dd($origin && rtrim($origin, '/') !== rtrim($application->website_url, '/'));
+
+
+            dd([
+                'origin' => rtrim($origin, '/'),
+                'app' => rtrim($application->website_url, '/')
+            ]);
+
             if ($origin && rtrim($origin, '/') !== rtrim($application->website_url, '/')) {
                 return (new ErrorResource([
                     'http_code' => 403,
