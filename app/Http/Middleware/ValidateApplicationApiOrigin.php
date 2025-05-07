@@ -25,7 +25,7 @@ class ValidateApplicationApiOrigin
 
 
             dd([
-                'origin' => rtrim($origin, '/'),
+                'origin' => $origin,
                 'app' => rtrim($application->website_url, '/')
             ]);
 
