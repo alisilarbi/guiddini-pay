@@ -17,10 +17,10 @@ class ValidateApplicationApiOrigin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        dd('hehe');
         $application = $request->application;
 
         if ($application->license_env === 'production') {
+            dd('hehe');
             $origin = $request->header('Origin') ?? $request->header('Referer');
             if ($origin && rtrim($origin, '/') !== rtrim($application->website_url, '/')) {
                 return (new ErrorResource([
