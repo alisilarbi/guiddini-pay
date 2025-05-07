@@ -17,6 +17,9 @@ class ValidateApplicationApiKeys
      */
     public function handle(Request $request, Closure $next): Response
     {
+        $origin = $request->header('Origin') ?? $request->header('Referer');
+        dd($origin);
+
         $appKey = $request->header('x-app-key');
         $secretKey = $request->header('x-app-secret');
 
