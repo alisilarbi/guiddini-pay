@@ -6,6 +6,8 @@ use App\Models\User;
 use Livewire\Component;
 use App\Models\Application;
 use Illuminate\Support\Facades\Auth;
+use Filament\Notifications\Notification;
+use App\Services\InternalPayments\InternalPaymentService;
 
 class ApplicationsAllowanceOverview extends Component
 {
@@ -17,6 +19,15 @@ class ApplicationsAllowanceOverview extends Component
     public $remainingAllowance;
     public $newAllowance;
     public $applicationPrice;
+    public $paymentService;
+
+    public function __construct()
+    {
+        $this->paymentService = app(InternalPaymentService::class);
+        // $this->receiptService = app(ReceiptService::class);
+    }
+
+
     public function mount()
     {
         $this->partner = Auth::user();
@@ -56,7 +67,28 @@ class ApplicationsAllowanceOverview extends Component
 
     public function buyAllowance()
     {
-        dd($this->newAllowance);
+        try {
+            $data = [
+                'amount' => $this->amount,
+                'origin' => 'System',
+            ];
+
+            $result = $this->paymentService->initiatePayment(
+                $data,
+                $this->application->app_key
+            );
+
+            dd($result);
+
+            Notification::make()
+                ->title('Paiement initié avec succès')
+                ->success()
+                ->send();
+
+            return redirect()->to($result['formUrl']);
+        } catch (\Throwable $e) {
+            $this->handleWebException($e);
+        }
     }
 
 
