@@ -46,20 +46,6 @@ class ValidatePartnerApiKeys
             ]))->response();
         }
 
-        if (app()->environment('production')) {
-            $origin = $request->header('Origin') ?? $request->header('Referer');
-
-            if ($origin && rtrim($origin, '/') !== rtrim($partner->website_url, '/')) {
-                return (new ErrorResource([
-                    'http_code' => 403,
-                    'code' => 'UNAUTHORIZED_ORIGIN',
-                    'message' => 'Unauthorized origin',
-                    'detail' => null,
-                    'meta' => []
-                ]))->response();
-            }
-        }
-
         $request->attributes->add(['partner' => $partner]);
         return $next($request);
     }

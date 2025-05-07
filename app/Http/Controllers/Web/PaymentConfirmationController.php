@@ -37,7 +37,7 @@ class PaymentConfirmationController extends Controller
         ]);
 
         if ($transaction->origin === 'System')
-            return redirect()->route('certification', [
+            return redirect()->route('pay', [
                 'slug' => $transaction->application->slug,
                 'order_number' => $transaction->order_number
             ]);

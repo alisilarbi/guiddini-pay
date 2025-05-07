@@ -14,7 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'validate_application_api_keys' => \App\Http\Middleware\ValidateApplicationApiKeys::class,
+            'validate_application_api_origin' => \App\Http\Middleware\ValidatePartnerApiOrigin::class,
             'validate_partner_api_keys' => \App\Http\Middleware\ValidatePartnerApiKeys::class,
+            'validate_partner_api_origin' => \App\Http\Middleware\ValidatePartnerApiOrigin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
