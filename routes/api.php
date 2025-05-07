@@ -21,7 +21,7 @@ Route::prefix('payment')->middleware(['validate_application_api_keys', 'validate
     Route::post('/email', [PaymentController::class, 'emailPaymentReceipt'])->name('api.client.payment.email');
 });
 
-Route::prefix('partner')->middleware(['validate_partner_api_keys', 'validate_partner_api_origin'])->group(function () {
+Route::prefix('partner')->middleware('validate_partner_api_keys')->group(function () {
 
     Route::prefix('application')->group(function () {
         Route::get('index', [PartnerApplicationController::class, 'index']);
@@ -36,7 +36,7 @@ Route::prefix('partner')->middleware(['validate_partner_api_keys', 'validate_par
     Route::prefix('prospect')->group(function () {
         Route::post('convert', [PartnerProspectController::class, 'convert']);
         Route::get('index', [PartnerProspectController::class, 'index']);
-        Route::post('store', [PartnerProspectController::class, 'store'])->withoutMiddleware('validate_partner_api_origin');
+        Route::post('store', [PartnerProspectController::class, 'store']);
         Route::get('show', [PartnerProspectController::class, 'show']);
         Route::patch('update', [PartnerProspectController::class, 'update']);
         Route::delete('destroy', [PartnerProspectController::class, 'destroy']);
