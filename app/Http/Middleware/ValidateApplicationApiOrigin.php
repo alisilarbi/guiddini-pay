@@ -17,7 +17,6 @@ class ValidateApplicationApiOrigin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        Log::info('ValidateApplicationApiKeys passed', ['app_key' => 'hjehe']);
         $application = $request->application;
 
         if ($application->license_env === 'production') {
