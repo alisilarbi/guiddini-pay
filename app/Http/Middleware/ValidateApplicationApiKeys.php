@@ -44,14 +44,6 @@ class ValidateApplicationApiKeys
             ]))->response();
         }
 
-        $origin = $request->header('Origin') ?? $request->header('Referer');
-        dd([
-            'origin' => $request->header('Origin'),
-            'app' => rtrim($application->website_url, '/')
-        ]);
-
-
-
         // $request->attributes->add(['application' => $application]);
         $request->merge(['application' => $application]);
 
