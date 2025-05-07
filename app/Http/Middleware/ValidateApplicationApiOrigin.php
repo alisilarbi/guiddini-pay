@@ -17,6 +17,7 @@ class ValidateApplicationApiOrigin
     public function handle(Request $request, Closure $next): Response
     {
         $application = $request->application;
+        dd($application);
         if ($application->license_env === 'production') {
             $origin = $request->header('Origin') ?? $request->header('Referer');
             if ($origin && rtrim($origin, '/') !== rtrim($application->website_url, '/')) {
