@@ -19,7 +19,9 @@ class ApplicationsAllowanceOverview extends Component
     public $remainingAllowance;
     public $newAllowance;
     public $applicationPrice;
-    public $paymentService;
+
+
+    protected InternalPaymentService $paymentService;
 
     public function __construct()
     {
@@ -77,8 +79,6 @@ class ApplicationsAllowanceOverview extends Component
                 $data,
                 $this->application->app_key
             );
-
-            dd($result);
 
             Notification::make()
                 ->title('Paiement initié avec succès')

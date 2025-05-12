@@ -8,11 +8,12 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\RequestException;
 use App\Services\Payments\TransactionUpdater;
 use Illuminate\Http\Client\ConnectionException;
+use App\Services\InternalPayments\InternalTransactionUpdater;
 
 class InternalConfirmGatewayService
 {
     public function __construct(
-        private TransactionUpdater $updater
+        private InternalTransactionUpdater $updater
     ) {}
 
     public function execute(Transaction $transaction): array
@@ -35,7 +36,8 @@ class InternalConfirmGatewayService
                 ? 'https://cib.satim.dz/payment/rest/'
                 : 'https://test.satim.dz/payment/rest/';
 
-            $response = Http::timeout(30)
+            $response = Http::withoutVerifying()
+                ->timeout(30)
                 ->get($baseUrl . 'confirmOrder.do', $params)
                 ->throw()
                 ->json();

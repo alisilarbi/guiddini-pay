@@ -8,11 +8,12 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\RequestException;
 use App\Services\Payments\TransactionUpdater;
 use Illuminate\Http\Client\ConnectionException;
+use App\Services\InternalPayments\InternalTransactionUpdater;
 
 class InternalInitiateGatewayService
 {
     public function __construct(
-        private TransactionUpdater $updater
+        private InternalTransactionUpdater $updater
     ) {}
 
     public function execute(Transaction $transaction): array
@@ -31,7 +32,7 @@ class InternalInitiateGatewayService
                 'orderNumber' => $transaction->order_number,
                 'amount' => (int)($transaction->amount * 100),
                 'currency' => '012',
-                'returnUrl' => route('payment.confirm', $transaction->order_number),
+                'returnUrl' => route('internal.payment.confirm', $transaction->order_number),
                 'language' => 'FR',
                 'jsonParams' => json_encode([
                     "force_terminal_id" => $credentials['terminal'],
@@ -44,7 +45,8 @@ class InternalInitiateGatewayService
                 ? 'https://cib.satim.dz/payment/rest/'
                 : 'https://test.satim.dz/payment/rest/';
 
-            $response = Http::timeout(30)
+            $response = Http::withoutVerifying()
+                ->timeout(30)
                 ->get($baseUrl . 'register.do', $params)
                 ->throw()
                 ->json();

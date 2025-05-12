@@ -10,38 +10,60 @@ use App\Models\Transaction;
 use App\Models\EventHistory;
 use App\Models\QuotaTransaction;
 use Illuminate\Support\Facades\DB;
+use App\Traits\HandlesWebExceptions;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Notifications\Notification;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
+use App\Services\InternalPayments\InternalPaymentService;
 
-class MarketPlace extends Page implements HasForms, HasTable
+class Marketplace extends Page implements HasForms, HasTable
 {
     use InteractsWithTable;
     use InteractsWithForms;
-
+    use HandlesWebExceptions;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
+    protected static ?string $title = 'MarketPlace';
 
-    protected static string $view = 'filament.partner.pages.market-place';
-    public User $partner;
+    public function getHeading(): string
+    {
+        if($this->orderNumber)
+            return 'Paiement en ligne';
+        else
+            return 'MarketPlace';
+    }
+
+    protected static ?string $navigationLabel = 'MarketPlace';
+    protected static ?string $slug = 'marketplace';
+
+    protected static string $view = 'filament.partner.pages.marketplace';
     public $totalApplications;
     public $paidApplications;
     public $unpaidApplications;
     public $remainingAllowance;
     public $newAllowance;
     public $applicationPrice;
+    public $orderNumber;
+    public $transaction;
+    public User $partner;
+    protected InternalPaymentService $paymentService;
 
-    public static function shouldRegisterNavigation(): bool
+    public function __construct()
     {
-        return true;
+        $this->paymentService = app(InternalPaymentService::class);
+        // $this->receiptService = app(ReceiptService::class);
     }
 
     public function mount(): void
     {
-        $this->partner = Auth::user();
+        $this->orderNumber = request()->get('orderNumber');
+        if($this->orderNumber)
+            $this->transaction = Transaction::where('order_number', $this->orderNumber)->first();
+        $this->partner = User::where('id', Auth::user()->id)->first();
         $this->applicationPrice = $this->partner->application_price;
     }
 
@@ -130,5 +152,8 @@ class MarketPlace extends Page implements HasForms, HasTable
             ]);
     }
 
-    // public function
+    public function tryAgain()
+    {
+        return redirect('partner/marketplace');
+    }
 }

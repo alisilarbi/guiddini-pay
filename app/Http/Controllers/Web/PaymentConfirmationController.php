@@ -12,7 +12,8 @@ use App\Traits\HandlesApiExceptions;
 use App\Traits\HandlesWebExceptions;
 use App\Services\Payments\PaymentService;
 use App\Services\Payments\ReceiptService;
-use App\Services\Payments\InternalPaymentService;
+use App\Filament\Partner\Pages\Marketplace;
+use App\Services\InternalPayments\InternalPaymentService;
 
 class PaymentConfirmationController extends Controller
 {
@@ -28,11 +29,8 @@ class PaymentConfirmationController extends Controller
     public function internalConfirm(string $orderNumber)
     {
         $result = $this->internalPaymentService->confirmPayment($orderNumber);
-
         $transaction = $result['transaction'];
         $gatewayResponse = $result['gateway_response'];
-
-        // $redirectUrl = $transaction->application->redirect_url;
 
         $queryParams = http_build_query([
             'order_number' => $orderNumber,
@@ -47,12 +45,15 @@ class PaymentConfirmationController extends Controller
                 'order_number' => $transaction->order_number
             ]);
 
-        // return redirect()->to("$redirectUrl?$queryParams");
+        if ($transaction->origin === 'Quota Debt')
+            return redirect('partner/marketplace?orderNumber=' . $orderNumber);
 
-        try {
-        } catch (\Throwable $e) {
-            return $this->handleApiException($e);
-        }
+
+
+            try {
+            } catch (\Throwable $e) {
+                return $this->handleApiException($e);
+            }
     }
 
     public function confirm(string $orderNumber)

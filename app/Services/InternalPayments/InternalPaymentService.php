@@ -4,22 +4,23 @@ namespace App\Services\InternalPayments;
 
 use App\Models\Transaction;
 use App\Exceptions\PaymentException;
-use App\Services\Payments\InternalConfirmGatewayService;
-use App\Services\Payments\InternalInitiateGatewayService;
+use App\Services\Payments\TransactionUpdater;
+use App\Services\InternalPayments\InternalTransactionUpdater;
+use App\Services\InternalPayments\InternalConfirmGatewayService;
+use App\Services\InternalPayments\InternalInitiateGatewayService;
 
 class InternalPaymentService
 {
     public function __construct(
         private InternalInitiateGatewayService $initiator,
         private InternalConfirmGatewayService $confirmer,
-        private TransactionUpdater $updater
+        private InternalTransactionUpdater $updater
     ) {}
 
     public function initiatePayment(array $data): array
     {
         $env = config('payments.env');
         $transaction = $this->createTransaction($data, $env);
-
         $response = $this->initiator->execute($transaction);
 
         return [
@@ -45,15 +46,14 @@ class InternalPaymentService
     private function createTransaction(array $data, string $env): Transaction
     {
         return Transaction::create([
+            'origin' => 'Quota',
             'amount' => $data['amount'],
             'order_number' => $this->generateOrderNumber(),
             'status' => 'initiated',
-            'application_id' => null,
-            'license_id' => null,
             'license_env' => $env,
             'currency' => '012',
-            'partner_id' => null,
-            'origin' => $data['origin'] ?? 'Internal',
+            'partner_id' => $data['partner_id'],
+            'origin' => $data['origin'] ?? 'Quota Debt',
         ]);
     }
 
