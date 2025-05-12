@@ -77,7 +77,10 @@ class PaymentService
 
         do {
             $unique = uniqid(mt_rand(), true);
-            $orderNumber = strtoupper(substr(base_convert($unique, 16, 36), 0, 20));
+            if ($application->license_env === 'production')
+                $orderNumber = strtoupper(substr(base_convert($unique, 16, 36), 0, 20));
+            else
+                $orderNumber = strtoupper(substr(base_convert($unique, 16, 36), 0, 10));
         } while (
             Transaction::where('order_number', $orderNumber)
             ->where('license_id', $licenseId)
@@ -86,6 +89,4 @@ class PaymentService
 
         return $orderNumber;
     }
-
-
 }
