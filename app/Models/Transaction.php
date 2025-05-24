@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Quota;
 use App\Models\Application;
 use App\Models\Environment;
 use Illuminate\Database\Eloquent\Model;
@@ -42,7 +43,12 @@ class Transaction extends Model
         'svfe_response',
         'pan',
         'ip_address',
-        'approval_code'
+        'approval_code',
+        'quota_transactions',
+    ];
+
+    protected $casts = [
+        'quota_transactions' => 'array',
     ];
 
     protected static function boot()
@@ -62,5 +68,10 @@ class Transaction extends Model
     public function partner()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function quotas()
+    {
+        return $this->hasMany(Quota::class);
     }
 }

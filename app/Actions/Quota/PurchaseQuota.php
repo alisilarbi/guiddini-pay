@@ -3,13 +3,13 @@
 namespace App\Actions\Quota;
 
 use App\Models\User;
-use App\Models\QuotaTransaction;
+use App\Models\Quota;
 
 class PurchaseQuota
 {
-    public function handle(User $partner, int $quantity): QuotaTransaction
+    public function handle(User $partner, int $quantity): Quota
     {
-        $transaction = QuotaTransaction::create([
+        $transaction = Quota::create([
             'partner_id' => $partner->id,
             'type' => 'purchase',
             'quantity' => $quantity,

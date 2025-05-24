@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('applications', function (Blueprint $table) {
-            $table->uuid('quota_transaction_id')->nullable();
-            $table->foreign('quota_transaction_id')->references('id')->on('quota_transactions');
+            $table->uuid('quota_id')->nullable();
+            $table->foreign('quota_id')->references('id')->on('quotas');
 
             $table->string('payment_status')->nullable();
         });
@@ -23,8 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('applications', function (Blueprint $table) {
-            $table->dropForeign('quota_transaction_id');
-            $table->dropColumn('quota_transaction_id');
+            $table->dropForeign('quota_id');
+            $table->dropColumn('quota_id');
             $table->dropColumn('payment_status');
 
         });

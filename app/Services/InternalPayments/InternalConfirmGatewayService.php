@@ -24,25 +24,34 @@ class InternalConfirmGatewayService
             throw new PaymentException("Missing credentials for $env environment", 'CONFIG_ERROR', 500);
         }
 
+
+        $params = [
+            'userName' => $credentials['username'],
+            'password' => $credentials['password'],
+            'orderId' => $transaction->order_id,
+            'language' => 'FR',
+        ];
+
+        $baseUrl = $env === 'production'
+            ? 'https://cib.satim.dz/payment/rest/'
+            : 'https://test.satim.dz/payment/rest/';
+
+
+        $response = Http::withoutVerifying()
+            ->timeout(30)
+            ->get($baseUrl . 'confirmOrder.do', $params)
+            ->throw()
+            ->json();
+
+
+
+
+
+        $this->updater->handleConfirmationResponse($transaction, $response);
+
+
         try {
-            $params = [
-                'userName' => $credentials['username'],
-                'password' => $credentials['password'],
-                'orderId' => $transaction->order_id,
-                'language' => 'FR',
-            ];
 
-            $baseUrl = $env === 'production'
-                ? 'https://cib.satim.dz/payment/rest/'
-                : 'https://test.satim.dz/payment/rest/';
-
-            $response = Http::withoutVerifying()
-                ->timeout(30)
-                ->get($baseUrl . 'confirmOrder.do', $params)
-                ->throw()
-                ->json();
-
-            $this->updater->handleConfirmationResponse($transaction, $response);
 
             return $response;
         } catch (RequestException $e) {

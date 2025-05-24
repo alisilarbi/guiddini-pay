@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Panel;
+use App\Models\Quota;
 use Livewire\Livewire;
 use App\Models\License;
 use App\Models\Application;
@@ -106,7 +107,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function quotaTransactions()
     {
-        return $this->hasMany(QuotaTransaction::class, 'partner_id');
+        return $this->hasMany(Quota::class, 'partner_id');
     }
 
     public function canCreateApplication()

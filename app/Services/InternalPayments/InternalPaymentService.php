@@ -21,8 +21,8 @@ class InternalPaymentService
     {
         $env = config('payments.env');
         $transaction = $this->createTransaction($data, $env);
-        $response = $this->initiator->execute($transaction);
 
+        $response = $this->initiator->execute($transaction);
         return [
             'formUrl' => $response['formUrl'],
             'transaction' => $transaction->only(['order_number', 'status', 'amount'])
@@ -34,6 +34,8 @@ class InternalPaymentService
         $transaction = Transaction::where('order_number', $orderNumber)
             ->whereNull('application_id')
             ->firstOrFail();
+
+
 
         $response = $this->confirmer->execute($transaction);
 
@@ -54,6 +56,7 @@ class InternalPaymentService
             'currency' => '012',
             'partner_id' => $data['partner_id'],
             'origin' => $data['origin'] ?? 'Quota Debt',
+            'quota_transactions' => $data['transactions'],
         ]);
     }
 

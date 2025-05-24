@@ -15,6 +15,8 @@ return new class extends Migration
             $table->uuid('application_id')->nullable()->change();
             $table->uuid('license_id')->nullable()->change();
             $table->string('license_env')->nullable()->change();
+
+            $table->json('quota_transactions')->nullable();
         });
     }
 
@@ -24,9 +26,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('transactions', function (Blueprint $table) {
-            $table->uuid('application_id')->nullable(false)->change();
-            $table->uuid('license_id')->nullable(false)->change();
-            $table->string('license_env')->nullable(false)->change();
+            $table->uuid('application_id')->nullable()->change();
+            $table->uuid('license_id')->nullable()->change();
+            $table->string('license_env')->nullable()->change();
+            $table->dropColumn('quota_transactions');
         });
     }
 };

@@ -49,16 +49,5 @@ class DatabaseSeeder extends Seeder
             'user_id' => $partner->id,
             'partner_id' => $partner->id,
         ]);
-
-        $application = Application::create([
-            'name' => 'Efawtara',
-            'website_url' => 'https://app.efawtara.com',
-            'redirect_url' => 'https://app.efawtara.com',
-            'user_id' => $partner->id,
-
-            'license_id' => $license->id,
-            'license_env' => 'development',
-            'partner_id' => $partner->id,
-        ]);
     }
 }

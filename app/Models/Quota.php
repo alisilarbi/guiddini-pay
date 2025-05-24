@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
-class QuotaTransaction extends Model
+class Quota extends Model
 {
     use HasUuids;
 
@@ -28,6 +28,6 @@ class QuotaTransaction extends Model
 
     public function applications()
     {
-        return $this->hasMany(Application::class, 'quota_transaction_id');
+        return $this->hasMany(Application::class, 'quota_id');
     }
 }

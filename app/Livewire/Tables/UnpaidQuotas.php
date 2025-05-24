@@ -4,10 +4,12 @@ namespace App\Livewire\Tables;
 
 use App\Models\User;
 use Filament\Tables;
+use App\Models\Quota;
 use Livewire\Component;
 use Filament\Tables\Table;
 use App\Models\QuotaTransaction;
 use Illuminate\Contracts\View\View;
+use App\Traits\HandlesWebExceptions;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
@@ -23,24 +25,28 @@ class UnpaidQuotas extends Component implements HasForms, HasTable
 {
     use InteractsWithForms;
     use InteractsWithTable;
+    use HandlesWebExceptions;
+
     public User $partner;
     public $total;
+    public $unpaidQuotas;
 
     protected InternalPaymentService $paymentService;
 
     public function __construct()
     {
         $this->paymentService = app(InternalPaymentService::class);
+        $this->unpaidQuotas = Quota::where('partner_id', Auth::user()->id)->where('payment_status', 'unpaid')->get();
     }
 
     public function table(Table $table): Table
     {
 
         $this->partner = Auth::user();
-        $this->total = QuotaTransaction::where('partner_id', $this->partner->id)->where('payment_status', 'unpaid')->sum('total');
+        $this->total = $this->unpaidQuotas->sum('total');
 
         return $table
-            ->query(QuotaTransaction::where('partner_id', $this->partner->id)->where('payment_status', 'unpaid'))
+            ->query(Quota::where('partner_id', $this->partner->id)->where('payment_status', 'unpaid'))
             ->columns([
                 TextColumn::make('payment_status')
                     ->badge()
@@ -73,23 +79,23 @@ class UnpaidQuotas extends Component implements HasForms, HasTable
 
     public function payDebts()
     {
-
-
         try {
+            $ids = $this->unpaidQuotas->pluck('id')->toArray();
             $data = [
                 'amount' => $this->total,
                 'origin' => 'Quota Debt',
                 'partner_id' => $this->partner->id,
+                'transactions' => $ids,
             ];
 
             $result = $this->paymentService->initiatePayment(
                 $data
             );
 
-            Notification::make()
-                ->title('Paiement initié avec succès')
-                ->success()
-                ->send();
+            // Notification::make()
+            //     ->title('Paiement initié avec succès')
+            //     ->success()
+            //     ->send();
 
             return redirect()->to($result['formUrl']);
         } catch (\Throwable $e) {

@@ -3,12 +3,16 @@
 namespace App\Filament\Partner\Pages;
 
 use App\Models\User;
+use App\Models\Quota;
 use Filament\Pages\Page;
 use Filament\Tables\Table;
 use App\Models\Application;
 use App\Models\Transaction;
 use App\Models\EventHistory;
+use Filament\Actions\Action;
 use App\Models\QuotaTransaction;
+use App\Actions\Quota\MarkAsPaid;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use App\Traits\HandlesWebExceptions;
 use Illuminate\Support\Facades\Auth;
@@ -16,14 +20,17 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Notifications\Notification;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Actions\Concerns\InteractsWithActions;
 use App\Services\InternalPayments\InternalPaymentService;
 
-class Marketplace extends Page implements HasForms, HasTable
+class Marketplace extends Page implements HasForms, HasTable, HasActions
 {
     use InteractsWithTable;
     use InteractsWithForms;
+    use InteractsWithActions;
     use HandlesWebExceptions;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
@@ -31,7 +38,7 @@ class Marketplace extends Page implements HasForms, HasTable
 
     public function getHeading(): string
     {
-        if($this->orderNumber)
+        if ($this->orderNumber)
             return 'Paiement en ligne';
         else
             return 'MarketPlace';
@@ -51,18 +58,45 @@ class Marketplace extends Page implements HasForms, HasTable
     public $transaction;
     public User $partner;
     protected InternalPaymentService $paymentService;
+    public $quotas;
+    protected $markAsPaidAction;
+
+    protected bool $viewTransactions = false;
 
     public function __construct()
     {
         $this->paymentService = app(InternalPaymentService::class);
+        $this->markAsPaidAction = app(MarkAsPaid::class);
         // $this->receiptService = app(ReceiptService::class);
     }
 
     public function mount(): void
     {
         $this->orderNumber = request()->get('orderNumber');
-        if($this->orderNumber)
+        if ($this->orderNumber) {
             $this->transaction = Transaction::where('order_number', $this->orderNumber)->first();
+
+            if (!$this->transaction) {
+                $this->orderNumber = null;
+            }
+
+            if ($this->transaction && $this->transaction->status === 'paid') {
+                $this->quotas = Quota::whereIn('id', $this->transaction->quota_transactions)->get();
+                $this->markAsPaidAction->handle($this->quotas);
+
+                Notification::make()
+                    ->title('Paiement réussi')
+                    ->success()
+                    ->send();
+            } else {
+                Notification::make()
+                    ->title('Erreur de paiement')
+                    ->danger()
+                    ->body($this->transaction->action_code_description ?? 'Une erreur est survenue lors du traitement de votre paiement.')
+                    ->send();
+            }
+        }
+
         $this->partner = User::where('id', Auth::user()->id)->first();
         $this->applicationPrice = $this->partner->application_price;
     }
@@ -93,44 +127,33 @@ class Marketplace extends Page implements HasForms, HasTable
                             return $record->application->name;
                         else if ($record->event_code === 'quota_creation')
                             return $record->action;
+                        else if ($record->event_code === 'quota_paid')
+                            return $record->action;
                     })
                     ->color(function ($record) {
                         if ($record->event_type === 'application')
                             return 'info';
                         else if ($record->event_type === 'quota')
                             return 'success';
+                        else if ($record->event_type === 'quota_paid')
+                            return 'success';
                     }),
-
-                // TextColumn::make('payment_status')
-                //     ->label('')
-                //     ->formatStateUsing(fn($state) => ucfirst($state))
-                //     ->color(function ($state) {
-                //         if ($state === 'unpaid')
-                //             return 'danger';
-                //         else if ($state === 'paid')
-                //             return 'success';
-                //     })
-                //     ->badge()
-                //     ->sortable(),
-
-                // TextColumn::make('total')
-                //     ->label('')
-                //     // ->money('DZ')
-                //     ->formatStateUsing(fn($record) => $record->total . ' DA')
-                //     // ->badge()
-                //     ->color('primary')
-                //     ->sortable(),
 
                 TextColumn::make('details')
                     ->label('')
                     ->formatStateUsing(function ($state, $record) {
-                        if ($state === $record->details['price'])
+                        $details = $record->details ?? [];
+
+                        if (($details['price'] ?? null) === $state)
                             return $state . ' DA';
 
-                        if ($state === $record->details['quantity'])
+                        if (($details['total'] ?? null) === $state)
+                            return $state . ' DA';
+
+                        if (($details['quantity'] ?? null) === $state)
                             return $state . ' App';
 
-                        if ($state === $record->details['payment_status'])
+                        if (($details['payment_status'] ?? null) === $state)
                             return ucfirst($state);
                     })
                     ->badge()
@@ -156,4 +179,10 @@ class Marketplace extends Page implements HasForms, HasTable
     {
         return redirect('partner/marketplace');
     }
+
+    public function viewTransaction()
+    {
+        return $this->viewTransactions = !$this->viewTransactions;
+    }
+
 }

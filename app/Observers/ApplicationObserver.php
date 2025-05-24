@@ -21,36 +21,17 @@ class ApplicationObserver
             'eventable_type' => Application::class,
             'action' => 'Created',
             'payment_status' => $application->payment_status,
-            'price' => $application->quotaTransaction->application_price,
+            'price' => $application->quota->application_price,
             'quantity' => 1,
-            'total' => $application->quotaTransaction->application_price,
+            'total' => $application->quota->application_price,
             'details' => [
-                'price' => $application->quotaTransaction->application_price,
+                'price' => $application->quota->application_price,
                 'quantity' => 1,
                 'payment_status' => $application->payment_status,
             ],
             'user_id' => null,
             'partner_id' => $application->partner_id,
         ]);
-
-        // EventHistory::create([
-        //     'event_type' => 'application',
-        //     'event_code' => 'application_creation',
-        //     'event_summary' => 'Application Created',
-        //     'eventable_id' => $application->id,
-        //     'eventable_type' => Application::class,
-        //     'action' => 'Created',
-        //     'payment_status' => $application->payment_status,
-        //     'price' => $application->quotaTransaction->application_price,
-        //     'quantity' => 1,
-        //     'total' => $application->quotaTransaction->application_price,
-        //     'details' => [
-        //         'price' => $application->quotaTransaction->application_price,
-        //         'quantity' => 1,
-        //     ],
-        //     'user_id' => null,
-        //     'partner_id' => $application->partner_id,
-        // ]);
     }
 
     /**
@@ -58,47 +39,47 @@ class ApplicationObserver
      */
     public function updated(Application $application): void
     {
-        if ($application->wasChanged('payment_status')) {
-            if ($application->payment_status === 'paid') {
-                EventHistory::create([
-                    'event_type' => 'application',
-                    'event_type' => 'application_paid',
-                    'event_summary' => 'Application Paid',
-                    'eventable_id' => $application->id,
-                    'eventable_type' => Application::class,
-                    'action' => 'Payment Successful',
-                    'payment_status' => $application->payment_status,
-                    'price' => $application->quotaTransaction->application_price,
-                    'quantity' => 1,
-                    'total' => $application->quotaTransaction->application_price,
-                    'details' => [
-                        // 'price' => $application->quotaTransaction->application_price,
-                        // 'quantity' => 1,
-                    ],
-                    'user_id' => null,
-                    'partner_id' => $application->partner_id,
-                ]);
-            } else {
-                EventHistory::create([
-                    'event_type' => 'application',
-                    'event_type' => 'application_unpaid',
-                    'event_summary' => 'Application Unpaid',
-                    'eventable_id' => $application->id,
-                    'eventable_type' => Application::class,
-                    'action' => 'Payment Successful',
-                    'payment_status' => $application->payment_status,
-                    'price' => $application->quotaTransaction->application_price,
-                    'quantity' => 1,
-                    'total' => $application->quotaTransaction->application_price,
-                    'details' => [
-                        // 'application_name' => $application->name,
-                        // 'license_env' => $application->license_env,
-                    ],
-                    'user_id' => null,
-                    'partner_id' => $application->partner_id,
-                ]);
-            }
-        }
+        // if ($application->wasChanged('payment_status')) {
+        //     if ($application->payment_status === 'paid') {
+        //         EventHistory::create([
+        //             'event_type' => 'application',
+        //             'event_code' => 'application_paid',
+        //             'event_summary' => 'Application Paid',
+        //             'eventable_id' => $application->id,
+        //             'eventable_type' => Application::class,
+        //             'action' => 'Payment Successful',
+        //             'payment_status' => $application->payment_status,
+        //             'price' => $application->quotaTransaction->application_price,
+        //             'quantity' => 1,
+        //             'total' => $application->quotaTransaction->application_price,
+        //             'details' => [
+        //                 // 'price' => $application->quotaTransaction->application_price,
+        //                 // 'quantity' => 1,
+        //             ],
+        //             'user_id' => null,
+        //             'partner_id' => $application->partner_id,
+        //         ]);
+        //     } else {
+        //         EventHistory::create([
+        //             'event_type' => 'application',
+        //             'event_code' => 'application_unpaid',
+        //             'event_summary' => 'Application Unpaid',
+        //             'eventable_id' => $application->id,
+        //             'eventable_type' => Application::class,
+        //             'action' => 'Payment Successful',
+        //             'payment_status' => $application->payment_status,
+        //             'price' => $application->quotaTransaction->application_price,
+        //             'quantity' => 1,
+        //             'total' => $application->quotaTransaction->application_price,
+        //             'details' => [
+        //                 // 'application_name' => $application->name,
+        //                 // 'license_env' => $application->license_env,
+        //             ],
+        //             'user_id' => null,
+        //             'partner_id' => $application->partner_id,
+        //         ]);
+        //     }
+        // }
     }
 
     /**

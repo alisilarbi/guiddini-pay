@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Quota;
 use App\Models\Environment;
 use Illuminate\Support\Str;
 use App\Models\ProductionRequest;
@@ -92,9 +93,9 @@ class Application extends Model
         });
     }
 
-    public function quotaTransaction()
+    public function quota()
     {
-        return $this->belongsTo(QuotaTransaction::class, 'quota_transaction_id');
+        return $this->belongsTo(Quota::class, 'quota_id');
     }
 
     // public function eventHistories()
