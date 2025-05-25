@@ -30,8 +30,8 @@ return new class extends Migration
             $table->uuid('application_id')->nullable()->change();
             $table->uuid('license_id')->nullable()->change();
             $table->string('license_env')->nullable()->change();
-            // $table->dropColumn('quota_transactions');
-            // $table->dropColumn('quota_quantity');
+            $table->dropColumn('quota_transactions');
+            $table->dropColumn('quota_quantity');
         });
     }
 };
