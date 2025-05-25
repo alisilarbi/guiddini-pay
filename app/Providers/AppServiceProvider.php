@@ -2,16 +2,18 @@
 
 namespace App\Providers;
 
+use App\Models\Quota;
 use App\Models\Application;
+use App\Models\Transaction;
 use Filament\Facades\Filament;
-use App\Models\QuotaTransaction;
+use App\Observers\QuotaObserver;
 use Filament\Support\Colors\Color;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Console\Prohibitable;
 use App\Observers\ApplicationObserver;
+use App\Observers\TransactionObserver;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use App\Observers\QuotaTransactionObserver;
 use Filament\Support\Facades\FilamentColor;
 use Illuminate\Database\Console\WipeCommand;
 use Illuminate\Database\Console\Migrations\FreshCommand;
@@ -44,6 +46,7 @@ class AppServiceProvider extends ServiceProvider
         ]);
 
         Application::observe(ApplicationObserver::class);
-        QuotaTransaction::observe(QuotaTransactionObserver::class);
+        Quota::observe(QuotaObserver::class);
+        Transaction::observe(TransactionObserver::class);
     }
 }

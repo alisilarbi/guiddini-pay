@@ -3,60 +3,110 @@
 namespace App\Filament\Partner\Pages;
 
 use App\Models\User;
+use App\Models\Quota;
 use Filament\Pages\Page;
 use Filament\Tables\Table;
 use App\Models\Application;
 use App\Models\Transaction;
 use App\Models\EventHistory;
+use Filament\Actions\Action;
 use App\Models\QuotaTransaction;
+use App\Actions\Quota\MarkAsPaid;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
+use App\Traits\HandlesWebExceptions;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Notifications\Notification;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
+use App\Services\InternalPayments\ReceiptService;
+use Filament\Actions\Concerns\InteractsWithActions;
+use App\Services\InternalPayments\InternalPaymentService;
 
-class MarketPlace extends Page implements HasForms, HasTable
+class Marketplace extends Page implements HasForms, HasTable, HasActions
 {
     use InteractsWithTable;
     use InteractsWithForms;
-
+    use InteractsWithActions;
+    use HandlesWebExceptions;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
+    protected static ?string $title = 'MarketPlace';
 
-    protected static string $view = 'filament.partner.pages.market-place';
-    public User $partner;
+    public function getHeading(): string
+    {
+        if ($this->orderNumber)
+            return 'Paiement en ligne';
+        else
+            return 'MarketPlace';
+    }
+
+    protected static ?string $navigationLabel = 'MarketPlace';
+    protected static ?string $slug = 'marketplace';
+
+    protected static string $view = 'filament.partner.pages.marketplace';
     public $totalApplications;
     public $paidApplications;
     public $unpaidApplications;
     public $remainingAllowance;
     public $newAllowance;
     public $applicationPrice;
+    public $orderNumber;
+    public $transaction;
+    public User $partner;
+    protected InternalPaymentService $paymentService;
+    public $quotas;
+    protected $markAsPaidAction;
+    public string $email;
 
-    public static function shouldRegisterNavigation(): bool
+    protected ReceiptService $receiptService;
+
+    protected bool $viewTransactions = false;
+
+    public function __construct()
     {
-        return true;
+        $this->paymentService = app(InternalPaymentService::class);
+        $this->markAsPaidAction = app(MarkAsPaid::class);
+        $this->receiptService = app(ReceiptService::class);
     }
 
     public function mount(): void
     {
-        $this->partner = Auth::user();
-        $this->applicationPrice = $this->partner->application_price;
+        $this->orderNumber = request()->get('orderNumber');
+        if ($this->orderNumber) {
+            $this->transaction = Transaction::where('order_number', $this->orderNumber)->first();
 
-        // Calculate application stats
-        // $this->totalApplications = Application::where('user_id', $this->partner->id)->count();
-        // $this->paidApplications = Application::where('user_id', $this->partner->id)
-        //     ->where('payment_status', 'paid')
-        //     ->count();
-        // $this->unpaidApplications = $this->totalApplications - $this->paidApplications;
-        // $this->remainingAllowance = $this->partner->remaining_allowance;
-        // $this->newAllowance = 1;
+            if (!$this->transaction) {
+                $this->orderNumber = null;
+            }
+
+            if ($this->transaction && $this->transaction->status === 'paid') {
+                $this->quotas = Quota::whereIn('id', $this->transaction->quota_transactions)->get();
+                $this->markAsPaidAction->handle($this->quotas);
+
+                Notification::make()
+                    ->title('Paiement réussi')
+                    ->success()
+                    ->send();
+            } else {
+                Notification::make()
+                    ->title('Erreur de paiement')
+                    ->danger()
+                    ->body($this->transaction->action_code_description ?? 'Une erreur est survenue lors du traitement de votre paiement.')
+                    ->send();
+            }
+        }
+
+        $this->partner = User::where('id', Auth::user()->id)->first();
+        $this->applicationPrice = $this->partner->application_price;
     }
 
     public function table(Table $table): Table
     {
-        $partnerId = $this->partner->id;
         return $table
             ->striped()
             ->heading('Historique')
@@ -74,11 +124,12 @@ class MarketPlace extends Page implements HasForms, HasTable
 
                 TextColumn::make('action')
                     ->label('')
-                    // ->badge()
                     ->formatStateUsing(function ($record) {
                         if ($record->event_code === 'application_creation')
                             return $record->application->name;
                         else if ($record->event_code === 'quota_creation')
+                            return $record->action;
+                        else if ($record->event_code === 'quota_paid')
                             return $record->action;
                     })
                     ->color(function ($record) {
@@ -86,38 +137,25 @@ class MarketPlace extends Page implements HasForms, HasTable
                             return 'info';
                         else if ($record->event_type === 'quota')
                             return 'success';
+                        else if ($record->event_type === 'quota_paid')
+                            return 'success';
                     }),
-
-                // TextColumn::make('payment_status')
-                //     ->label('')
-                //     ->formatStateUsing(fn($state) => ucfirst($state))
-                //     ->color(function ($state) {
-                //         if ($state === 'unpaid')
-                //             return 'danger';
-                //         else if ($state === 'paid')
-                //             return 'success';
-                //     })
-                //     ->badge()
-                //     ->sortable(),
-
-                // TextColumn::make('total')
-                //     ->label('')
-                //     // ->money('DZ')
-                //     ->formatStateUsing(fn($record) => $record->total . ' DA')
-                //     // ->badge()
-                //     ->color('primary')
-                //     ->sortable(),
 
                 TextColumn::make('details')
                     ->label('')
                     ->formatStateUsing(function ($state, $record) {
-                        if ($state === $record->details['price'])
+                        $details = $record->details ?? [];
+
+                        if (($details['price'] ?? null) === $state)
                             return $state . ' DA';
 
-                        if ($state === $record->details['quantity'])
+                        if (($details['total'] ?? null) === $state)
+                            return $state . ' DA';
+
+                        if (($details['quantity'] ?? null) === $state)
                             return $state . ' App';
 
-                        if ($state === $record->details['payment_status'])
+                        if (($details['payment_status'] ?? null) === $state)
                             return ucfirst($state);
                     })
                     ->badge()
@@ -128,16 +166,64 @@ class MarketPlace extends Page implements HasForms, HasTable
                     ->dateTime(),
             ])
             ->defaultSort('created_at', 'desc')
-            ->filters([
-                // Add filters if needed
-            ])
-            ->actions([
-                // Add actions if needed
-            ])
-            ->bulkActions([
-                // Add bulk actions if needed
-            ]);
+            ->filters([])
+            ->actions([])
+            ->bulkActions([]);
     }
 
-    // public function
+    public function tryAgain()
+    {
+        return redirect('partner/marketplace');
+    }
+
+    public function viewTransaction()
+    {
+        return $this->viewTransactions = !$this->viewTransactions;
+    }
+
+    public function downloadReceipt()
+    {
+
+        try {
+            $signedUrl = $this->receiptService->generateDownloadLink($this->orderNumber);
+            $this->dispatch('download-receipt', url: $signedUrl);
+
+            Notification::make()
+                ->title('Reçu téléchargé avec succès')
+                ->success()
+                ->send();
+        } catch (\Throwable $e) {
+            $this->handleWebException($e);
+        }
+    }
+
+    public function sendEmail()
+    {
+        $this->validate([
+            'orderNumber' => 'required|string',
+            'email' => 'required|email',
+        ], [
+            'orderNumber.required' => 'Le numéro de commande est requis.',
+            'email.required' => 'L\'adresse e-mail est requise.',
+            'email.email' => 'L\'adresse e-mail doit être valide.',
+        ]);
+
+        $data = [
+            'orderNumber' => $this->orderNumber,
+            'email' => $this->email,
+        ];
+
+        $this->receiptService->emailPaymentReceipt($data);
+        $this->dispatch('close-modal', id: 'send-email');
+
+        Notification::make()
+            ->title('Email envoyé avec succès')
+            ->success()
+            ->send();
+
+        try {
+        } catch (\Throwable $e) {
+            $this->handleWebException($e);
+        }
+    }
 }

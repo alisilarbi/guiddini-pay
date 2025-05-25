@@ -185,13 +185,13 @@
     <header class="clearfix">
         <h2 style="text-align: center;">Reçu de paiement éléctronique</h2>
 
-        @if ($guiddiniIcon)
+        @if (isset($guiddiniIcon))
             <div id="logo">
                 <img style="width: 100%; max-width: 140px; height: 50px;" src="data:image/png;base64,{{ $guiddiniIcon }}">
             </div>
         @endif
 
-        @if ($applicationLogo)
+        @if (isset($applicationLogo))
             <img style="width: 100%; max-width: 75px; height: 75px; float: right;"
                 src="data:image/png;base64,{{ $applicationLogo }}">
         @endif
@@ -200,9 +200,9 @@
         <div id="invoice-header">
             <div id="details" class="clearfix" style="float: left;">
                 <div id="Signature">
-                    <h3>L'entreprise: {{ $companyName }}</h3>
-                    <div>Téléphone: {{ $phone }}</div>
-                    <div>Email: {{ $email }}</div>
+                    <h3>L'entreprise: {{ $companyName ?? "Guiddini" }}</h3>
+                    <div>Téléphone: {{ $phone ?? "0770774999" }}</div>
+                    <div>Email: {{ $email ?? "mourad@guiddini.com" }}</div>
                 </div>
             </div>
         </div>

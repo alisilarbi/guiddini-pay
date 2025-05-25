@@ -153,7 +153,6 @@ class Partners extends Page implements HasForms, HasTable
                             ->action(fn(User $record) => $record->delete()),
                     ])->dropdown(false),
 
-
                     ActionGroup::make([
                         Action::make('grant_quota')
                             ->label('Grant Quota')

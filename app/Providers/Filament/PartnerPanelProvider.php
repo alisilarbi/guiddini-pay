@@ -17,6 +17,7 @@ use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Filament\Http\Middleware\AuthenticateSession;
+use App\Livewire\Hooks\ShowUserTransactionsButton;
 use App\Livewire\Hooks\ApplicationsAllowanceOverview;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
@@ -74,10 +75,14 @@ class PartnerPanelProvider extends PanelProvider
 
     public function registerRenderHooks(Panel $panel): void
     {
-
         $panel->renderHook(
             'panels::global-search.after',
             fn() => Livewire::mount(ApplicationsAllowanceOverview::class)
+        );
+
+        $panel->renderHook(
+            'panels::page.header.widgets.after',
+            fn() => Livewire::mount(ShowUserTransactionsButton::class)
         );
 
     }
