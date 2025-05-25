@@ -4,22 +4,15 @@ namespace App\Actions\Quota;
 
 use App\Models\User;
 use App\Models\Quota;
+use App\Models\Transaction;
 
 class PurchaseQuota
 {
-    public function handle(User $partner, int $quantity): Quota
+    public function handle(Transaction $transaction, User $partner): void
     {
-        $transaction = Quota::create([
-            'partner_id' => $partner->id,
-            'type' => 'purchase',
-            'quantity' => $quantity,
-            'is_paid' => true,
-            'application_price' => $partner->application_price,
-            'amount' => $partner->application_price * $quantity,
-        ]);
-
-        $partner->increment('remaining_allowance', $quantity);
-
-        return $transaction;
+        $partner->increment('total_paid', $transaction->quota_quantity);
+        $partner->increment('available_quota', $transaction->quota_quantity);
     }
+
+
 }

@@ -28,32 +28,35 @@ class PaymentConfirmationController extends Controller
 
     public function internalConfirm(string $orderNumber)
     {
-        $result = $this->internalPaymentService->confirmPayment($orderNumber);
-        $transaction = $result['transaction'];
-        $gatewayResponse = $result['gateway_response'];
+        try {
+            $result = $this->internalPaymentService->confirmPayment($orderNumber);
 
-        $queryParams = http_build_query([
-            'order_number' => $orderNumber,
-            // 'status' => $transaction->status,
-            // 'confirmation_status' => $transaction->confirmation_status,
-            // 'gateway_code' => $this->getGatewayErrorCode($gatewayResponse)
-        ]);
+            $transaction = $result['transaction'];
+            $gatewayResponse = $result['gateway_response'];
 
-        if ($transaction->origin === 'System')
-            return redirect()->route('pay', [
-                'slug' => $transaction->application->slug,
-                'order_number' => $transaction->order_number
+            $queryParams = http_build_query([
+                'order_number' => $orderNumber,
+                // 'status' => $transaction->status,
+                // 'confirmation_status' => $transaction->confirmation_status,
+                // 'gateway_code' => $this->getGatewayErrorCode($gatewayResponse)
             ]);
 
-        if ($transaction->origin === 'Quota Debt')
-            return redirect('partner/marketplace?orderNumber=' . $orderNumber);
+            if ($transaction->origin === 'System')
+                return redirect()->route('pay', [
+                    'slug' => $transaction->application->slug,
+                    'order_number' => $transaction->order_number
+                ]);
+
+            if ($transaction->origin === 'Quota Debt')
+                return redirect('partner/marketplace?orderNumber=' . $orderNumber);
+
+            if ($transaction->origin === 'Quota Credit')
+                return redirect('partner/marketplace?orderNumber=' . $orderNumber);
 
 
-
-            try {
-            } catch (\Throwable $e) {
-                return $this->handleApiException($e);
-            }
+        } catch (\Throwable $e) {
+            return $this->handleApiException($e);
+        }
     }
 
     public function confirm(string $orderNumber)

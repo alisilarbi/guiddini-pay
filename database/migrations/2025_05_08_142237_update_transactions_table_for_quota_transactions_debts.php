@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('license_env')->nullable()->change();
 
             $table->json('quota_transactions')->nullable();
+            $table->unsignedBigInteger('quota_quantity')->nullable();
         });
     }
 
@@ -30,6 +31,7 @@ return new class extends Migration
             $table->uuid('license_id')->nullable()->change();
             $table->string('license_env')->nullable()->change();
             $table->dropColumn('quota_transactions');
+            $table->dropColumn('quota_quantity');
         });
     }
 };

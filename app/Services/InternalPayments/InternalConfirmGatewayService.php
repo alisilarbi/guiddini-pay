@@ -24,7 +24,6 @@ class InternalConfirmGatewayService
             throw new PaymentException("Missing credentials for $env environment", 'CONFIG_ERROR', 500);
         }
 
-
         $params = [
             'userName' => $credentials['username'],
             'password' => $credentials['password'],
@@ -45,15 +44,14 @@ class InternalConfirmGatewayService
 
 
 
-
-
         $this->updater->handleConfirmationResponse($transaction, $response);
+            return $response;
+
+        dd('hehe');
 
 
         try {
 
-
-            return $response;
         } catch (RequestException $e) {
             $this->updater->handleRequestError($transaction, $e);
             throw $this->mapRequestException($e);

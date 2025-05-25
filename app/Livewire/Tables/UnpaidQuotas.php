@@ -92,11 +92,6 @@ class UnpaidQuotas extends Component implements HasForms, HasTable
                 $data
             );
 
-            // Notification::make()
-            //     ->title('Paiement initié avec succès')
-            //     ->success()
-            //     ->send();
-
             return redirect()->to($result['formUrl']);
         } catch (\Throwable $e) {
             $this->handleWebException($e);

@@ -39,8 +39,8 @@ class CreateApplication
                 $availableTransaction->update(['status' => 'exhausted']);
             }
 
-            $partner->decrement('available_quota');
-            $partner->increment('used_quota');
+            // $partner->decrement('available_quota');
+            // $partner->increment('used_quota');
         }
 
         $application = Application::create([
@@ -49,7 +49,7 @@ class CreateApplication
             'redirect_url' => $data['redirect_url'],
             'partner_id' => $partner->id,
             'user_id' => $user->id,
-            'quota_transaction_id' => $quotaTransactionId,
+            'quota_id' => $quotaTransactionId,
             'payment_status' => $paymentStatus,
         ]);
 

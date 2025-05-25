@@ -14,6 +14,7 @@ use App\Models\QuotaTransaction;
 use App\Actions\Quota\MarkAsPaid;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
+use App\Actions\Quota\PurchaseQuota;
 use App\Traits\HandlesWebExceptions;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Contracts\HasForms;
@@ -65,6 +66,8 @@ class Marketplace extends Page implements HasForms, HasTable, HasActions
 
     protected ReceiptService $receiptService;
 
+    protected $purchaseQuotaAction;
+
     protected bool $viewTransactions = false;
 
     public function __construct()
@@ -72,26 +75,65 @@ class Marketplace extends Page implements HasForms, HasTable, HasActions
         $this->paymentService = app(InternalPaymentService::class);
         $this->markAsPaidAction = app(MarkAsPaid::class);
         $this->receiptService = app(ReceiptService::class);
+        $this->purchaseQuotaAction = app(PurchaseQuota::class);
     }
+
+    // public function mount(): void
+    // {
+    //     $this->orderNumber = request()->get('orderNumber');
+    //     if ($this->orderNumber) {
+    //         $this->transaction = Transaction::where('order_number', $this->orderNumber)->first();
+
+    //         if (!$this->transaction) {
+    //             $this->orderNumber = null;
+    //         }
+
+    //         if ($this->transaction && $this->transaction->status === 'paid') {
+    //             $this->quotas = Quota::whereIn('id', $this->transaction->quota_transactions)->get();
+    //             $this->markAsPaidAction->handle($this->quotas);
+
+    //             Notification::make()
+    //                 ->title('Paiement réussi')
+    //                 ->success()
+    //                 ->send();
+    //         } else {
+    //             Notification::make()
+    //                 ->title('Erreur de paiement')
+    //                 ->danger()
+    //                 ->body($this->transaction->action_code_description ?? 'Une erreur est survenue lors du traitement de votre paiement.')
+    //                 ->send();
+    //         }
+    //     }
+
+    //     $this->partner = User::where('id', Auth::user()->id)->first();
+    //     $this->applicationPrice = $this->partner->application_price;
+    // }
 
     public function mount(): void
     {
-        $this->orderNumber = request()->get('orderNumber');
+        $this->orderNumber = request('orderNumber');
+        $this->partner = Auth::user();
+        $this->applicationPrice = $this->partner->application_price;
+
         if ($this->orderNumber) {
             $this->transaction = Transaction::where('order_number', $this->orderNumber)->first();
 
             if (!$this->transaction) {
                 $this->orderNumber = null;
+                return;
             }
 
-            if ($this->transaction && $this->transaction->status === 'paid') {
-                $this->quotas = Quota::whereIn('id', $this->transaction->quota_transactions)->get();
-                $this->markAsPaidAction->handle($this->quotas);
+            if ($this->transaction->status === 'paid') {
+                if ($this->transaction->origin === 'Quota Debt') {
+                    $this->quotas = Quota::whereIn('id', $this->transaction->quota_transactions)->get();
+                    $this->markAsPaidAction->handle($this->quotas);
+                }
 
-                Notification::make()
-                    ->title('Paiement réussi')
-                    ->success()
-                    ->send();
+                if ($this->transaction->origin === 'Quota Credit') {
+                    $this->purchaseQuotaAction->handle($this->transaction, $this->partner);
+                }
+
+                Notification::make()->title('Paiement réussi')->success()->send();
             } else {
                 Notification::make()
                     ->title('Erreur de paiement')
@@ -100,10 +142,9 @@ class Marketplace extends Page implements HasForms, HasTable, HasActions
                     ->send();
             }
         }
-
-        $this->partner = User::where('id', Auth::user()->id)->first();
-        $this->applicationPrice = $this->partner->application_price;
     }
+
+
 
     public function table(Table $table): Table
     {
@@ -131,6 +172,8 @@ class Marketplace extends Page implements HasForms, HasTable, HasActions
                             return $record->action;
                         else if ($record->event_code === 'quota_paid')
                             return $record->action;
+                        else if($record->event_code === 'quota_bought')
+                            return $record->action;
                     })
                     ->color(function ($record) {
                         if ($record->event_type === 'application')
@@ -139,6 +182,8 @@ class Marketplace extends Page implements HasForms, HasTable, HasActions
                             return 'success';
                         else if ($record->event_type === 'quota_paid')
                             return 'success';
+                        else if ($record->event_type === 'quota_bought')
+                            return 'warning';
                     }),
 
                 TextColumn::make('details')

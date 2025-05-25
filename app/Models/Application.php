@@ -35,8 +35,8 @@ class Application extends Model
 
         'partner_id',
 
-        'quota_transaction_id',
         'payment_status',
+        'quota_id',
     ];
 
     public static function generateAppKey(): string
@@ -97,12 +97,6 @@ class Application extends Model
     {
         return $this->belongsTo(Quota::class, 'quota_id');
     }
-
-    // public function eventHistories()
-    // {
-    //     return $this->morphTo();
-    // }
-
 
 
 }

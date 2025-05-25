@@ -118,7 +118,7 @@ class User extends Authenticatable implements FilamentUser
         if ($this->partner_mode == 'unlimited')
             return true;
 
-        return $this->remaining_allowance > 0;
+        return $this->available_quota > 0;
     }
 
     public function registerRenderHooks(Panel $panel) {}

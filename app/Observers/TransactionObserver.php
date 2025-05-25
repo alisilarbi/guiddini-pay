@@ -47,6 +47,30 @@ class TransactionObserver
                 ]);
             }
         }
+
+        if ($transaction->origin === 'Quota Credit') {
+            if ($transaction->wasChanged('status') && $transaction->status === 'paid') {
+
+                EventHistory::create([
+                    'event_type' => 'transaction',
+                    'event_code' => 'quota_bought',
+                    'event_summary' => 'Online Payment',
+                    'eventable_id' => $transaction->id,
+                    'eventable_type' => Transaction::class,
+                    'action' => 'Quota Bought',
+                    'payment_status' => $transaction->payment_status,
+                    'price' => $transaction->amount,
+                    'quantity' => 1,
+                    'total' => $transaction->amount,
+                    'details' => [
+                        'total' => $transaction->amount,
+                        'quantity' => $transaction->quota_quantity,
+                    ],
+                    'user_id' => null,
+                    'partner_id' => $transaction->partner_id,
+                ]);
+            }
+        }
     }
 
     /**

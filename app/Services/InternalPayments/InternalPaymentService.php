@@ -56,7 +56,8 @@ class InternalPaymentService
             'currency' => '012',
             'partner_id' => $data['partner_id'],
             'origin' => $data['origin'] ?? 'Quota Debt',
-            'quota_transactions' => $data['transactions'],
+            'quota_transactions' => $data['transactions'] ?? null,
+            'quota_quantity' => $data['quantity'] ?? null,
         ]);
     }
 

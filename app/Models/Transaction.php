@@ -45,6 +45,7 @@ class Transaction extends Model
         'ip_address',
         'approval_code',
         'quota_transactions',
+        'quota_quantity',
     ];
 
     protected $casts = [

@@ -5,12 +5,14 @@ namespace App\Livewire\Hooks;
 use App\Models\User;
 use Livewire\Component;
 use App\Models\Application;
+use App\Traits\HandlesWebExceptions;
 use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification;
 use App\Services\InternalPayments\InternalPaymentService;
 
 class ApplicationsAllowanceOverview extends Component
 {
+    use HandlesWebExceptions;
 
     public User $partner;
     public $totalApplications;
@@ -20,15 +22,12 @@ class ApplicationsAllowanceOverview extends Component
     public $newAllowance;
     public $applicationPrice;
 
-
     protected InternalPaymentService $paymentService;
 
     public function __construct()
     {
         $this->paymentService = app(InternalPaymentService::class);
-        // $this->receiptService = app(ReceiptService::class);
     }
-
 
     public function mount()
     {
@@ -69,21 +68,18 @@ class ApplicationsAllowanceOverview extends Component
 
     public function buyAllowance()
     {
+
         try {
             $data = [
-                'amount' => $this->amount,
-                'origin' => 'System',
+                'amount' => $this->newAllowance * $this->applicationPrice,
+                'quantity' => $this->newAllowance,
+                'origin' => 'Quota Credit',
+                'partner_id' => $this->partner->id,
             ];
 
             $result = $this->paymentService->initiatePayment(
-                $data,
-                $this->application->app_key
+                $data
             );
-
-            Notification::make()
-                ->title('Paiement initié avec succès')
-                ->success()
-                ->send();
 
             return redirect()->to($result['formUrl']);
         } catch (\Throwable $e) {
