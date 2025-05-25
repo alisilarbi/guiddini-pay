@@ -28,7 +28,6 @@ class UserPanelProvider extends PanelProvider
             ->path('user')
             ->login()
             ->passwordReset()
-            ->register()
             ->profile()
             ->colors([
                 'primary' => Color::Hex('#4f6ff6'),
