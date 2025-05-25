@@ -40,7 +40,7 @@
                 <x-filament::button class="w-full justify-center mt-3 " outlined icon="{{ $buttonIcon }}"
                     color="{{ $buttonColor }}" x-on:click="$dispatch('open-modal', { id: 'buy-allowance' })"
                     size="xs">
-                    Manage
+                    Order
                 </x-filament::button>
             </div>
         </div>
