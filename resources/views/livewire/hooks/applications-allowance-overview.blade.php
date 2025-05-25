@@ -86,7 +86,7 @@
                     <h4 class="font-medium mb-3">Purchase Additional Quota</h4>
 
                     <div class="flex items-center justify-between">
-                        <span class="text-sm">Select amount :</span>
+                        <span class="text-sm">Select quantity :</span>
                         <div class="flex items-center">
 
                             <x-filament::input.wrapper>
