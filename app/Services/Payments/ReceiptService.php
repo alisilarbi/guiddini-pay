@@ -73,7 +73,7 @@ class ReceiptService
         return URL::signedRoute('client.payment.pdf', ['order_number' => $orderNumber]);
     }
 
-    public function emailPaymentReceipt(array $data): array
+    public function emailPaymentReceipt(array $data, Application $application): array
     {
         if (!isset($data['orderNumber']) || !isset($data['email'])) {
             throw new ReceiptException(
