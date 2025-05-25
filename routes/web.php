@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Services\Payments\ReceiptService;
 use App\Livewire\Public\SponteanousPayment;
 use App\Http\Controllers\Web\PaymentConfirmationController;
+use \App\Services\InternalPayments\ReceiptService as InternalReceiptService;
 
 
 Route::get('/', function () {
@@ -25,6 +26,12 @@ Route::prefix('internal/payment')->group(function(){
 Route::prefix('client/payment')->group(function () {
     Route::get('/pdf/{order_number}', [ReceiptService::class, 'downloadPaymentReceipt'])
         ->name('client.payment.pdf')
+        ->middleware('signed');
+});
+
+Route::prefix('internal/payment')->group(function () {
+    Route::get('/pdf/{order_number}', [InternalReceiptService::class, 'downloadPaymentReceipt'])
+        ->name('internal.payment.pdf')
         ->middleware('signed');
 });
 

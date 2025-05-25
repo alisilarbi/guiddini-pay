@@ -120,12 +120,9 @@ class SponteanousPayment extends Component
 
 
         try {
-
             $data = [
                 'orderNumber' => $this->orderNumber,
                 'email' => $this->email,
-                'x-app-key' => $this->application->app_key,
-                'x-secret-key' => $this->application->app_secret,
             ];
 
             $this->receiptService->emailPaymentReceipt($data, $this->application);

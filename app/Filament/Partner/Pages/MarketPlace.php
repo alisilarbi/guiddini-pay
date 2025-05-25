@@ -23,6 +23,7 @@ use Filament\Notifications\Notification;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
+use App\Services\InternalPayments\ReceiptService;
 use Filament\Actions\Concerns\InteractsWithActions;
 use App\Services\InternalPayments\InternalPaymentService;
 
@@ -60,6 +61,9 @@ class Marketplace extends Page implements HasForms, HasTable, HasActions
     protected InternalPaymentService $paymentService;
     public $quotas;
     protected $markAsPaidAction;
+    public string $email;
+
+    protected ReceiptService $receiptService;
 
     protected bool $viewTransactions = false;
 
@@ -67,7 +71,7 @@ class Marketplace extends Page implements HasForms, HasTable, HasActions
     {
         $this->paymentService = app(InternalPaymentService::class);
         $this->markAsPaidAction = app(MarkAsPaid::class);
-        // $this->receiptService = app(ReceiptService::class);
+        $this->receiptService = app(ReceiptService::class);
     }
 
     public function mount(): void
@@ -103,7 +107,6 @@ class Marketplace extends Page implements HasForms, HasTable, HasActions
 
     public function table(Table $table): Table
     {
-        $partnerId = $this->partner->id;
         return $table
             ->striped()
             ->heading('Historique')
@@ -121,7 +124,6 @@ class Marketplace extends Page implements HasForms, HasTable, HasActions
 
                 TextColumn::make('action')
                     ->label('')
-                    // ->badge()
                     ->formatStateUsing(function ($record) {
                         if ($record->event_code === 'application_creation')
                             return $record->application->name;
@@ -164,15 +166,9 @@ class Marketplace extends Page implements HasForms, HasTable, HasActions
                     ->dateTime(),
             ])
             ->defaultSort('created_at', 'desc')
-            ->filters([
-                // Add filters if needed
-            ])
-            ->actions([
-                // Add actions if needed
-            ])
-            ->bulkActions([
-                // Add bulk actions if needed
-            ]);
+            ->filters([])
+            ->actions([])
+            ->bulkActions([]);
     }
 
     public function tryAgain()
@@ -185,4 +181,49 @@ class Marketplace extends Page implements HasForms, HasTable, HasActions
         return $this->viewTransactions = !$this->viewTransactions;
     }
 
+    public function downloadReceipt()
+    {
+
+        try {
+            $signedUrl = $this->receiptService->generateDownloadLink($this->orderNumber);
+            $this->dispatch('download-receipt', url: $signedUrl);
+
+            Notification::make()
+                ->title('Reçu téléchargé avec succès')
+                ->success()
+                ->send();
+        } catch (\Throwable $e) {
+            $this->handleWebException($e);
+        }
+    }
+
+    public function sendEmail()
+    {
+        $this->validate([
+            'orderNumber' => 'required|string',
+            'email' => 'required|email',
+        ], [
+            'orderNumber.required' => 'Le numéro de commande est requis.',
+            'email.required' => 'L\'adresse e-mail est requise.',
+            'email.email' => 'L\'adresse e-mail doit être valide.',
+        ]);
+
+        $data = [
+            'orderNumber' => $this->orderNumber,
+            'email' => $this->email,
+        ];
+
+        $this->receiptService->emailPaymentReceipt($data);
+        $this->dispatch('close-modal', id: 'send-email');
+
+        Notification::make()
+            ->title('Email envoyé avec succès')
+            ->success()
+            ->send();
+
+        try {
+        } catch (\Throwable $e) {
+            $this->handleWebException($e);
+        }
+    }
 }
