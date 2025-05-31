@@ -123,4 +123,27 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Admin api keys
+    |--------------------------------------------------------------------------
+    |
+    | Admin api keys are used to authenticate admin requests.
+    | Since there is no admin interface yet to fetch them from the DB.
+    | Im saving them in the .env file.
+    |
+    */
+
+    'admin_api' => [
+        'admin_key' => env('ADMIN_KEY'),
+        'admin_secret' => env('ADMIN_SECRET'),
+    ],
+
+
+
+
+
+
+
 ];

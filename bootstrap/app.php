@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'validate_application_api_origin' => \App\Http\Middleware\ValidateApplicationApiOrigin::class,
             'validate_partner_api_keys' => \App\Http\Middleware\ValidatePartnerApiKeys::class,
             'validate_partner_api_origin' => \App\Http\Middleware\ValidatePartnerApiOrigin::class,
+            'validate_admin_api_keys' => \App\Http\Middleware\ValidateAdminApiKeys::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

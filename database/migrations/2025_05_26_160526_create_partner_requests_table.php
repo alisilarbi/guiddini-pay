@@ -13,9 +13,17 @@ return new class extends Migration
     {
         Schema::create('partner_requests', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name');
-            $table->string('email');
-            // $table->string('')
+
+            $table->string('name')->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('business_type')->nullable();
+            $table->string('company_name')->nullable();
+            $table->boolean('converted')->nullable();
+
+            $table->uuid('partner_id')->nullable();
+            $table->foreign('partner_id')->references('id')->on('users');
+
 
             $table->timestamps();
         });

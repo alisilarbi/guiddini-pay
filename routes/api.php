@@ -63,4 +63,19 @@ Route::prefix('partner')->middleware('validate_partner_api_keys')->group(functio
         Route::patch('update', [PartnerClientController::class, 'update']);
         Route::delete('destroy', [PartnerClientController::class, 'destroy']);
     });
+
 });
+
+Route::prefix('admin')->middleware('validate_admin_api_keys')->group(function () {
+
+    Route::prefix('partner-request')->group(function () {
+        // Route::get('index', [\App\Http\Controllers\Api\Admin\PartnerRequestController::class, 'index']);
+        Route::post('store', [\App\Http\Controllers\Api\Admin\PartnerRequestController::class, 'store']);
+        // Route::patch('update/{id}', [\App\Http\Controllers\Api\Admin\PartnerRequestController::class, 'update']);
+        // Route::delete('destroy/{id}', [\App\Http\Controllers\Api\Admin\PartnerRequestController::class, 'destroy']);
+    });
+
+});
+
+
+

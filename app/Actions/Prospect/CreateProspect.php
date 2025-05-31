@@ -34,6 +34,8 @@ class CreateProspect
 
         Mail::to($partner->email)->send(new NewProspectRegistered($prospect));
         Mail::to('nayla@guiddini.com')->send(new NewProspectRegistered($prospect));
+        Mail::to('lisa@guiddini.com')->send(new NewProspectRegistered($prospect));
+
 
         return $prospect;
     }

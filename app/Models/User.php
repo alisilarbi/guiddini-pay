@@ -122,4 +122,10 @@ class User extends Authenticatable implements FilamentUser
     }
 
     public function registerRenderHooks(Panel $panel) {}
+
+    public function hasUnpaidApplications(): bool
+    {
+        return $this->total_unpaid > 0;
+    }
+
 }
