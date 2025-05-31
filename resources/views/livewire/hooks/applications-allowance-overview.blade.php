@@ -1,5 +1,4 @@
 <div>
-    {{-- @vite('resources/css/app.css') --}}
     @if ($this->partner->partner_mode == 'quota')
         @php
             $bgClass =

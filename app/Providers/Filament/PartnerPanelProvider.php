@@ -70,7 +70,8 @@ class PartnerPanelProvider extends PanelProvider
             ->brandName('Guiddini Pay')
             ->brandLogo(asset('images/logotype_guiddinipay.png'))
             ->brandLogoHeight('3rem')
-            ->favicon(asset('images/icon_guiddinipay.png'));
+            ->favicon(asset('images/icon_guiddinipay.png'))
+            ->viteTheme('resources/css/app.css');
     }
 
     public function registerRenderHooks(Panel $panel): void
