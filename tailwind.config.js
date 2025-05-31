@@ -6,6 +6,7 @@ export default {
         './app/Filament/**/*.php',
         './resources/views/**/*.blade.php',
         './vendor/filament/**/*.blade.php',
+        './app/Livewire/Hooks/ApplicationAllowanceOverview.php',
         './resources/views/livewire/hooks/applications-allowance-overview.blade.phpp',
     ],
     theme: {
