@@ -65,35 +65,35 @@ class PartnerApplicationController extends Controller
                 throw new \Exception('Unauthorized');
             }
 
-            // Variables for the action
             $quotaTransactionId = null;
             $paymentStatus = $partner->default_is_paid ? 'paid' : 'unpaid';
 
-            // Handle quota checks
-            if ($partner->partner_mode === 'quota') {
-                if ($partner->available_quota <= 0) {
-                    throw new \Exception('QUOTA_DEPLETED');
-                }
+            // Check if the partner has a quota transaction available
+            // Uncomment the following lines if you want to implement quota management
+            // if ($partner->partner_mode === 'quota') {
+            //     if ($partner->available_quota <= 0) {
+            //         throw new \Exception('QUOTA_DEPLETED');
+            //     }
 
-                $availableTransaction = $partner->quotaTransactions()
-                    ->where('remaining_quantity', '>', 0)
-                    ->where('status', 'active')
-                    ->orderBy('payment_status', 'asc')
-                    ->first();
+            //     $availableTransaction = $partner->quotaTransactions()
+            //         ->where('remaining_quantity', '>', 0)
+            //         ->where('status', 'active')
+            //         ->orderBy('payment_status', 'asc')
+            //         ->first();
 
-                if (!$availableTransaction) {
-                    throw new \Exception('NO_QUOTA_AVAILABLE');
-                }
+            //     if (!$availableTransaction) {
+            //         throw new \Exception('NO_QUOTA_AVAILABLE');
+            //     }
 
-                $quotaTransactionId = $availableTransaction->id;
-                $paymentStatus = $availableTransaction->payment_status;
+            //     $quotaTransactionId = $availableTransaction->id;
+            //     $paymentStatus = $availableTransaction->payment_status;
 
-                // Update the quota transaction
-                $availableTransaction->decrement('remaining_quantity');
-                if ($availableTransaction->remaining_quantity === 0) {
-                    $availableTransaction->update(['status' => 'exhausted']);
-                }
-            }
+            //     // Update the quota transaction
+            //     $availableTransaction->decrement('remaining_quantity');
+            //     if ($availableTransaction->remaining_quantity === 0) {
+            //         $availableTransaction->update(['status' => 'exhausted']);
+            //     }
+            // }
 
             // Prepare data and create the application
             $data = $request->only(['name', 'website_url', 'redirect_url', 'license_id', 'license_env']);
