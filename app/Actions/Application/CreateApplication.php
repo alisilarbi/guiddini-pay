@@ -39,8 +39,8 @@ class CreateApplication
                 $availableTransaction->update(['status' => 'exhausted']);
             }
 
-            // $partner->decrement('available_quota');
-            // $partner->increment('used_quota');
+            $partner->decrement('available_quota');
+            $partner->increment('used_quota');
         }
 
         $application = Application::create([
