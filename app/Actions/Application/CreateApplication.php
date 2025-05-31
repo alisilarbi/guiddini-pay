@@ -17,9 +17,9 @@ class CreateApplication
         $paymentStatus = $partner->default_is_paid ? 'paid' : 'unpaid';
 
         if ($partner->partner_mode === 'quota') {
-            // if ($partner->available_quota <= 0) {
-            //     throw new \Exception('QUOTA_DEPLETED', 403);
-            // }
+            if ($partner->available_quota <= 0) {
+                throw new \Exception('QUOTA_DEPLETED', 403);
+            }
 
             $availableTransaction = $partner->quotaTransactions()
                 ->where('remaining_quantity', '>', 0)
@@ -27,9 +27,9 @@ class CreateApplication
                 ->orderBy('payment_status', 'asc')
                 ->first();
 
-            // if (!$availableTransaction) {
-            //     throw new \Exception('NO_QUOTA_AVAILABLE', 400);
-            // }
+            if (!$availableTransaction) {
+                throw new \Exception('NO_QUOTA_AVAILABLE', 400);
+            }
 
             $quotaTransactionId = $availableTransaction->id;
             $paymentStatus = $availableTransaction->payment_status;
