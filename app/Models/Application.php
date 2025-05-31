@@ -98,5 +98,8 @@ class Application extends Model
         return $this->belongsTo(Quota::class, 'quota_id');
     }
 
-
+    public function eventHistories()
+    {
+        return $this->morphMany(EventHistory::class, 'eventable');
+    }
 }
