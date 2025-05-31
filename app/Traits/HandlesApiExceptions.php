@@ -69,6 +69,16 @@ trait HandlesApiExceptions
             $errorCode = 'NO_QUOTA_TRANSACTION';
             $message = 'No quota transaction available.';
             $detail = 'The partner has no quota transaction available.';
+        } elseif ($exception->getMessage() === 'QUOTA_DEPLETED') {
+            $statusCode = 403;
+            $errorCode = 'QUOTA_DEPLETED';
+            $message = 'No quota available to use.';
+            $detail = 'The partner has no quota left to consume.';
+        } elseif ($exception->getMessage() === 'NO_QUOTA_AVAILABLE') {
+            $statusCode = 400;
+            $errorCode = 'NO_QUOTA_AVAILABLE';
+            $message = 'No quota available.';
+            $detail = 'The partner has no quota available.';
         };
 
         return $this->jsonApiErrorResponse(

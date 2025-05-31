@@ -12,26 +12,26 @@ class ApplicationObserver
      */
     public function created(Application $application): void
     {
-
-        EventHistory::create([
-            'event_type' => 'application',
-            'event_code' => 'application_creation',
-            'event_summary' => 'Application created',
-            'eventable_id' => $application->id,
-            'eventable_type' => Application::class,
-            'action' => 'Created',
-            'payment_status' => $application->payment_status,
-            'price' => $application->quota->application_price,
-            'quantity' => 1,
-            'total' => $application->quota->application_price,
-            'details' => [
+        if ($application->partner->partner_mode === 'quota')
+            EventHistory::create([
+                'event_type' => 'application',
+                'event_code' => 'application_creation',
+                'event_summary' => 'Application created',
+                'eventable_id' => $application->id,
+                'eventable_type' => Application::class,
+                'action' => 'Created',
+                'payment_status' => $application->payment_status,
                 'price' => $application->quota->application_price,
                 'quantity' => 1,
-                'payment_status' => $application->payment_status,
-            ],
-            'user_id' => null,
-            'partner_id' => $application->partner_id,
-        ]);
+                'total' => $application->quota->application_price,
+                'details' => [
+                    'price' => $application->quota->application_price,
+                    'quantity' => 1,
+                    'payment_status' => $application->payment_status,
+                ],
+                'user_id' => null,
+                'partner_id' => $application->partner_id,
+            ]);
     }
 
     /**

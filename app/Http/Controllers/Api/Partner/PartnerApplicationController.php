@@ -51,35 +51,106 @@ class PartnerApplicationController extends Controller
      */
     public function store(Request $request, CreateApplication $action)
     {
-
-        $request->validate([
-            'name' => 'required|string',
-            'website_url' => 'required|string',
-            'redirect_url' => 'required|string',
-            'license_id' => 'nullable|string|exists:licenses,id',
-            'license_env' => 'nullable|string|in:development,production',
-        ]);
-
-
-        $application = $action->handle(
-            user: $request->attributes->get('partner'),
-            partner: $request->attributes->get('partner'),
-            data: $request->only(['name', 'website_url', 'redirect_url', 'license_id', 'license_env'])
-        );
-
-        return new ApplicationResource([
-            'success' => true,
-            'code' => 'APPLICATION_CREATED',
-            'message' => 'Application saved successfully',
-            'data' => $application,
-            'http' => 201,
-        ]);
-
         try {
+            $request->validate([
+                'name' => 'required|string',
+                'website_url' => 'required|string',
+                'redirect_url' => 'required|string',
+                'license_id' => 'nullable|string|exists:licenses,id',
+                'license_env' => 'nullable|string|in:development,production',
+            ]);
+
+            $partner = $request->attributes->get('partner');
+            if (!$partner) {
+                throw new \Exception('Unauthorized');
+            }
+
+            // Variables for the action
+            $quotaTransactionId = null;
+            $paymentStatus = $partner->default_is_paid ? 'paid' : 'unpaid';
+
+            // Handle quota checks
+            if ($partner->partner_mode === 'quota') {
+                if ($partner->available_quota <= 0) {
+                    throw new \Exception('QUOTA_DEPLETED');
+                }
+
+                $availableTransaction = $partner->quotaTransactions()
+                    ->where('remaining_quantity', '>', 0)
+                    ->where('status', 'active')
+                    ->orderBy('payment_status', 'asc')
+                    ->first();
+
+                if (!$availableTransaction) {
+                    throw new \Exception('NO_QUOTA_AVAILABLE');
+                }
+
+                $quotaTransactionId = $availableTransaction->id;
+                $paymentStatus = $availableTransaction->payment_status;
+
+                // Update the quota transaction
+                $availableTransaction->decrement('remaining_quantity');
+                if ($availableTransaction->remaining_quantity === 0) {
+                    $availableTransaction->update(['status' => 'exhausted']);
+                }
+            }
+
+            // Prepare data and create the application
+            $data = $request->only(['name', 'website_url', 'redirect_url', 'license_id', 'license_env']);
+            $data['quota_id'] = $quotaTransactionId;
+            $data['payment_status'] = $paymentStatus;
+
+            $application = $action->handle(
+                user: $partner,
+                partner: $partner,
+                data: $data
+            );
+
+            return response()->json([
+                'success' => true,
+                'code' => 'APPLICATION_CREATED',
+                'message' => 'Application saved successfully',
+                'data' => $application,
+            ], 201);
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
         }
     }
+
+
+
+    // public function store(Request $request, CreateApplication $action)
+    // {
+
+
+    //     try {
+
+    //         $request->validate([
+    //             'name' => 'required|string',
+    //             'website_url' => 'required|string',
+    //             'redirect_url' => 'required|string',
+    //             'license_id' => 'nullable|string|exists:licenses,id',
+    //             'license_env' => 'nullable|string|in:development,production',
+    //         ]);
+
+
+    //         $application = $action->handle(
+    //             user: $request->attributes->get('partner'),
+    //             partner: $request->attributes->get('partner'),
+    //             data: $request->only(['name', 'website_url', 'redirect_url', 'license_id', 'license_env'])
+    //         );
+
+    //         return new ApplicationResource([
+    //             'success' => true,
+    //             'code' => 'APPLICATION_CREATED',
+    //             'message' => 'Application saved successfully',
+    //             'data' => $application,
+    //             'http' => 201,
+    //         ]);
+    //     } catch (\Throwable $e) {
+    //         return $this->handleApiException($e);
+    //     }
+    // }
 
     /**
      * Display the specified resource.
