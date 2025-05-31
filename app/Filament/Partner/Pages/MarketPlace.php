@@ -78,37 +78,6 @@ class Marketplace extends Page implements HasForms, HasTable, HasActions
         $this->purchaseQuotaAction = app(PurchaseQuota::class);
     }
 
-    // public function mount(): void
-    // {
-    //     $this->orderNumber = request()->get('orderNumber');
-    //     if ($this->orderNumber) {
-    //         $this->transaction = Transaction::where('order_number', $this->orderNumber)->first();
-
-    //         if (!$this->transaction) {
-    //             $this->orderNumber = null;
-    //         }
-
-    //         if ($this->transaction && $this->transaction->status === 'paid') {
-    //             $this->quotas = Quota::whereIn('id', $this->transaction->quota_transactions)->get();
-    //             $this->markAsPaidAction->handle($this->quotas);
-
-    //             Notification::make()
-    //                 ->title('Paiement réussi')
-    //                 ->success()
-    //                 ->send();
-    //         } else {
-    //             Notification::make()
-    //                 ->title('Erreur de paiement')
-    //                 ->danger()
-    //                 ->body($this->transaction->action_code_description ?? 'Une erreur est survenue lors du traitement de votre paiement.')
-    //                 ->send();
-    //         }
-    //     }
-
-    //     $this->partner = User::where('id', Auth::user()->id)->first();
-    //     $this->applicationPrice = $this->partner->application_price;
-    // }
-
     public function mount(): void
     {
         $this->orderNumber = request('orderNumber');
@@ -143,8 +112,6 @@ class Marketplace extends Page implements HasForms, HasTable, HasActions
             }
         }
     }
-
-
 
     public function table(Table $table): Table
     {
