@@ -63,6 +63,20 @@ class PartnerApplicationController extends Controller
                 'license_env' => 'nullable|string|in:development,production',
             ]);
 
+            $partner = $request->attributes->get('partner');
+            if ($partner->available_quota <= 0) {
+                throw new \Exception('QUOTA_DEPLETED', 403);
+            }
+
+            $availableTransaction = $partner->quotaTransactions()
+                ->where('remaining_quantity', '>', 0)
+                ->where('status', 'active')
+                ->orderBy('payment_status', 'asc')
+                ->first();
+
+            if (!$availableTransaction) {
+                throw new \Exception('NO_QUOTA_AVAILABLE', 400);
+            }
 
             $application = $action->handle(
                 user: $request->attributes->get('partner'),
