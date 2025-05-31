@@ -1,6 +1,6 @@
 <div>
     {{-- @vite('resources/css/app.css') --}}
-
+    @filamentStyles
     @if ($this->partner->partner_mode == 'quota')
         @php
             $bgClass =
