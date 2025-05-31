@@ -167,7 +167,7 @@ class Marketplace extends Page implements HasForms, HasTable, HasActions
                     ->label('')
                     ->formatStateUsing(function ($record) {
                         if ($record->event_code === 'application_creation')
-                            return $record->application->name ?? 'hehe';
+                            return $record->application?->name ?? 'hehe';
                         else if ($record->event_code === 'quota_creation')
                             return $record->action;
                         else if ($record->event_code === 'quota_paid')
