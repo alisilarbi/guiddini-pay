@@ -37,6 +37,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
+        DB::statement("SET time_zone = '+01:00'");
         Schema::defaultStringLength(191);
         DB::prohibitDestructiveCommands($this->app->isProduction());
 
