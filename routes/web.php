@@ -36,10 +36,3 @@ Route::prefix('internal/payment')->group(function () {
 });
 
 Route::get('pay/{slug}/{order_number?}', SponteanousPayment::class)->name('pay');
-
-Route::get('/run-cache', function () {
-    Artisan::call('route:cache');
-    Artisan::call('config:cache');
-    Artisan::call('view:cache');
-    return 'Caches created!';
-});
