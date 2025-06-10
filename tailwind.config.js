@@ -7,9 +7,11 @@ export default {
         './resources/views/**/*.blade.php',
         './vendor/filament/**/*.blade.php',
         './resources/views/livewire/hooks/applications-allowance-overview.blade.php',
+        './resourfces/views/filament/partner/pages/marketplace.blade.php',
     ],
     safelist: [
         // Dynamically generated classes in your component
+        //for the public pages
         'bg-red-50', 'bg-orange-50', 'bg-green-50',
         'border-red-300', 'border-orange-300', 'border-green-300',
         'hover:bg-red-100', 'hover:bg-orange-100', 'hover:bg-green-100',
