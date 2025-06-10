@@ -76,15 +76,15 @@ class PartnerPanelProvider extends PanelProvider
 
     public function registerRenderHooks(Panel $panel): void
     {
-        // $panel->renderHook(
-        //     'panels::global-search.after',
-        //     fn() => Livewire::mount(ApplicationsAllowanceOverview::class)
-        // );
+        $panel->renderHook(
+            'panels::global-search.after',
+            fn() => Livewire::mount(ApplicationsAllowanceOverview::class)
+        );
 
-        // $panel->renderHook(
-        //     'panels::page.header.widgets.after',
-        //     fn() => Livewire::mount(ShowUserTransactionsButton::class)
-        // );
+        $panel->renderHook(
+            'panels::page.header.widgets.after',
+            fn() => Livewire::mount(ShowUserTransactionsButton::class)
+        );
 
     }
 }
