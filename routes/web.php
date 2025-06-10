@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use App\Services\Payments\ReceiptService;
 use App\Livewire\Public\SponteanousPayment;
@@ -18,7 +19,7 @@ Route::prefix('payment')->group(function () {
     Route::get('/confirm/{order_number}', [PaymentConfirmationController::class, 'confirm'])->name('payment.confirm');
 });
 
-Route::prefix('internal/payment')->group(function(){
+Route::prefix('internal/payment')->group(function () {
     Route::get('/confirm/{order_number}', [PaymentConfirmationController::class, 'internalConfirm'])->name('internal.payment.confirm');
 });
 
@@ -35,3 +36,10 @@ Route::prefix('internal/payment')->group(function () {
 });
 
 Route::get('pay/{slug}/{order_number?}', SponteanousPayment::class)->name('pay');
+
+Route::get('/run-cache', function () {
+    Artisan::call('route:cache');
+    Artisan::call('config:cache');
+    Artisan::call('view:cache');
+    return 'Caches created!';
+});
