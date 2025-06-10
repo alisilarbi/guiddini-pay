@@ -2,7 +2,3 @@
 @tailwind components;
 @tailwind utilities;
 @tailwind variants;
-
-.fi-wi-stats-overview-stat {
-    border: 1px solid gray !important;
-}
