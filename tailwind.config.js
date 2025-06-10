@@ -6,16 +6,16 @@ export default {
         './app/Filament/**/*.php',
         './resources/views/**/*.blade.php',
         './vendor/filament/**/*.blade.php',
-        './resources/views/livewire/hooks/applications-allowance-overview.blade.php',
+        // './resources/views/livewire/hooks/applications-allowance-overview.blade.php',
     ],
-    safelist: [
-        // Dynamically generated classes in your component
-        'bg-red-50', 'bg-orange-50', 'bg-green-50',
-        'border-red-300', 'border-orange-300', 'border-green-300',
-        'hover:bg-red-100', 'hover:bg-orange-100', 'hover:bg-green-100',
-        'text-red-600', 'text-orange-600', 'text-green-600',
-        'bg-red-500', 'bg-orange-500', 'bg-green-500',
-    ],
+    // safelist: [
+    //     // Dynamically generated classes in your component
+    //     'bg-red-50', 'bg-orange-50', 'bg-green-50',
+    //     'border-red-300', 'border-orange-300', 'border-green-300',
+    //     'hover:bg-red-100', 'hover:bg-orange-100', 'hover:bg-green-100',
+    //     'text-red-600', 'text-orange-600', 'text-green-600',
+    //     'bg-red-500', 'bg-orange-500', 'bg-green-500',
+    // ],
     theme: {
         extend: {
             colors: {
