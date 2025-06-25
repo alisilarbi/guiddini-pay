@@ -233,6 +233,8 @@ class Applications extends Page implements HasForms, HasTable
                             ->url(fn(Application $record): string => route('pay', ['slug' => $record->slug], false))
                             ->openUrlInNewTab()
 
+
+
                     ])
                         ->dropdown(false),
 
@@ -249,10 +251,10 @@ class Applications extends Page implements HasForms, HasTable
                                     ->options(function () {
                                         return User::where('is_user', true)
                                             ->pluck('name', 'id')
-                                            ->mapWithKeys(function ($name, $id) {
-                                                $user = User::find($id);
-                                                return [$id => "{$name} ({$user->email})"];
-                                            })
+                                            // ->mapWithKeys(function ($name, $id) {
+                                            //     $user = User::find($id);
+                                            //     return [$id => "{$name} ({$user->email})"];
+                                            // })
                                             ->all();
                                     }),
                             ])
