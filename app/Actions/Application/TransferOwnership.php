@@ -13,11 +13,6 @@ class TransferOwnership
             'user_id' => $newOwner->id,
         ]);
 
-        Notification::make()
-            ->title('Ownership recovered')
-            ->success()
-            ->send();
-
         return $application;
     }
 }

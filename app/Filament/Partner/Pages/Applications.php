@@ -263,6 +263,7 @@ class Applications extends Page implements HasForms, HasTable
                                 $transferOwnership->handle(
                                     newOwner: User::where('id', $data['user'])->first(),
                                     application: $record,
+
                                 );
 
                                 Notification::make()
