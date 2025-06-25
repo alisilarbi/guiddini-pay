@@ -251,10 +251,10 @@ class Applications extends Page implements HasForms, HasTable
                                     ->options(function () {
                                         return User::where('is_user', true)
                                             ->pluck('name', 'id')
-                                            // ->mapWithKeys(function ($name, $id) {
-                                            //     $user = User::find($id);
-                                            //     return [$id => "{$name} ({$user->email})"];
-                                            // })
+                                            ->mapWithKeys(function ($name, $id) {
+                                                $user = User::find($id);
+                                                return [$id => "{$name} ({$user->email})"];
+                                            })
                                             ->all();
                                     }),
                             ])
@@ -283,12 +283,13 @@ class Applications extends Page implements HasForms, HasTable
                                     application: $record,
                                 );
 
-                                Notification::make()
-                                    ->title('Ownership recovered')
-                                    ->success()
-                                    ->send();
+                                // Notification::make()
+                                //     ->title('Ownership recovered')
+                                //     ->success()
+                                //     ->send();
 
                                 $this->dispatch('refresh-table');
+
                             })
                             ->disabled(function (Application $record) {
                                 if ($record->user_id === Auth::user()->id)
