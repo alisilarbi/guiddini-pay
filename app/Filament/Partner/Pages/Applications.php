@@ -308,7 +308,7 @@ class Applications extends Page implements HasForms, HasTable
                                 $this->dispatch('refresh-table');
                             })
                             ->hidden(function () {
-                                return 0 < User::where('is_user', true)
+                                return 0 >= User::where('is_user', true)
                                     ->where('partner_id', Auth::user()->id)
                                     ->count();
                             }),
