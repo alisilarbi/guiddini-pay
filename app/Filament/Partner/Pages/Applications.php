@@ -31,6 +31,7 @@ use Filament\Tables\Actions\ActionGroup;
 use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Infolists\Components\Fieldset;
 use Filament\Infolists\Components\TextEntry;
@@ -56,19 +57,28 @@ class Applications extends Page implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(Application::where('partner_id', Auth::user()->id)->with(['license', 'user'])->latest())
+            ->query(
+                Application::where('partner_id', Auth::user()->id)
+                    ->with(['license', 'user'])
+                    ->latest()
+            )
+            ->striped()
             ->columns([
                 TextColumn::make('name')
+                    ->searchable()
                     ->label('App name'),
 
                 TextColumn::make('user.name')
+                    ->searchable()
                     ->label('Owner'),
 
                 SelectColumn::make('license_id')
+                    ->searchable()
                     ->label('License')
                     ->options(License::where('user_id', Auth::user()->id)->pluck('name', 'id')),
 
                 SelectColumn::make('license_env')
+                    ->searchable()
                     ->options(function ($record) {
                         $license = $record->license;
 
@@ -90,6 +100,30 @@ class Applications extends Page implements HasForms, HasTable
                     ->rules(['required'])
                     ->selectablePlaceholder(false)
 
+
+
+            ])
+            ->searchPlaceholder('Name, Owner, etc ...')
+            ->filters([
+                SelectFilter::make('license_id')
+                    ->label('License')
+                    ->options(License::where('user_id', Auth::user()->id)->pluck('name', 'id')->toArray()),
+
+                SelectFilter::make('license_env')
+                    ->label('Environment')
+                    ->options([
+                        'development' => 'Development',
+                        'production' => 'Production',
+                    ]),
+
+                // SelectFilter::make('user_id')
+                //     ->label('Owner')
+                //     ->options(
+                //         User::where('is_user', true)
+                //             ->where
+                //             ->pluck('name', 'id')
+                //             ->toArray()
+                //     ),
             ])
             ->actions([
                 ActionGroup::make([
@@ -290,7 +324,6 @@ class Applications extends Page implements HasForms, HasTable
                                 //     ->send();
 
                                 $this->dispatch('refresh-table');
-
                             })
                             ->disabled(function (Application $record) {
                                 if ($record->user_id === Auth::user()->id)
@@ -320,6 +353,7 @@ class Applications extends Page implements HasForms, HasTable
             ])
             ->headerActions([
                 Action::make('create')
+                    ->label('New Application')
                     ->steps([
                         Step::make('Information Général')
                             ->schema([
@@ -396,19 +430,20 @@ class Applications extends Page implements HasForms, HasTable
                                 ->send();
 
                             $this->dispatch('refresh-table');
-
                         } catch (\Throwable $e) {
                             $this->handleWebException($e);
                         }
                     })
-                    ->disabled(function(){
+                    ->disabled(function () {
                         $partner = User::where('id', Auth::user()->id)->first();
 
-                        if($partner->canCreateApplication()){
+                        if ($partner->canCreateApplication()) {
                             return false;
                         }
                         return true;
                     }),
-            ]);
+            ])
+            ->defaultSort('created_at', 'desc')
+            ->paginationPageOptions([10, 25, 50, 100]);
     }
 }

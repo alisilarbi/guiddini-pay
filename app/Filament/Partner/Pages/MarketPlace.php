@@ -46,6 +46,11 @@ class Marketplace extends Page implements HasForms, HasTable, HasActions
             return 'MarketPlace';
     }
 
+    public static function canAccess(): bool
+    {
+        return Auth::check() && Auth::user()->partner_mode === 'quota';
+    }
+
     protected static ?string $navigationLabel = 'MarketPlace';
     protected static ?string $slug = 'marketplace';
 
