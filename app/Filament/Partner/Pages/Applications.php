@@ -284,6 +284,7 @@ class Applications extends Page implements HasForms, HasTable
                                     ->required()
                                     ->options(function () {
                                         return User::where('is_user', true)
+                                            ->where('partner_id', Auth::user()->id)
                                             ->pluck('name', 'id')
                                             ->mapWithKeys(function ($name, $id) {
                                                 $user = User::find($id);
