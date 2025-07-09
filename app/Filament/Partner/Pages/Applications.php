@@ -49,10 +49,10 @@ class Applications extends Page implements HasForms, HasTable
     use HandlesWebExceptions;
 
     protected static ?string $navigationIcon = 'heroicon-o-cube';
-
     protected static string $view = 'filament.partner.pages.applications';
-
     protected static ?string $navigationGroup = 'Integrations';
+    protected static ?int $navigationSort = 3;
+
 
     public function table(Table $table): Table
     {
@@ -72,10 +72,46 @@ class Applications extends Page implements HasForms, HasTable
                     ->searchable()
                     ->label('Owner'),
 
+                TextColumn::make('license.gateway_type')
+                    ->badge()
+                    ->label('Gateway')
+                    ->formatStateUsing(function (?string $state): string {
+                        return match ($state) {
+                            'satim' => 'Satim.dz',
+                            'poste_dz' => 'Poste.dz',
+                            default => ucfirst($state),
+                        };
+                    })
+                    ->color(function (?string $state): string {
+                        return match ($state) {
+                            'satim' => 'success', // Green
+                            'poste_dz' => 'warning', // Yellow
+                            default => 'gray',
+                        };
+                    })
+                    ->extraAttributes([
+                        'class' => 'text-sm px-3 py-1 font-semibold rounded-full uppercase', // badge size override
+                    ]),
+
                 SelectColumn::make('license_id')
                     ->searchable()
                     ->label('License')
-                    ->options(License::where('user_id', Auth::user()->id)->pluck('name', 'id')),
+                    ->options(
+                        License::where('user_id', Auth::id())
+                            ->get()
+                            ->mapWithKeys(fn($license) => [
+                                $license->id => sprintf(
+                                    '%s (%s)',
+                                    $license->name,
+                                    match ($license->gateway_type) {
+                                        'satim' => 'Satim.dz',
+                                        'poste_dz' => 'Poste.dz',
+                                        default => ucfirst($license->gateway_type),
+                                    }
+                                ),
+                            ])
+                            ->toArray()
+                    ),
 
                 SelectColumn::make('license_env')
                     ->searchable()
@@ -86,19 +122,76 @@ class Applications extends Page implements HasForms, HasTable
                             return [];
                         }
 
-                        if ($license->satim_production_username && $license->satim_production_password && $license->satim_production_terminal) {
-                            return [
-                                'development' => 'Development',
-                                'production' => 'Production',
-                            ];
+                        $options = [];
+
+                        if ($license->gateway_type === 'satim') {
+                            // Check SATIM development
+                            if (
+                                $license->satim_development_username &&
+                                $license->satim_development_password &&
+                                $license->satim_development_terminal
+                            ) {
+                                $options['development'] = 'Development';
+                            }
+
+                            // Check SATIM production
+                            if (
+                                $license->satim_production_username &&
+                                $license->satim_production_password &&
+                                $license->satim_production_terminal
+                            ) {
+                                $options['production'] = 'Production';
+                            }
+                        } elseif ($license->gateway_type === 'poste_dz') {
+                            // Check PosteDz development
+                            if (
+                                $license->poste_dz_development_username &&
+                                $license->poste_dz_development_password
+                            ) {
+                                $options['development'] = 'Development';
+                            }
+
+                            // Check PosteDz production
+                            if (
+                                $license->poste_dz_production_username &&
+                                $license->poste_dz_production_password
+                            ) {
+                                $options['production'] = 'Production';
+                            }
                         }
 
-                        return [
-                            'development' => 'Development',
-                        ];
+                        return $options;
                     })
                     ->rules(['required'])
                     ->selectablePlaceholder(false)
+
+
+
+
+
+
+                // SelectColumn::make('license_env')
+                //     ->searchable()
+                //     ->options(function ($record) {
+                //         $license = $record->license;
+
+                //         if (!$license) {
+                //             return [];
+                //         }
+
+                //         if ($license->satim_production_username && $license->satim_production_password && $license->satim_production_terminal) {
+                //             return [
+                //                 'development' => 'Development',
+                //                 'production' => 'Production',
+                //             ];
+                //         }
+
+                //         return [
+                //             'development' => 'Development',
+                //         ];
+                //     })
+                //     ->rules(['required'])
+                //     ->selectablePlaceholder(false)
 
 
 

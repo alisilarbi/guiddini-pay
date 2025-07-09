@@ -20,8 +20,8 @@ class Dashboard extends \Filament\Pages\Dashboard implements HasForms
     public ?array $data = [];
 
     protected static ?string $navigationIcon = 'heroicon-o-home';
-
     protected static string $view = 'filament.partner.pages.dashboard';
+    protected static ?int $navigationSort = 1;
 
     public function mount()
     {

@@ -37,6 +37,8 @@ class Marketplace extends Page implements HasForms, HasTable, HasActions
 
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
     protected static ?string $title = 'MarketPlace';
+    protected static ?int $navigationSort = 2;
+
 
     public function getHeading(): string
     {

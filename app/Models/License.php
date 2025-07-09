@@ -14,6 +14,8 @@ class License extends Model
         'partner_id',
         'name',
 
+        'gateway_type',
+
         'satim_development_username',
         'satim_development_password',
         'satim_development_terminal',
@@ -21,6 +23,11 @@ class License extends Model
         'satim_production_username',
         'satim_production_password',
         'satim_production_terminal',
+
+        'poste_dz_development_username',
+        'poste_dz_development_password',
+        'poste_dz_production_username',
+        'poste_dz_production_password',
     ];
 
     public function user()
@@ -38,4 +45,13 @@ class License extends Model
         return $this->hasMany(Application::class);
     }
 
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function successfulTransactions()
+    {
+        return $this->hasMany(Transaction::class)->where('status', 'paid');
+    }
 }

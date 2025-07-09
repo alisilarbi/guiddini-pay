@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Payments;
+namespace App\Services\Payments\Gateways\Satim;
 
 use App\Models\Transaction;
 use App\Exceptions\PaymentException;
@@ -10,7 +10,7 @@ use App\Services\Payments\CredentialsService;
 use App\Services\Payments\TransactionUpdater;
 use Illuminate\Http\Client\ConnectionException;
 
-class InitiateGatewayService
+class SatimConfirmService
 {
     public function __construct(
         private CredentialsService $credentials,
@@ -23,47 +23,26 @@ class InitiateGatewayService
             $params = [
                 'userName' => $this->credentials->getFor($transaction, 'username'),
                 'password' => $this->credentials->getFor($transaction, 'password'),
-                'terminal_id' => $this->credentials->getFor($transaction, 'terminal'),
-                'orderNumber' => $transaction->order_number,
-                'amount' => (int)($transaction->amount * 100),
-                'currency' => '012',
-                'returnUrl' => route('payment.confirm', $transaction->order_number),
+                'orderId' => $transaction->order_id,
                 'language' => 'FR',
-                'jsonParams' => json_encode([
-                    "force_terminal_id" => $this->credentials->getFor($transaction, 'terminal'),
-                    "udf1" => $transaction->order_number,
-                    "udf5" => "00",
-                ])
             ];
 
             $response = Http::timeout(30)
-                ->get($this->baseUrl($transaction) . 'register.do', $params)
+                ->get($this->baseUrl($transaction) . 'confirmOrder.do', $params)
                 ->throw()
                 ->json();
 
-            $this->updater->handleInitiationResponse($transaction, $response);
-            if ($this->isErrorResponse($response)) {
-                $errorCode = $response['ErrorCode'] ?? $response['errorCode'] ?? 'UNKNOWN';
-                if ($errorCode === '5') {
-                    throw new PaymentException(
-                        'Access denied by the gateway',
-                        'ACCESS_DENIED',
-                        403,
-                        [
-                            'current_environment' => $transaction->license_env,
-                            'satim_response' => $response,
-                        ],
-                        '',
-                    );
-                }
+            $this->updater->handleConfirmationResponse($transaction, $response);
 
-                throw new PaymentException(
-                    $response['ErrorMessage'] ?? 'Payment gateway error',
-                    'GATEWAY_ERROR',
-                    402,
-                    ['gateway_response' => $response]
-                );
-            }
+            // if ($this->isErrorResponse($response)) {
+            //     dd('error response');
+            //     throw new PaymentException(
+            //         $response['ErrorMessage'] ?? 'Confirmation failed',
+            //         'CONFIRMATION_FAILED',
+            //         402,
+            //         ['gateway_response' => $response]
+            //     );
+            // }
 
             return $response;
         } catch (RequestException $e) {

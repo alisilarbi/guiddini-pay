@@ -32,10 +32,10 @@ class Clients extends Page implements HasForms, HasTable
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-
     protected static string $view = 'filament.partner.pages.clients';
-
     protected static ?string $navigationGroup = 'CRM';
+    protected static ?int $navigationSort = 7;
+
 
     public function table(Table $table): Table
     {
@@ -147,7 +147,6 @@ class Clients extends Page implements HasForms, HasTable
                                 ->success()
                                 ->send();
                             $this->dispatch('refresh-table');
-
                         }),
 
                 ]),

@@ -8,6 +8,14 @@ use Illuminate\Http\Client\RequestException;
 
 class TransactionUpdater
 {
+
+    /**
+     * Update transaction with initiation response data.
+     *
+     * @param Transaction $transaction The transaction to update
+     * @param array $response The gateway's initiation response
+     * @return void
+     */
     public function handleInitiationResponse(Transaction $transaction, array $response): void
     {
         $transaction->update([
@@ -18,6 +26,13 @@ class TransactionUpdater
         ]);
     }
 
+    /**
+     * Update transaction with confirmation response data.
+     *
+     * @param Transaction $transaction The transaction to update
+     * @param array $response The gateway's confirmation response
+     * @return void
+     */
     public function handleConfirmationResponse(Transaction $transaction, array $response): void
     {
         $updateData = [
@@ -67,6 +82,13 @@ class TransactionUpdater
         ]);
     }
 
+    /**
+     * Update transaction with error details from a failed request.
+     *
+     * @param Transaction $transaction The transaction to update
+     * @param RequestException $e The exception thrown during the request
+     * @return void
+     */
     public function handleRequestError(Transaction $transaction, RequestException $e): void
     {
         $transaction->update([
@@ -76,11 +98,24 @@ class TransactionUpdater
         ]);
     }
 
+
+    /**
+     * Mark transaction as unreachable if the gateway cannot be contacted.
+     *
+     * @param Transaction $transaction The transaction to update
+     * @return void
+     */
     public function markUnreachable(Transaction $transaction): void
     {
         $transaction->update(['status' => 'gateway_unreachable']);
     }
 
+    /**
+     * Determine the initiation status based on the response.
+     *
+     * @param array $response The gateway's initiation response
+     * @return string The determined status
+     */
     private function determineInitiationStatus(array $response): string
     {
         if (($response['errorCode'] ?? '1') === '5') {

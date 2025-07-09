@@ -34,10 +34,10 @@ class Prospects extends Page implements HasForms, HasTable
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-plus';
-
     protected static string $view = 'filament.partner.pages.prospects';
-
     protected static ?string $navigationGroup = 'CRM';
+    protected static ?int $navigationSort = 8;
+
 
     public function table(Table $table): Table
     {

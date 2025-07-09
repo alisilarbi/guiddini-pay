@@ -23,10 +23,10 @@ class Transactions extends Page implements HasForms, HasTable
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
-
     protected static string $view = 'filament.partner.pages.transactions';
-
     protected static ?string $navigationGroup = 'Finances';
+    protected static ?int $navigationSort = 9;
+
 
     public function table(Table $table): Table
     {
@@ -225,5 +225,4 @@ class Transactions extends Page implements HasForms, HasTable
                 default => null,
             });
     }
-
 }
