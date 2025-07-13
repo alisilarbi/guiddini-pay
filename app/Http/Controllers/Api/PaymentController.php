@@ -35,8 +35,6 @@ class PaymentController extends Controller
             $request->header('X-App-Key')
         );
 
-        dd($result);
-
         return new PaymentResource([
             'success' => true,
             'code' => 'PAYMENT_INITIATED',
