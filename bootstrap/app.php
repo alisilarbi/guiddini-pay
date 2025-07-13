@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'validate_partner_api_origin' => \App\Http\Middleware\ValidatePartnerApiOrigin::class,
         ]);
     })
-    ->withExceptions(function (Exceptions $exceptions) {
-        //
-    })->create();
+    ->withProviders([
+        App\Providers\HandlerServiceProvider::class,
+    ])
+    ->withExceptions(function (Exceptions $exceptions) {})->create();

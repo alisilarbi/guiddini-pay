@@ -19,39 +19,22 @@ class SatimConfirmService
 
     public function execute(Transaction $transaction): array
     {
-        try {
-            $params = [
-                'userName' => $this->credentials->getFor($transaction, 'username'),
-                'password' => $this->credentials->getFor($transaction, 'password'),
-                'orderId' => $transaction->order_id,
-                'language' => 'FR',
-            ];
+        $params = [
+            'userName' => $this->credentials->getFor($transaction, 'username'),
+            'password' => $this->credentials->getFor($transaction, 'password'),
+            'orderId' => $transaction->order_id,
+            'language' => 'FR',
+        ];
 
-            $response = Http::timeout(30)
-                ->get($this->baseUrl($transaction) . 'confirmOrder.do', $params)
-                ->throw()
-                ->json();
+        $response = Http::timeout(30)
+            ->get($this->baseUrl($transaction) . 'confirmOrder.do', $params)
+            ->throw()
+            ->json();
 
-            $this->updater->handleConfirmationResponse($transaction, $response);
+        $this->updater->handleConfirmationResponse($transaction, $response);
 
-            // if ($this->isErrorResponse($response)) {
-            //     dd('error response');
-            //     throw new PaymentException(
-            //         $response['ErrorMessage'] ?? 'Confirmation failed',
-            //         'CONFIRMATION_FAILED',
-            //         402,
-            //         ['gateway_response' => $response]
-            //     );
-            // }
 
-            return $response;
-        } catch (RequestException $e) {
-            $this->updater->handleRequestError($transaction, $e);
-            throw $this->mapRequestException($e);
-        } catch (ConnectionException $e) {
-            $this->updater->markUnreachable($transaction);
-            throw new PaymentException('Gateway unavailable', 'GATEWAY_UNAVAILABLE', 503);
-        }
+        return $response;
     }
 
     private function baseUrl(Transaction $transaction): string

@@ -27,6 +27,8 @@ class PartnerApplicationController extends Controller
     public function index(Request $request)
     {
         try {
+
+
             $partner = $request->attributes->get('partner');
 
             $applications = Application::where('partner_id', $partner->id)->get();
@@ -41,6 +43,8 @@ class PartnerApplicationController extends Controller
                     'message' => $applications->isEmpty() ? 'No applications available' : 'Applications retrieved successfully'
                 ]
             ], 200);
+
+
         } catch (\Throwable $e) {
             return $this->handleApiException($e);
         }

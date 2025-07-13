@@ -41,11 +41,6 @@ class SponteanousPayment extends Component
             $this->transaction = Transaction::where('order_number', $this->orderNumber)->first();
             $this->showTransaction = !!$this->transaction;
         }
-
-        // try {
-        // } catch (\Throwable $e) {
-        //     $this->handleWebException($e);
-        // }
     }
 
     public function render()
@@ -65,26 +60,24 @@ class SponteanousPayment extends Component
             'acceptedTerms.accepted' => 'Vous devez accepter les termes et conditions.',
         ]);
 
-        try {
-            $data = [
-                'amount' => $this->amount,
-                'origin' => 'System',
-            ];
+        $data = [
+            'amount' => $this->amount,
+            'origin' => 'System',
+        ];
 
-            $result = $this->paymentService->initiatePayment(
-                $data,
-                $this->application->app_key
-            );
+        dd($data);
 
-            Notification::make()
-                ->title('Paiement initié avec succès')
-                ->success()
-                ->send();
+        $result = $this->paymentService->initiatePayment(
+            $data,
+            $this->application->app_key
+        );
 
-            return redirect()->to($result['formUrl']);
-        } catch (\Throwable $e) {
-            $this->handleWebException($e);
-        }
+        Notification::make()
+            ->title('Paiement initié avec succès')
+            ->success()
+            ->send();
+
+        return redirect()->to($result['formUrl']);
     }
 
     public function downloadReceipt()
