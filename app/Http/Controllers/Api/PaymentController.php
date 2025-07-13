@@ -25,6 +25,8 @@ class PaymentController extends Controller
 
     public function initiate(Request $request)
     {
+
+        dd($request->all());
         $validated = $request->validate([
             'amount' => 'required|numeric|min:50|decimal:0,2',
         ]);
