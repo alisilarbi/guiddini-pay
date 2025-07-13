@@ -16,8 +16,6 @@ class PaymentResource extends JsonResource
     {
         $data = $this->resource['data'];
 
-        dd($data);
-
         return [
             'data' => [
                 'type' => 'transaction',
