@@ -125,7 +125,9 @@ class PaymentController extends Controller
             'x-secret-key' => $request->header('x-secret-key'),
         ];
 
-        $this->receiptService->emailPaymentReceipt($data);
+        // dd($request->application);
+
+        $this->receiptService->emailPaymentReceipt($data, $request->application);
 
         return response()->json([
             'data' => null,
