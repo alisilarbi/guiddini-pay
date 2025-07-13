@@ -26,7 +26,6 @@ class PaymentController extends Controller
     public function initiate(Request $request)
     {
 
-        dd($request->all());
         $validated = $request->validate([
             'amount' => 'required|numeric|min:50|decimal:0,2',
         ]);
@@ -35,6 +34,8 @@ class PaymentController extends Controller
             $validated,
             $request->header('X-App-Key')
         );
+
+        dd($result);
 
         return new PaymentResource([
             'success' => true,
