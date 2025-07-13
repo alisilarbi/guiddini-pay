@@ -44,11 +44,6 @@ class PaymentController extends Controller
         ]);
     }
 
-    private function getGatewayErrorCode(array $response): string
-    {
-        return (string)($response['ErrorCode'] ?? $response['errorCode'] ?? 'UNKNOWN');
-    }
-
     public function getTransaction(Request $request)
     {
 
@@ -124,8 +119,6 @@ class PaymentController extends Controller
             'x-app-key' => $request->header('x-app-key'),
             'x-secret-key' => $request->header('x-secret-key'),
         ];
-
-        // dd($request->application);
 
         $this->receiptService->emailPaymentReceipt($data, $request->application);
 

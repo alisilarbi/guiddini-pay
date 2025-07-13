@@ -73,7 +73,7 @@ class ReceiptService
         return URL::signedRoute('client.payment.pdf', ['order_number' => $orderNumber]);
     }
 
-    public function emailPaymentReceipt(array $data, Application $application): array
+    public function emailPaymentReceipt(array $data, Application $application): void
     {
         if (!isset($data['orderNumber']) || !isset($data['email'])) {
             throw new ReceiptException(
@@ -86,32 +86,13 @@ class ReceiptService
         $orderNumber = $data['orderNumber'];
         $email = $data['email'];
 
-        $transaction = Transaction::where('order_number', $orderNumber)->first()
-            ?: throw new ReceiptException(
-                'Transaction not found',
-                'TRANSACTION_NOT_FOUND',
-                404
-            );
-
-        if (!$application) {
-            throw new ReceiptException(
-                'Invalid application provided',
-                'APPLICATION_NOT_FOUND',
-                404
-            );
-        }
+        $transaction = Transaction::where('order_number', $orderNumber)->firstOrFail();
 
         $transaction = Transaction::where('order_number', $orderNumber)->firstOrFail();
         $application = $transaction->application;
 
         $pdf = $this->generatePdf($application, $transaction);
-
         $receiptUrl = $this->generateDownloadLink($transaction->order_number);
-
         Mail::to($email)->send(new TransactionReceipt($transaction, $application, $pdf, $receiptUrl));
-
-        return [
-            'message' => 'Email sent successfully'
-        ];
     }
 }

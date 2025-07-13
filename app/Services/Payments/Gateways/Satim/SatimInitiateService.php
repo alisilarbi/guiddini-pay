@@ -79,14 +79,4 @@ class SatimInitiateService
     {
         return ($response['ErrorCode'] ?? $response['errorCode'] ?? '1') !== '0';
     }
-
-    private function mapRequestException(RequestException $e): PaymentException
-    {
-        return new PaymentException(
-            'Gateway request failed',
-            'GATEWAY_ERROR',
-            $e->response->status(),
-            ['gateway_response' => $e->response->json()]
-        );
-    }
 }

@@ -32,8 +32,6 @@ class SatimConfirmService
             ->json();
 
         $this->updater->handleConfirmationResponse($transaction, $response);
-
-
         return $response;
     }
 
@@ -42,20 +40,5 @@ class SatimConfirmService
         return $transaction->license_env === 'production'
             ? 'https://cib.satim.dz/payment/rest/'
             : 'https://test.satim.dz/payment/rest/';
-    }
-
-    private function isErrorResponse(array $response): bool
-    {
-        return ($response['ErrorCode'] ?? $response['errorCode'] ?? '1') !== '0';
-    }
-
-    private function mapRequestException(RequestException $e): PaymentException
-    {
-        return new PaymentException(
-            'Gateway request failed',
-            'GATEWAY_ERROR',
-            $e->response->status(),
-            ['gateway_response' => $e->response->json()]
-        );
     }
 }
