@@ -38,7 +38,9 @@ class TransactionResource extends JsonResource
                     'ip_address' => $data['transaction']['ip_address'],
                     'approval_code' => $data['transaction']['approval_code'],
                     // 'updated_at' => \Carbon\Carbon::parse($data['transaction']['updated_at'])->toRfc3339String(),
-                    'updated_at' => \Carbon\Carbon::parse($data['transaction']['updated_at'], config('app.timezone'))->toRfc3339String(),
+                    'updated_at' => \Carbon\Carbon::parse($data['transaction']['updated_at'])
+                        ->timezone('Africa/Algiers')
+                        ->toRfc3339String(),
                 ],
                 'links' => [
                     'self' => route('api.client.payment.show', ['order_number' => $data['transaction']['order_number']]) ?? null,
