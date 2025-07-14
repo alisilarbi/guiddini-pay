@@ -7,6 +7,7 @@ use App\Models\License;
 use Livewire\Component;
 use Filament\Tables\Table;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\TextColumn;
@@ -23,7 +24,7 @@ class LatestSatimLicenses extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(License::where('gateway_type', 'satim')->latest())
+            ->query(License::where('gateway_type', 'satim')->where('partner_id', Auth::user()->id)->latest())
             ->columns([
                 TextColumn::make('name')
                     ->label('License Name')
