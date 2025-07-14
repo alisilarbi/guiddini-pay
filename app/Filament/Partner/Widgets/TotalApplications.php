@@ -20,7 +20,7 @@ class TotalApplications extends BaseWidget
         $totalApplications = $partner->used_quota;
 
         return [
-            Stat::make('Applications totales', $totalApplications)
+            Stat::make('Applications utilisés', $totalApplications)
                 ->description('Toutes les applications que vous avez créées')
                 ->icon('heroicon-m-rectangle-stack')
                 ->color('primary')
