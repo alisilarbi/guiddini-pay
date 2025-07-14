@@ -54,6 +54,7 @@ class Dashboard extends \Filament\Pages\Dashboard implements HasForms
                                 TextInput::make('partner_key')
                                     ->disabled(),
                                 TextInput::make('partner_secret')
+                                    ->password()
                                     ->disabled()
                             ]),
                     ])
