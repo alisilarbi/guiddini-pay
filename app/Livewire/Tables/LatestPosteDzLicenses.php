@@ -7,6 +7,7 @@ use App\Models\License;
 use Livewire\Component;
 use Filament\Tables\Table;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\TextColumn;
@@ -24,7 +25,7 @@ class LatestPosteDzLicenses extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(License::where('gateway_type', 'poste_dz')->latest())
+            ->query(License::where('gateway_type', 'poste_dz')->where('partner_id', Auth::user()->id)->latest())
             ->columns([
                 TextColumn::make('name')
                     ->label('License Name')
