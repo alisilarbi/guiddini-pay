@@ -20,6 +20,6 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withProviders([
-        App\Providers\HandlerServiceProvider::class,
+        // App\Providers\HandlerServiceProvider::class,
     ])
     ->withExceptions(function (Exceptions $exceptions) {})->create();

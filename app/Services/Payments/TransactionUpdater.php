@@ -38,6 +38,7 @@ class TransactionUpdater
         $updateData = [
             'deposit_amount' => isset($response['depositAmount']) ? $response['depositAmount'] / 100 : null,
             'auth_code' => $response['authCode'] ?? null,
+            'params' => $response['params'] ?? null,
             'action_code' => $response['actionCode'] ?? null,
             'action_code_description' => $response['actionCodeDescription'] ?? null,
             'ErrorCode' => $response['ErrorCode'] ?? null,
@@ -79,7 +80,9 @@ class TransactionUpdater
             'ip_address' => $updateData['ip_address'],
             'confirmation_status' => $updateData['confirmation_status'],
             'approval_code' => $updateData['approval_code'],
+            'params' => $updateData['params'],
         ]);
+
     }
 
     /**

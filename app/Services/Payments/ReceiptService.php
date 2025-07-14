@@ -63,26 +63,13 @@ class ReceiptService
 
     public function generateDownloadLink(string $orderNumber): string
     {
-        $transaction = Transaction::where('order_number', $orderNumber)->first()
-            ?: throw new ReceiptException(
-                'Transaction not found',
-                'TRANSACTION_NOT_FOUND',
-                404
-            );
+        Transaction::where('order_number', $orderNumber)->firstOrFail();
 
         return URL::signedRoute('client.payment.pdf', ['order_number' => $orderNumber]);
     }
 
     public function emailPaymentReceipt(array $data, Application $application): void
     {
-        if (!isset($data['orderNumber']) || !isset($data['email'])) {
-            throw new ReceiptException(
-                'Missing required fields: orderNumber or email',
-                'INVALID_INPUT',
-                422
-            );
-        }
-
         $orderNumber = $data['orderNumber'];
         $email = $data['email'];
 

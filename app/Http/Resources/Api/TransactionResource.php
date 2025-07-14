@@ -26,6 +26,7 @@ class TransactionResource extends JsonResource
                     'status' => $data['transaction']['status'],
                     'deposit_amount' => $data['transaction']['deposit_amount'],
                     'auth_code' => $data['transaction']['auth_code'],
+                    'params' => $data['transaction']['params'],
                     'action_code' => $data['transaction']['action_code'],
                     'action_code_description' => $data['transaction']['action_code_description'],
                     'error_code' => $data['transaction']['error_code'],
@@ -37,7 +38,6 @@ class TransactionResource extends JsonResource
                     'pan' => $data['transaction']['pan'],
                     'ip_address' => $data['transaction']['ip_address'],
                     'approval_code' => $data['transaction']['approval_code'],
-                    // 'updated_at' => \Carbon\Carbon::parse($data['transaction']['updated_at'])->toRfc3339String(),
                     'updated_at' => \Carbon\Carbon::parse($data['transaction']['updated_at'])
                         ->timezone('Africa/Algiers')
                         ->toRfc3339String(),

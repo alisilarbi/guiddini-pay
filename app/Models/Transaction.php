@@ -28,6 +28,7 @@ class Transaction extends Model
         'deposit_amount',
         'currency',
         'auth_code',
+        'params',
         'action_code',
         'action_code_description',
         'error_code',
@@ -50,6 +51,7 @@ class Transaction extends Model
 
     protected $casts = [
         'quota_transactions' => 'array',
+        'params' => 'array',
     ];
 
     protected static function boot()

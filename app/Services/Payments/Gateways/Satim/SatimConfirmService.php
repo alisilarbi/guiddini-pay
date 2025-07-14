@@ -27,6 +27,7 @@ class SatimConfirmService
         ];
 
         $response = Http::timeout(30)
+            ->withOptions(['verify' => false])
             ->get($this->baseUrl($transaction) . 'confirmOrder.do', $params)
             ->throw()
             ->json();

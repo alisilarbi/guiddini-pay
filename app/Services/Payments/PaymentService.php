@@ -136,10 +136,13 @@ class PaymentService
     private function generateOrderNumber(Application $application): string
     {
         $licenseId = $application->license->id;
+        $length = $application->license_env === 'development' ? 10 : 20;
+
         do {
             $unique = uniqid(mt_rand(), true);
-            $orderNumber = strtoupper(substr(base_convert($unique, 16, 36), 0, 20));
+            $orderNumber = strtoupper(substr(base_convert($unique, 16, 36), 0, $length));
         } while (Transaction::where('order_number', $orderNumber)->where('license_id', $licenseId)->exists());
+
         return $orderNumber;
     }
 }

@@ -65,8 +65,6 @@ class SponteanousPayment extends Component
             'origin' => 'System',
         ];
 
-        dd($data);
-
         $result = $this->paymentService->initiatePayment(
             $data,
             $this->application->app_key
