@@ -46,8 +46,8 @@ class Dashboard extends \Filament\Pages\Dashboard implements HasForms
     {
         return $form
             ->schema([
-                Section::make('Rate limiting')
-                    ->description('Prevent abuse by limiting the number of requests per period')
+                Section::make('Partner Keys')
+                    ->description('Use these keys to integrate with the partner API.')
                     ->schema([
                         Grid::make(2)
                             ->schema([
