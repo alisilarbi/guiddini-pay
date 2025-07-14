@@ -9,13 +9,15 @@
                     Create Application
                 </x-filament::button>
             </div>
-            <div>
-                @livewire(\App\Filament\Partner\Widgets\UnpaidApplications::class)
-                <x-filament::button class="w-full justify-center mt-3" outlined
-                    x-on:click="$dispatch('open-modal', { id: 'pay-debts' })" size="xs">
-                    Pay debts
-                </x-filament::button>
-            </div>
+            @if (Auth::user()->total_unpaid > 0)
+                <div>
+                    @livewire(\App\Filament\Partner\Widgets\UnpaidApplications::class)
+                    <x-filament::button class="w-full justify-center mt-3" outlined
+                        x-on:click="$dispatch('open-modal', { id: 'pay-debts' })" size="xs">
+                        Pay debts
+                    </x-filament::button>
+                </div>
+            @endif
 
             <div>
                 @livewire(\App\Filament\Partner\Widgets\RemainingAllowance::class)
