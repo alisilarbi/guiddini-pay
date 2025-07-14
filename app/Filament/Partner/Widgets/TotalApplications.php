@@ -21,7 +21,7 @@ class TotalApplications extends BaseWidget
 
         return [
             Stat::make('Quota consommé', $totalApplications)
-                ->description('Toutes les applications que vous avez créées')
+                ->description('Applications que vous avez créées')
                 ->icon('heroicon-m-rectangle-stack')
                 ->color('primary')
                 // ->chart([$totalApplications, $paidApplications, $unpaidApplications])
