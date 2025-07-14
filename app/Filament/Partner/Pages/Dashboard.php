@@ -52,6 +52,7 @@ class Dashboard extends \Filament\Pages\Dashboard implements HasForms
                         Grid::make(2)
                             ->schema([
                                 TextInput::make('partner_key')
+                                    ->password()
                                     ->disabled(),
                                 TextInput::make('partner_secret')
                                     ->password()
