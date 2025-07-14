@@ -23,7 +23,7 @@ class LatestSatimLicenses extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(License::where('gateway_type', 'satim')->latest())
+            ->query(License::where('gateway_type', 'satim')->where('partner_id', Auth::user()->id)->latest())
             ->columns([
                 TextColumn::make('name')
                     ->label('License Name')

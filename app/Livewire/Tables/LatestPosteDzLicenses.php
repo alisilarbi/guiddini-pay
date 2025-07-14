@@ -24,7 +24,7 @@ class LatestPosteDzLicenses extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(License::where('gateway_type', 'poste_dz')->latest())
+            ->query(License::where('gateway_type', 'poste_dz')->where('partner_id', Auth::user()->id)->latest())
             ->columns([
                 TextColumn::make('name')
                     ->label('License Name')
