@@ -35,7 +35,7 @@ class PosteDzConfirmService
             $response = Http::timeout(30)
                 ->withOptions(['verify' => false])
                 ->get($this->baseUrl($transaction) . 'getOrderStatus.do', $params)
-                // ->throw()
+                ->throw()
                 ->json();
 
             $this->updater->handleConfirmationResponse($transaction, $response);
