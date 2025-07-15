@@ -38,7 +38,7 @@ class PosteDzConfirmService
                 ->throw()
                 ->json();
 
-            // dd($response);
+            dd($response);
 
             $this->updater->handleConfirmationResponse($transaction, $response);
 
