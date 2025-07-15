@@ -38,8 +38,6 @@ class PosteDzConfirmService
                 ->throw()
                 ->json();
 
-            dd($response);
-
             $this->updater->handleConfirmationResponse($transaction, $response);
 
             return $response;
