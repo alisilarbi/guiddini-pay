@@ -2,8 +2,8 @@
     <div class="bg-primary-50 border border-primary-200 text-sm text-primary-800 rounded-lg p-4 dark:bg-primary-800/10 dark:border-primary-900 dark:text-primary-500"
         role="alert" tabindex="-1" aria-labelledby="hs-with-description-label">
         <div class="flex">
-            <div class="shrink-0">
-                <svg class="shrink-0 size-4 mt-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+            <div class="shrink-0" style="margin-top: 2px;">
+                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                     stroke-linejoin="round">
                     <circle cx="12" cy="12" r="10"></circle>
