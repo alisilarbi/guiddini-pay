@@ -19,6 +19,8 @@ use Filament\Notifications\Notification;
 use Filament\Tables\Columns\Layout\Panel;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
+use Filament\Forms\Components\Placeholder;
+use Illuminate\Validation\ValidationException;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
@@ -70,15 +72,21 @@ class SatimLicenses extends Page implements HasForms, HasTable
                     Split::make([
 
                         Stack::make([
-                            TextColumn::make('satim_development_username'),
-                            TextColumn::make('satim_development_password'),
-                            TextColumn::make('satim_development_terminal'),
+                            TextColumn::make('satim_development_username')
+                                ->label('Nom d\'utilisateur'),
+                            TextColumn::make('satim_development_password')
+                                ->label('Mot de passe'),
+                            TextColumn::make('satim_development_terminal')
+                                ->label('Terminal'),
                         ]),
 
                         Stack::make([
-                            TextColumn::make('satim_production_username'),
-                            TextColumn::make('satim_production_password'),
-                            TextColumn::make('satim_production_terminal'),
+                            TextColumn::make('satim_production_username')
+                                ->label('Nom d\'utilisateur'),
+                            TextColumn::make('satim_production_password')
+                                ->label('Mot de passe'),
+                            TextColumn::make('satim_production_terminal')
+                                ->label('Terminal'),
                         ]),
 
                     ])
@@ -91,6 +99,7 @@ class SatimLicenses extends Page implements HasForms, HasTable
             ])
             ->actions([
                 Action::make('update')
+                    ->label('Modifier')
                     ->fillForm(function ($record) {
                         return [
                             'name' => $record?->name,
@@ -107,6 +116,7 @@ class SatimLicenses extends Page implements HasForms, HasTable
                             ->columns(2)
                             ->schema([
                                 TextInput::make('name')
+                                    ->label('Nom de la license')
                                     ->required(),
                             ]),
 
@@ -114,28 +124,36 @@ class SatimLicenses extends Page implements HasForms, HasTable
                             ->columns(3)
                             ->schema([
                                 TextInput::make('satim_development_username')
+                                    ->label('Nom d\'utilisateur')
                                     ->live()
-                                    ->required(),
+                                    ->required(fn($get) => $get('satim_development_password') || $get('satim_development_terminal')),
+
                                 TextInput::make('satim_development_password')
+                                    ->label('Mot de passe')
                                     ->live()
-                                    ->required(),
+                                    ->required(fn($get) => $get('satim_development_username') || $get('satim_development_terminal')),
+
                                 TextInput::make('satim_development_terminal')
+                                    ->label('Terminal')
                                     ->live()
-                                    ->required(),
+                                    ->required(fn($get) => $get('satim_development_username') || $get('satim_development_password')),
                             ]),
 
                         Fieldset::make('Production')
                             ->columns(3)
                             ->schema([
                                 TextInput::make('satim_production_username')
+                                    ->label('Nom d\'utilisateur')
                                     ->live()
                                     ->required(fn($get) => $get('satim_production_password') || $get('satim_production_terminal')),
 
                                 TextInput::make('satim_production_password')
+                                    ->label('Mot de passe')
                                     ->live()
                                     ->required(fn($get) => $get('satim_production_username') || $get('satim_production_terminal')),
 
                                 TextInput::make('satim_production_terminal')
+                                    ->label('Terminal')
                                     ->live()
                                     ->required(fn($get) => $get('satim_production_username') || $get('satim_production_password')),
                             ])
@@ -155,10 +173,12 @@ class SatimLicenses extends Page implements HasForms, HasTable
                     }),
             ])
             ->headerActions([
-                Action::make('create')
-                    ->label('Create')
-                    ->form([
 
+
+                Action::make('create')
+                    ->outlined()
+                    ->label('Enregistrer une license')
+                    ->form([
                         Fieldset::make('Information')
                             ->columns(2)
                             ->schema([
@@ -170,29 +190,103 @@ class SatimLicenses extends Page implements HasForms, HasTable
                             ->columns(3)
                             ->schema([
                                 TextInput::make('satim_development_username')
+                                    ->label('Nom d\'utilisateur')
                                     ->live()
-                                    ->required(),
+                                    ->required(function (\Filament\Forms\Get $get) {
+                                        $devStarted = filled($get('satim_development_username'))
+                                            || filled($get('satim_development_password'))
+                                            || filled($get('satim_development_terminal'));
+
+                                        $prodStarted = filled($get('satim_production_username'))
+                                            || filled($get('satim_production_password'))
+                                            || filled($get('satim_production_terminal'));
+
+                                        return $devStarted || ! $prodStarted;
+                                    }),
+
                                 TextInput::make('satim_development_password')
+                                    ->label('Mot de passe')
                                     ->live()
-                                    ->required(),
+                                    ->required(function (\Filament\Forms\Get $get) {
+                                        $devStarted = filled($get('satim_development_username'))
+                                            || filled($get('satim_development_password'))
+                                            || filled($get('satim_development_terminal'));
+
+                                        $prodStarted = filled($get('satim_production_username'))
+                                            || filled($get('satim_production_password'))
+                                            || filled($get('satim_production_terminal'));
+
+                                        return $devStarted || ! $prodStarted;
+                                    }),
+
                                 TextInput::make('satim_development_terminal')
+                                    ->label('Terminal')
                                     ->live()
-                                    ->required(),
+                                    ->required(function (\Filament\Forms\Get $get) {
+                                        $devStarted = filled($get('satim_development_username'))
+                                            || filled($get('satim_development_password'))
+                                            || filled($get('satim_development_terminal'));
+
+                                        $prodStarted = filled($get('satim_production_username'))
+                                            || filled($get('satim_production_password'))
+                                            || filled($get('satim_production_terminal'));
+
+                                        return $devStarted || ! $prodStarted;
+                                    }),
                             ]),
 
                         Fieldset::make('Production')
                             ->columns(3)
                             ->schema([
                                 TextInput::make('satim_production_username')
-                                    ->live(),
+                                    ->label('Nom d\'utilisateur')
+                                    ->live()
+                                    ->required(function (\Filament\Forms\Get $get) {
+                                        $prodStarted = filled($get('satim_production_username'))
+                                            || filled($get('satim_production_password'))
+                                            || filled($get('satim_production_terminal'));
+
+                                        $devStarted = filled($get('satim_development_username'))
+                                            || filled($get('satim_development_password'))
+                                            || filled($get('satim_development_terminal'));
+
+                                        return $prodStarted || ! $devStarted;
+                                    }),
+
                                 TextInput::make('satim_production_password')
-                                    ->live(),
+                                    ->label('Mot de passe')
+                                    ->live()
+                                    ->required(function (\Filament\Forms\Get $get) {
+                                        $prodStarted = filled($get('satim_production_username'))
+                                            || filled($get('satim_production_password'))
+                                            || filled($get('satim_production_terminal'));
+
+                                        $devStarted = filled($get('satim_development_username'))
+                                            || filled($get('satim_development_password'))
+                                            || filled($get('satim_development_terminal'));
+
+                                        return $prodStarted || ! $devStarted;
+                                    }),
+
                                 TextInput::make('satim_production_terminal')
-                                    ->live(),
-                            ])
+                                    ->label('Terminal')
+                                    ->live()
+                                    ->required(function (\Filament\Forms\Get $get) {
+                                        $prodStarted = filled($get('satim_production_username'))
+                                            || filled($get('satim_production_password'))
+                                            || filled($get('satim_production_terminal'));
+
+                                        $devStarted = filled($get('satim_development_username'))
+                                            || filled($get('satim_development_password'))
+                                            || filled($get('satim_development_terminal'));
+
+                                        return $prodStarted || ! $devStarted;
+                                    }),
+                            ]),
                     ])
-                    ->action(function ($data, CreateLicense $createLicense) {
+                    ->action(function (array $data, CreateLicense $createLicense) {
                         $data['type'] = 'satim';
+
                         $createLicense->handle(
                             user: Auth::user(),
                             partner: Auth::user(),

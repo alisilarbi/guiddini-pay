@@ -28,22 +28,21 @@ class LatestPosteDzLicenses extends Component implements HasForms, HasTable
             ->query(License::where('gateway_type', 'poste_dz')->where('partner_id', Auth::user()->id)->latest())
             ->columns([
                 TextColumn::make('name')
-                    ->label('License Name')
+                    ->label('Nom license')
                     ->weight(FontWeight::Bold),
 
                 TextColumn::make('created_at')
-                    ->label('Created At ')
+                    ->label('Crée le')
                     ->badge(),
 
                 TextColumn::make('successful_transactions_count')
-                    ->label('Paid Transactions')
-                    ->counts('successfulTransactions')
-                    ->sortable(),
+                    ->label('Transactions réussites')
+                    ->counts('successfulTransactions'),
 
             ])
             ->headerActions([
-                Tables\Actions\Action::make('hehe')
-                    ->label('Manage')
+                Tables\Actions\Action::make('manage')
+                    ->label('Gérer')
                     ->icon('heroicon-o-arrow-top-right-on-square')
                     ->iconPosition(IconPosition::After)
                     ->color('primary')

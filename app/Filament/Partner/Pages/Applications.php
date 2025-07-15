@@ -66,15 +66,15 @@ class Applications extends Page implements HasForms, HasTable
             ->columns([
                 TextColumn::make('name')
                     ->searchable()
-                    ->label('App name'),
+                    ->label('Nom de l\'application'),
 
                 TextColumn::make('user.name')
                     ->searchable()
-                    ->label('Owner'),
+                    ->label('Propriétaire'),
 
                 TextColumn::make('license.gateway_type')
                     ->badge()
-                    ->label('Gateway')
+                    ->label('Portail')
                     ->formatStateUsing(function (?string $state): string {
                         return match ($state) {
                             'satim' => 'Satim.dz',
@@ -114,6 +114,7 @@ class Applications extends Page implements HasForms, HasTable
                     ),
 
                 SelectColumn::make('license_env')
+                    ->label('Environnement')
                     ->searchable()
                     ->options(function ($record) {
                         $license = $record->license;
@@ -166,10 +167,6 @@ class Applications extends Page implements HasForms, HasTable
                     ->selectablePlaceholder(false)
 
 
-
-
-
-
                 // SelectColumn::make('license_env')
                 //     ->searchable()
                 //     ->options(function ($record) {
@@ -196,7 +193,7 @@ class Applications extends Page implements HasForms, HasTable
 
 
             ])
-            ->searchPlaceholder('Name, Owner, etc ...')
+            ->searchPlaceholder('Nom, Propriétaire, etc ...')
             ->filters([
                 SelectFilter::make('license_id')
                     ->label('License')
@@ -250,7 +247,7 @@ class Applications extends Page implements HasForms, HasTable
                             ]),
 
                         ViewAction::make('view_keys')
-                            ->label('Keys')
+                            ->label('Clés API')
                             ->icon('heroicon-o-key')
                             ->form([
 
@@ -275,7 +272,7 @@ class Applications extends Page implements HasForms, HasTable
 
 
                         Action::make('edit')
-                            ->label('Edit')
+                            ->label('Éditer')
                             ->icon('heroicon-o-pencil-square')
                             ->fillForm(function ($record) {
                                 return [
@@ -355,7 +352,7 @@ class Applications extends Page implements HasForms, HasTable
                             }),
 
                         Action::make('online_payment')
-                            ->label('Online Payment')
+                            ->label('Paiement spontané')
                             ->icon('heroicon-o-arrow-top-right-on-square')
                             ->url(fn(Application $record): string => route('pay', ['slug' => $record->slug], false))
                             ->openUrlInNewTab()
@@ -368,7 +365,7 @@ class Applications extends Page implements HasForms, HasTable
                     ActionGroup::make([
 
                         Action::make('change_ownership')
-                            ->label('Transfer Ownership')
+                            ->label('Transfert de propriété')
                             ->icon('heroicon-o-arrow-path-rounded-square')
                             ->form([
 
@@ -399,15 +396,15 @@ class Applications extends Page implements HasForms, HasTable
                                     ->success()
                                     ->send();
                                 $this->dispatch('refresh-table');
-                            })
-                            ->hidden(function () {
-                                return 0 >= User::where('is_user', true)
-                                    ->where('partner_id', Auth::user()->id)
-                                    ->count();
                             }),
+                            // ->hidden(function () {
+                            //     return 0 >= User::where('is_user', true)
+                            //         ->where('partner_id', Auth::user()->id)
+                            //         ->count();
+                            // }),
 
                         Action::make('recover')
-                            ->label('Recover')
+                            ->label('Recouvrer')
                             ->icon('heroicon-o-arrow-uturn-left')
                             ->requiresConfirmation()
                             ->action(function (Application $record, TransferOwnership $transferOwnership) {
@@ -436,7 +433,7 @@ class Applications extends Page implements HasForms, HasTable
                     ActionGroup::make([
 
                         Action::make('delete')
-                            ->label('Delete')
+                            ->label('Supprimer')
                             ->color('danger')
                             ->icon('heroicon-o-x-circle')
                             ->requiresConfirmation()
@@ -452,7 +449,8 @@ class Applications extends Page implements HasForms, HasTable
             ])
             ->headerActions([
                 Action::make('create')
-                    ->label('New Application')
+                    ->label('Créer une application')
+                    ->outlined()
                     ->steps([
                         Step::make('Information Général')
                             ->schema([

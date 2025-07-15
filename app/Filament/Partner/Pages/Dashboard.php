@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Concerns\InteractsWithForms;
 
 
@@ -46,8 +47,8 @@ class Dashboard extends \Filament\Pages\Dashboard implements HasForms
     {
         return $form
             ->schema([
-                Section::make('Partner Keys')
-                    ->description('Use these keys to integrate with the partner API.')
+                Section::make('Clés API des partenaires')
+                    ->description('Utilisez ces clés APi pour consommer les endpoints des partenaires et garantir une personnalisation complète de votre compte et vos intégrations.')
                     ->schema([
                         Grid::make(2)
                             ->schema([
@@ -61,7 +62,18 @@ class Dashboard extends \Filament\Pages\Dashboard implements HasForms
                                     ->revealable()
                             ]),
                     ])
+                    ->headerActions([
+                        Action::make('create')
+                            ->outlined()
+                            ->icon('heroicon-o-arrow-top-right-on-square')
+                            ->label('Documentation')
+                            ->url('https://www.guiddini.dz/docs')
+                            ->openUrlInNewTab()
+
+
+                    ])
             ])
+
             ->statePath('data');
     }
 }

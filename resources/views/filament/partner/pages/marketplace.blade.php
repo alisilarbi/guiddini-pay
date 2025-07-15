@@ -6,7 +6,7 @@
                 @livewire(\App\Filament\Partner\Widgets\TotalApplications::class)
                 <x-filament::button class="w-full justify-center mt-3" outlined
                     x-on:click="window.location.href = '/partner/applications'" size="xs">
-                    Create Application
+                    Créer une application
                 </x-filament::button>
             </div>
             @if (Auth::user()->total_unpaid > 0)
@@ -14,7 +14,7 @@
                     @livewire(\App\Filament\Partner\Widgets\UnpaidApplications::class)
                     <x-filament::button class="w-full justify-center mt-3" outlined
                         x-on:click="$dispatch('open-modal', { id: 'pay-debts' })" size="xs">
-                        Pay debts
+                        Payer les dettes
                     </x-filament::button>
                 </div>
             @endif
@@ -42,7 +42,7 @@
                 <x-filament::button class="w-full justify-center mt-3 " outlined icon="{{ $buttonIcon }}"
                     color="{{ $buttonColor }}" x-on:click="$dispatch('open-modal', { id: 'buy-allowance' })"
                     size="xs">
-                    Order Now
+                    Recharger votre quota
                 </x-filament::button>
             </div>
         </div>

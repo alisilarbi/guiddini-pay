@@ -81,6 +81,7 @@ class PosteDzLicenses extends Page implements HasForms, HasTable
             ])
             ->actions([
                 Action::make('update')
+                    ->label('Modifier')
                     ->fillForm(function ($record) {
                         return [
                             'name' => $record?->name,
@@ -139,13 +140,14 @@ class PosteDzLicenses extends Page implements HasForms, HasTable
             ])
             ->headerActions([
                 Action::make('create')
-                    ->label('Create')
+                    ->outlined()
+                    ->label('Enregistrer une license')
                     ->form([
-
                         Fieldset::make('Information')
                             ->columns(2)
                             ->schema([
                                 TextInput::make('name')
+                                    ->label('Nom de la license')
                                     ->required(),
                             ]),
 
@@ -153,28 +155,53 @@ class PosteDzLicenses extends Page implements HasForms, HasTable
                             ->columns(2)
                             ->schema([
                                 TextInput::make('poste_dz_development_username')
+                                    ->label('Nom d\'utilisateur')
                                     ->live()
-                                    ->required(fn($get) => $get('poste_dz_development_password')),
-                                TextInput::make('poste_dz_development_password')
-                                    ->live()
-                                    ->required(fn($get) => $get('poste_dz_development_username')),
+                                    ->required(function (\Filament\Forms\Get $get) {
+                                        $devStarted = filled($get('poste_dz_development_username')) || filled($get('poste_dz_development_password'));
+                                        $prodStarted = filled($get('poste_dz_production_username')) || filled($get('poste_dz_production_password'));
 
+                                        return $devStarted || ! $prodStarted;
+                                    }),
+
+                                TextInput::make('poste_dz_development_password')
+                                    ->label('Mot de passe')
+                                    ->live()
+                                    ->required(function (\Filament\Forms\Get $get) {
+                                        $devStarted = filled($get('poste_dz_development_username')) || filled($get('poste_dz_development_password'));
+                                        $prodStarted = filled($get('poste_dz_production_username')) || filled($get('poste_dz_production_password'));
+
+                                        return $devStarted || ! $prodStarted;
+                                    }),
                             ]),
 
                         Fieldset::make('Production')
                             ->columns(2)
                             ->schema([
                                 TextInput::make('poste_dz_production_username')
+                                    ->label('Nom d\'utilisateur')
                                     ->live()
-                                    ->required(fn($get) => $get('poste_dz_production_password')),
-                                TextInput::make('poste_dz_production_password')
-                                    ->live()
-                                    ->required(fn($get) => $get('poste_dz_production_username')),
+                                    ->required(function (\Filament\Forms\Get $get) {
+                                        $prodStarted = filled($get('poste_dz_production_username')) || filled($get('poste_dz_production_password'));
+                                        $devStarted = filled($get('poste_dz_development_username')) || filled($get('poste_dz_development_password'));
 
-                            ])
+                                        return $prodStarted || ! $devStarted;
+                                    }),
+
+                                TextInput::make('poste_dz_production_password')
+                                    ->label('Mot de passe')
+                                    ->live()
+                                    ->required(function (\Filament\Forms\Get $get) {
+                                        $prodStarted = filled($get('poste_dz_production_username')) || filled($get('poste_dz_production_password'));
+                                        $devStarted = filled($get('poste_dz_development_username')) || filled($get('poste_dz_development_password'));
+
+                                        return $prodStarted || ! $devStarted;
+                                    }),
+                            ]),
                     ])
-                    ->action(function ($data, CreateLicense $createLicense) {
+                    ->action(function (array $data, CreateLicense $createLicense) {
                         $data['gateway_type'] = 'poste_dz';
+
                         $createLicense->handle(
                             user: Auth::user(),
                             partner: Auth::user(),

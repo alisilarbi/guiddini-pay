@@ -24,14 +24,16 @@ class LicensesOverview extends BaseWidget
 
         return [
 
-            Stat::make('🏦 SATIM Licenses', $satimCount)
-                ->description('SATIM gateway licenses for card payments 💳')
-                ->icon('heroicon-m-banknotes')
-                ->color('success'),
+            Stat::make('SATIM Licenses', $satimCount)
+                ->description('Licenses de paiement en ligne de SATIM')
+                // ->icon('heroicon-m-banknotes')
+                ->chart([7, 2, 10, 3, 15, 4, 17])
+                ->color('danger'),
 
-            Stat::make('📮 PosteDZ Licenses', $posteDzCount)
-                ->description('PosteDZ gateway licenses for Algérie Poste 💸')
-                ->icon('heroicon-m-inbox')
+            Stat::make('PosteDZ Licenses', $posteDzCount)
+                ->description('Licenses de paiement en ligne de Algérie Poste')
+                // ->icon('heroicon-m-inbox')
+                ->chart([12, 3, 10, 2, 7, 1, 9])
                 ->color('info'),
         ];
     }

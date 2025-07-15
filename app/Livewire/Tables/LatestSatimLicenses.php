@@ -27,25 +27,25 @@ class LatestSatimLicenses extends Component implements HasForms, HasTable
             ->query(License::where('gateway_type', 'satim')->where('partner_id', Auth::user()->id)->latest())
             ->columns([
                 TextColumn::make('name')
-                    ->label('License Name')
+                    ->label('Nom license')
                     ->weight(FontWeight::Bold),
 
                 TextColumn::make('created_at')
-                    ->label('Created At ')
+                    ->label('Crée le')
+                    ->color('danger')
                     ->badge(),
 
                 TextColumn::make('successful_transactions_count')
-                    ->label('Paid Transactions')
-                    ->counts('successfulTransactions')
-                    ->sortable(),
+                    ->label('Transactions réussites')
+                    ->counts('successfulTransactions'),
 
             ])
             ->headerActions([
                 Tables\Actions\Action::make('manage')
-                    ->label('Manage')
+                    ->label('Gérer')
                     ->icon('heroicon-o-arrow-top-right-on-square')
                     ->iconPosition(\Filament\Support\Enums\IconPosition::After)
-                    ->color('primary')
+                    ->color('danger')
                     ->outlined()
                     ->url(route('filament.partner.pages.satim-licenses')),
             ]);

@@ -46,11 +46,13 @@ class Prospects extends Page implements HasForms, HasTable
             ->columns([
 
                 TextColumn::make('name')
+                    ->label('Nom')
                     ->sortable()
                     ->searchable()
                     ->color('primary'),
 
                 TextColumn::make('company_name')
+                    ->label('Nom de l\'entreprise')
                     ->sortable()
                     ->searchable()
                     ->formatStateUsing(function (Prospect $record) {
@@ -58,30 +60,34 @@ class Prospects extends Page implements HasForms, HasTable
                     }),
 
                 TextColumn::make('phone')
-                    ->label('Phone Number')
+                    ->label('Numéro de téléphone')
                     ->sortable()
                     ->searchable()
                     ->icon('heroicon-o-phone')
                     ->copyable(),
 
                 TextColumn::make('email')
-                    ->label('email')
+                    ->label('Email')
                     ->sortable()
                     ->searchable()
                     ->icon('heroicon-o-envelope'),
 
-                ViewColumn::make('bank_account')->view('components.tables.columns.bank_account'),
+                ViewColumn::make('bank_account')
+                    ->label('Compte bancaire')
+                    ->view('components.tables.columns.bank_account'),
 
-                ViewColumn::make('integrations')->view('components.tables.columns.integrations'),
+                ViewColumn::make('integrations')
+                    ->label('Intégrations')
+                    ->view('components.tables.columns.integrations'),
 
                 TextColumn::make('website_link')
-                    ->label('Website')
+                    ->label('Lien du site web')
                     ->limit(30)
                     ->url(fn($record) => $record?->website_link, true)
                     ->hidden(fn($record) => !$record?->website_integration),
 
                 TextColumn::make('programming_languages')
-                    ->label('Languages')
+                    ->label('Languages de programmation')
                     ->formatStateUsing(fn($state) => implode(', ', json_decode($state ?? '[]')))
                     ->badge()
                     ->color('warning'),
@@ -89,7 +95,7 @@ class Prospects extends Page implements HasForms, HasTable
             ])
             ->filters([
                 SelectFilter::make('legal_status')
-                    ->label('Legal Status')
+                    ->label('Statut juridique')
                     ->options([
                         'EURL' => 'EURL',
                         'SARL' => 'SARL',
@@ -109,7 +115,7 @@ class Prospects extends Page implements HasForms, HasTable
                     ->searchable(),
 
                 TernaryFilter::make('converted')
-                    ->label('Converted')
+                    ->label('Converti')
                     ->trueLabel('Yes')
                     ->falseLabel('No')
                     ->default(false)
@@ -142,7 +148,7 @@ class Prospects extends Page implements HasForms, HasTable
                         }),
 
                     Action::make('delete')
-                        ->label('Delete')
+                        ->label('Supprimer')
                         ->color('danger')
                         ->icon('heroicon-o-x-circle')
                         ->requiresConfirmation()

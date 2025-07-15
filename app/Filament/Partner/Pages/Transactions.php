@@ -34,19 +34,20 @@ class Transactions extends Page implements HasForms, HasTable
             ->query(Transaction::where('partner_id', Auth::user()->id))
             ->columns([
                 TextColumn::make('application.name')
-                    ->label('Application')
+                    ->label('Nom de l\'application')
                     ->searchable()
                     ->sortable()
                     ->description(fn($record) => $record->application?->website_url)
                     ->toggleable(),
 
                 TextColumn::make('application.user.name')
-                    ->label('Name')
+                    ->label('Propriétaire')
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
 
                 TextColumn::make('amount')
+                    ->label('Montant')
                     ->money('DZD', true)
                     ->sortable()
                     ->color(fn($record) => $record->amount > 0 ? 'success' : 'danger')
@@ -55,6 +56,7 @@ class Transactions extends Page implements HasForms, HasTable
                     ->toggleable(),
 
                 TextColumn::make('deposit_amount')
+                    ->label('Dépôt')
                     ->money('DZD', true)
                     ->label('Deposit')
                     ->sortable()
@@ -69,19 +71,20 @@ class Transactions extends Page implements HasForms, HasTable
                 //     ->state(fn($record) => 'DZD'),
 
                 TextColumn::make('order_id')
+                    ->label('Numéro d\'identification')
                     ->copyable()
                     ->searchable()
-                    ->label('Order ID')
                     ->color('primary')
                     ->toggleable(),
 
                 TextColumn::make('order_number')
-                    ->label('Order #')
+                    ->label('Numéro de commande')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
 
                 TextColumn::make('status')
+                    ->label('Statut')
                     ->badge()
                     ->searchable()
                     ->sortable()
@@ -93,56 +96,58 @@ class Transactions extends Page implements HasForms, HasTable
                     ->toggleable(),
 
                 TextColumn::make('confirmation_status')
+                    ->label('Statut de confirmation')
                     ->badge()
                     ->color('gray')
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('description')
+                    ->label('Description')
                     ->wrap()
                     ->limit(50)
                     ->tooltip(fn($record) => $record->description)
                     ->toggleable(),
 
                 TextColumn::make('action_code')
-                    ->label('Action Code')
+                    ->label('Code d\'action')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('action_code_description')
-                    ->label('Action Description')
+                    ->label('Description du code d\'action')
                     ->wrap()
                     ->limit(50)
                     ->toggleable(),
 
                 TextColumn::make('auth_code')
-                    ->label('Auth Code')
+                    ->label('Code d\'authentification')
                     ->copyable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('approval_code')
-                    ->label('Approval Code')
+                    ->label('Code d\'approbation')
                     ->copyable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('error_code')
-                    ->label('Error Code')
+                    ->label('Code d\'erreur')
                     ->color('danger')
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('error_message')
-                    ->label('Error Message')
+                    ->label('Message d\'erreur')
                     ->color('danger')
                     ->wrap()
                     ->limit(50)
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('card_holder_name')
-                    ->label('Cardholder')
+                    ->label('Nom du titulaire de la carte')
                     ->searchable()
                     ->toggleable(),
 
                 TextColumn::make('pan')
-                    ->label('Card Number')
+                    ->label('Numéro de carte')
                     ->formatStateUsing(fn($state) => '****-****-****-' . substr($state, -4))
                     ->toggleable(isToggledHiddenByDefault: true),
 
@@ -155,19 +160,14 @@ class Transactions extends Page implements HasForms, HasTable
                     // })
                     ->toggleable(),
 
-                TextColumn::make('license_id')
-                    ->label('License ID')
-                    ->copyable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
                 TextColumn::make('ip_address')
-                    ->label('IP Address')
+                    ->label('Adresse IP')
                     ->copyable()
                     ->color('gray')
                     ->toggleable(),
 
                 TextColumn::make('form_url')
-                    ->label('Payment Link')
+                    ->label('Lien du formulaire')
                     ->url(fn($record) => $record->form_url)
                     ->openUrlInNewTab()
                     ->icon('heroicon-o-link')
@@ -180,13 +180,13 @@ class Transactions extends Page implements HasForms, HasTable
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('created_at')
-                    ->label('Created')
+                    ->label('Date de création')
                     ->dateTime('M d, Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('updated_at')
-                    ->label('Last Updated')
+                    ->label('Date de mise à jour')
                     ->dateTime('M d, Y H:i')
                     ->sortable()
                     ->color('gray')

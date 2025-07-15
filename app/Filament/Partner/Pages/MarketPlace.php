@@ -135,6 +135,15 @@ class Marketplace extends Page implements HasForms, HasTable, HasActions
                             return 'info';
                         else if ($record->event_type === 'quota')
                             return 'success';
+                    })
+                    ->formatStateUsing(function (string $state): string {
+                        return match ($state) {
+                            'Application created' => 'Création d\'application',
+                            'Online Payment' => 'Paiement en ligne',
+                            'Quota Creation' => 'Création du quota',
+                            'Quota Transaction' => 'Transaction de quota',
+                            default => $state, // fallback in case it's not matched
+                        };
                     }),
 
                 TextColumn::make('action')
@@ -144,11 +153,14 @@ class Marketplace extends Page implements HasForms, HasTable, HasActions
                             return $record->application?->name;
                         // return 'heheeh';
                         else if ($record->event_code === 'quota_creation')
-                            return $record->action;
+                            return 'Quota assigné';
+                        // return $record->action;
                         else if ($record->event_code === 'quota_paid')
-                            return $record->action;
+                            return 'Paiement de quota';
+                        // return $record->action;
                         else if ($record->event_code === 'quota_bought')
-                            return $record->action;
+                            return 'Recharge de quota';
+                        // return $record->action;
                     })
                     ->color(function ($record) {
                         if ($record->event_type === 'application')
@@ -166,18 +178,42 @@ class Marketplace extends Page implements HasForms, HasTable, HasActions
                     ->formatStateUsing(function ($state, $record) {
                         $details = $record->details ?? [];
 
-                        if (($details['price'] ?? null) === $state)
-                            return $state . ' DA';
+                        // Handle price
+                        if (($details['price'] ?? null) === $state || ($details['total'] ?? null) === $state) {
+                            return number_format((float) $state, 2, ',', ' ') . ' DA';
+                        }
 
-                        if (($details['total'] ?? null) === $state)
-                            return $state . ' DA';
-
-                        if (($details['quantity'] ?? null) === $state)
+                        // Handle quantity
+                        if (($details['quantity'] ?? null) === $state) {
                             return $state . ' App';
+                        }
 
-                        if (($details['payment_status'] ?? null) === $state)
-                            return ucfirst($state);
+                        // Handle payment status
+                        if (($details['payment_status'] ?? null) === $state) {
+                            return match (strtolower($state)) {
+                                'paid' => 'Payé',
+                                'unpaid' => 'Non payé',
+                                default => ucfirst($state),
+                            };
+                        }
+
+                        return $state;
                     })
+                    // ->formatStateUsing(function ($state, $record) {
+                    //     $details = $record->details ?? [];
+
+                    //     if (($details['price'] ?? null) === $state)
+                    //         return $state . ' DA';
+
+                    //     if (($details['total'] ?? null) === $state)
+                    //         return $state . ' DA';
+
+                    //     if (($details['quantity'] ?? null) === $state)
+                    //         return $state . ' App';
+
+                    //     if (($details['payment_status'] ?? null) === $state)
+                    //         return ucfirst($state);
+                    // })
                     ->badge()
                     ->color('gray'),
 

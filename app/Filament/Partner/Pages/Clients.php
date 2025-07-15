@@ -42,14 +42,18 @@ class Clients extends Page implements HasForms, HasTable
         return $table
             ->query(User::query()->with(['applications', 'partner'])->where('partner_id', Auth::user()->id)->where('is_user', true))
             ->columns([
-                TextColumn::make('name'),
-                TextColumn::make('email'),
+                TextColumn::make('name')
+                    ->label('Nom'),
+                TextColumn::make('email')
+                    ->label('Email'),
                 TextColumn::make('partner.name')
+                    ->label('Partenaire')
                     ->state(function (User $record) {
                         $user = User::where('id', $record->partner_id)->first();
                         return $user->name;
                     }),
                 TextColumn::make('applications_count')
+                    ->label('Applications')
                     ->state(function (User $record) {
                         return $record->applications()->count();
                     })
@@ -61,7 +65,7 @@ class Clients extends Page implements HasForms, HasTable
 
                 ActionGroup::make([
                     Action::make('update')
-                        ->label('Update')
+                        ->label('Modifier')
                         ->icon('heroicon-o-pencil-square')
                         ->form([
                             TextInput::make('name')
@@ -89,7 +93,7 @@ class Clients extends Page implements HasForms, HasTable
                         }),
 
                     Action::make('updatePassword')
-                        ->label('Update Password')
+                        ->label('Modifier le mot de passe')
                         ->icon('heroicon-o-lock-closed')
                         ->form([
                             Grid::make(2)
@@ -132,7 +136,7 @@ class Clients extends Page implements HasForms, HasTable
                         }),
 
                     Action::make('delete')
-                        ->label('Delete')
+                        ->label('Supprimer')
                         ->color('danger')
                         ->icon('heroicon-o-x-circle')
                         ->requiresConfirmation()
@@ -155,7 +159,8 @@ class Clients extends Page implements HasForms, HasTable
             ->headerActions([
 
                 Action::make('new_client')
-                    ->label('Create New Client')
+                    ->outlined()
+                    ->label('Enregistrer un nouveau client')
                     ->form([
                         TextInput::make('name')
                             ->required(),
