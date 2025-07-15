@@ -28,6 +28,7 @@ class PosteDzConfirmService
                 'userName' => $this->credentials->getFor($transaction, 'username'),
                 'password' => $this->credentials->getFor($transaction, 'password'),
                 'orderId' => $transaction->order_id,
+                'amount' => $transaction->amount,
                 'language' => 'FR',
             ];
 
