@@ -94,6 +94,7 @@ class TransactionUpdater
      */
     public function handleRequestError(Transaction $transaction, RequestException $e): void
     {
+
         $transaction->update([
             'status' => 'gateway_error',
             'error_code' => $e->getCode(),
