@@ -23,30 +23,30 @@ class PosteDzConfirmService
      */
     public function execute(Transaction $transaction): array
     {
-        try {
-            $params = [
-                'userName' => $this->credentials->getFor($transaction, 'username'),
-                'password' => $this->credentials->getFor($transaction, 'password'),
-                'orderId' => $transaction->order_id,
-                'amount' => $transaction->amount,
-                'language' => 'FR',
-            ];
+        $params = [
+            'userName' => $this->credentials->getFor($transaction, 'username'),
+            'password' => $this->credentials->getFor($transaction, 'password'),
+            'orderId' => $transaction->order_id,
+            'amount' => $transaction->amount,
+            'language' => 'FR',
+        ];
 
-            $response = Http::timeout(30)
-                ->withOptions(['verify' => false])
-                ->get($this->baseUrl($transaction) . 'getOrderStatus.do', $params)
-                ->throw()
-                ->json();
+        $response = Http::timeout(30)
+            ->withOptions(['verify' => false])
+            ->get($this->baseUrl($transaction) . 'getOrderStatus.do', $params)
+            ->throw()
+            ->json();
 
-            dd($response);
 
-            $this->updater->handleConfirmationResponse($transaction, $response);
+        $this->updater->handleConfirmationResponse($transaction, $response);
 
-            return $response;
-        } catch (\Exception $e) {
-            $this->updater->handleRequestError($transaction, $e);
-            throw $e;
-        }
+        return $response;
+        // try {
+
+        // } catch (\Exception $e) {
+        //     $this->updater->handleRequestError($transaction, $e);
+        //     throw $e;
+        // }
     }
 
     /**
