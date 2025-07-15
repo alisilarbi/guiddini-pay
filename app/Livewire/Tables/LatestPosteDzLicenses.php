@@ -26,6 +26,7 @@ class LatestPosteDzLicenses extends Component implements HasForms, HasTable
     {
         return $table
             ->query(License::where('gateway_type', 'poste_dz')->where('partner_id', Auth::user()->id)->latest())
+            ->heading('Applicaiton récentes')
             ->columns([
                 TextColumn::make('name')
                     ->label('Nom license')
@@ -48,7 +49,8 @@ class LatestPosteDzLicenses extends Component implements HasForms, HasTable
                     ->color('primary')
                     ->outlined()
                     ->url(route('filament.partner.pages.poste-dz-licenses')),
-            ]);
+            ])
+            ->defaultPaginationPageOption(5);
     }
 
     public function render(): View

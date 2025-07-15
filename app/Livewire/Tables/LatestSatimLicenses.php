@@ -25,6 +25,7 @@ class LatestSatimLicenses extends Component implements HasForms, HasTable
     {
         return $table
             ->query(License::where('gateway_type', 'satim')->where('partner_id', Auth::user()->id)->latest())
+            ->heading('License récentes')
             ->columns([
                 TextColumn::make('name')
                     ->label('Nom license')
@@ -48,7 +49,8 @@ class LatestSatimLicenses extends Component implements HasForms, HasTable
                     ->color('danger')
                     ->outlined()
                     ->url(route('filament.partner.pages.satim-licenses')),
-            ]);
+            ])
+            ->defaultPaginationPageOption(5);
     }
 
     public function render(): View
