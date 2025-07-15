@@ -34,7 +34,7 @@ class PosteDzConfirmService
 
             $response = Http::timeout(30)
                 ->withOptions(['verify' => false])
-                ->get($this->baseUrl($transaction) . 'confirmOrder.do', $params)
+                ->get($this->baseUrl($transaction) . 'deposit.do', $params)
                 ->throw()
                 ->json();
 
