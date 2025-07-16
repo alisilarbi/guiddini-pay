@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Services\Payments;
+namespace App\Services\Payments\Gateways\PosteDz;
 
 use App\Models\Transaction;
-use Illuminate\Http\Client\Response;
 use Illuminate\Http\Client\RequestException;
 
-class TransactionUpdater
+class PosteDzTransactionUpdater
 {
-
     /**
      * Update transaction with initiation response data.
      *
@@ -27,7 +25,7 @@ class TransactionUpdater
     }
 
     /**
-     * Update transaction with confirmation response data.
+     * Update transaction with confirmation response data from getOrderStatus.do.
      *
      * @param Transaction $transaction The transaction to update
      * @param array $response The gateway's confirmation response
@@ -36,53 +34,54 @@ class TransactionUpdater
     public function handleConfirmationResponse(Transaction $transaction, array $response): void
     {
         $updateData = [
-            'deposit_amount' => isset($response['depositAmount']) ? $response['depositAmount'] / 100 : null,
-            'auth_code' => $response['authCode'] ?? null,
-            'params' => $response['params'] ?? null,
-            'action_code' => $response['actionCode'] ?? null,
-            'action_code_description' => $response['actionCodeDescription'] ?? null,
-            'ErrorCode' => $response['ErrorCode'] ?? null,
-            'ErrorMessage' => $response['ErrorMessage'] ?? null,
-            'svfe_response' => $response['svfe_response'] ?? null,
-            'pan' => $response['Pan'] ?? null,
-            'ip_address' => $response['Ip'] ?? null,
-            'status' => $response['status'] ?? null,
-            'confirmation_status' => $response['confirmation_status'] ?? null,
-            'approval_code' => $response['approvalCode'] ?? null,
+            'error_code'        => (int)($response['errorCode'] ?? 7),
+            'order_status_description' => $response['orderStatusDescription'] ?? null,
+            'order_status'      => (int)($response['orderStatus'] ?? -1),
+            // 'error_message'     => $response['errorMessage'] ?? null,
+            'pan'               => $response['pan'] ?? null,
+            'expiration'        => $response['expiration'] ?? null,
+            'cardholder_name'   => $response['cardholderName'] ?? null,
+            'amount'            => isset($response['amount']) ? $response['amount'] / 100 : null,
+            'currency'          => $response['currency'] ?? null,
         ];
 
-        $isSuccess = false;
+        $errorCode = $updateData['error_code'];
+        $orderStatus = $updateData['order_status'];
 
-        $errorCode = (int)$response['ErrorCode'] ?? 1;
-        $actionCode = (int)$response['actionCode'] ?? 1;
+        if ($errorCode === 0) {
+            // Success path — check orderStatus
+            $updateData['status'] = match ($orderStatus) {
+                2 => 'paid',
+                0 => 'pending',
+                6 => 'declined',
+                5 => 'access_denied',
+            } ?? 'unknown';
 
-        $isSuccess = in_array($errorCode, [0, 2]) && $actionCode === 0;
+            $updateData['confirmation_status'] = match ($orderStatus) {
+                2 => 'confirmed',
+                0 => 'pending',
+                6, 5 => 'failed',
+            } ?? 'failed';
+        } else {
+            // Error path — map known error codes
+            $updateData['status'] = match ($errorCode) {
+                5 => 'invalid_request',   // Bad params or user permission issue
+                6 => 'invalid_order',     // Order not found
+                7 => 'system_error',      // Payment state error or system error
+                default => 'error',
+            };
 
-        $errorType = match ((int)($response['actionCode'] ?? -1)) {
-            0 => null, // Success
-            10 => 'user_cancelled',
-            116 => 'insufficient_funds',
-            -1, 111 => 'bank_rejection',
-            default => 'general_failure'
-        };
+            $updateData['confirmation_status'] = 'failed';
+        }
 
-        $updateData['status'] = $isSuccess ? 'paid' : ($errorType ?? 'failed');
-        $updateData['confirmation_status'] = $isSuccess ? 'confirmed' : 'failed';
 
-        $transaction->update([
-            'deposit_amount' => $updateData['deposit_amount'],
-            'auth_code' => $updateData['auth_code'],
-            'action_code' => $updateData['action_code'],
-            'action_code_description' => $updateData['action_code_description'],
-            'status' => $updateData['status'],
-            'svfe_response' => $updateData['svfe_response'],
-            'pan' => $updateData['pan'],
-            'ip_address' => $updateData['ip_address'],
-            'confirmation_status' => $updateData['confirmation_status'],
-            'approval_code' => $updateData['approval_code'],
-            'params' => $updateData['params'],
-        ]);
+        $updateData['transaction_status'] = $updateData['status'];
+        $updateData['transaction_status_message'] = $updateData['order_status_description'] ?? 'No error message provided';
 
+        // $updateData['action_code'] = $updateData['order_status'];
+        $updateData['action_code_description'] = $updateData['order_status_description'];
+
+        $transaction->update($updateData);
     }
 
     /**
@@ -94,14 +93,12 @@ class TransactionUpdater
      */
     public function handleRequestError(Transaction $transaction, RequestException $e): void
     {
-
         $transaction->update([
             'status' => 'gateway_error',
             'error_code' => $e->getCode(),
             'error_message' => $e->response->json()['ErrorMessage'] ?? 'Gateway request failed'
         ]);
     }
-
 
     /**
      * Mark transaction as unreachable if the gateway cannot be contacted.

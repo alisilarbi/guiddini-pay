@@ -31,6 +31,7 @@ class Transaction extends Model
         'params',
         'action_code',
         'action_code_description',
+        'order_status_description',
         'error_code',
         'error_message',
         'order_number',
@@ -45,8 +46,12 @@ class Transaction extends Model
         'pan',
         'ip_address',
         'approval_code',
+        'expiration',
         'quota_transactions',
         'quota_quantity',
+
+        'transaction_status',
+        'transaction_status_message',
     ];
 
     protected $casts = [

@@ -37,6 +37,12 @@ class Handler extends ExceptionHandler
      */
     protected function renderApiException(Request $request, Throwable $exception)
     {
+
+        if (app()->environment('local')) {
+            return parent::render($request, $exception);
+        }
+
+
         $statusCode = 500;
         $errorCode = 'INTERNAL_ERROR';
         $message = 'An unexpected error occurred';

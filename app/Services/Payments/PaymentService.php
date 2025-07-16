@@ -17,7 +17,6 @@ use App\Services\Payments\Gateways\PosteDz\PosteDzInitiateService;
 class PaymentService
 {
     public function __construct(
-        private TransactionUpdater $updater,
         private CredentialsService $credentials
     ) {}
 
@@ -59,7 +58,6 @@ class PaymentService
             ->where('order_number', $orderNumber)
             ->firstOrFail();
 
-
         $gatewayType = $transaction->application->license->gateway_type;
         $confirmService = $this->getConfirmService($gatewayType);
         $response = $confirmService->execute($transaction);
@@ -86,7 +84,6 @@ class PaymentService
             default => throw new PaymentException('Unsupported gateway type', 'UNSUPPORTED_GATEWAY', 400),
         };
     }
-
 
 
     /**

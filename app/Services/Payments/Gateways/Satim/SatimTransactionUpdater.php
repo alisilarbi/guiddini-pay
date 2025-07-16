@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Services\Payments\Gateways\PosteDz;
+namespace App\Services\Payments\Gateways\Satim;
 
 use App\Models\Transaction;
 use Illuminate\Http\Client\Response;
 use Illuminate\Http\Client\RequestException;
 
-class PosteDzTransactionUpdater
+class SatimTransactionUpdater
 {
 
     /**
@@ -35,38 +35,22 @@ class PosteDzTransactionUpdater
      */
     public function handleConfirmationResponse(Transaction $transaction, array $response): void
     {
-        dd($response);
-
         $updateData = [
-            'order_status_description' => $response('orderStatusDescription') ?? null,
-            'expiration' => $response['expiration'] ?? null,
-            'card_holder_name' => $response['cardHolderName'] ?? null,
             'deposit_amount' => isset($response['depositAmount']) ? $response['depositAmount'] / 100 : null,
-            'currency' => $response['currency'] ?? null,
             'auth_code' => $response['authCode'] ?? null,
-            'error_code' => $response['ErrorCode'] ?? null,
-            'error_message' => $response['ErrorMessage'] ?? null,
-            'order_status' => $response['OrderStatus'] ?? null,
-            'order_number' => $response['OrderNumber'] ?? null,
+            'params' => $response['params'] ?? null,
+            'action_code' => $response['actionCode'] ?? null,
+            'action_code_description' => $response['actionCodeDescription'] ?? null,
+            'ErrorCode' => $response['ErrorCode'] ?? null,
+            'ErrorMessage' => $response['ErrorMessage'] ?? null,
+            'svfe_response' => $response['svfe_response'] ?? null,
             'pan' => $response['Pan'] ?? null,
             'ip_address' => $response['Ip'] ?? null,
-
-            // 'deposit_amount' => isset($response['depositAmount']) ? $response['depositAmount'] / 100 : null,
-            // 'auth_code' => $response['authCode'] ?? null,
-            // 'params' => $response['params'] ?? null,
-            // 'action_code' => $response['actionCode'] ?? null,
-            // 'action_code_description' => $response['actionCodeDescription'] ?? null,
-            // 'ErrorCode' => $response['ErrorCode'] ?? null,
-            // 'ErrorMessage' => $response['ErrorMessage'] ?? null,
-            // 'svfe_response' => $response['svfe_response'] ?? null,
-            // 'pan' => $response['Pan'] ?? null,
-            // 'ip_address' => $response['Ip'] ?? null,
-            // 'status' => $response['status'] ?? null,
-            // 'confirmation_status' => $response['confirmation_status'] ?? null,
-            // 'approval_code' => $response['approvalCode'] ?? null,
+            'status' => $response['status'] ?? null,
+            'confirmation_status' => $response['confirmation_status'] ?? null,
+            'approval_code' => $response['approvalCode'] ?? null,
+            'expiration' => $response['expiration'] ?? null,
         ];
-
-        dd($response);
 
         $isSuccess = false;
 
@@ -86,20 +70,21 @@ class PosteDzTransactionUpdater
         $updateData['status'] = $isSuccess ? 'paid' : ($errorType ?? 'failed');
         $updateData['confirmation_status'] = $isSuccess ? 'confirmed' : 'failed';
 
-        dd($updateData);
-
         $transaction->update([
             'deposit_amount' => $updateData['deposit_amount'],
             'auth_code' => $updateData['auth_code'],
+            'params' => $updateData['params'],
             'action_code' => $updateData['action_code'],
             'action_code_description' => $updateData['action_code_description'],
-            'status' => $updateData['status'],
+            'error_code' => $updateData['ErrorCode'],
+            'error_message' => $updateData['ErrorMessage'],
             'svfe_response' => $updateData['svfe_response'],
             'pan' => $updateData['pan'],
             'ip_address' => $updateData['ip_address'],
+            'status' => $updateData['status'],
             'confirmation_status' => $updateData['confirmation_status'],
             'approval_code' => $updateData['approval_code'],
-            'params' => $updateData['params'],
+            'expiration' => $updateData['expiration'],
         ]);
 
     }

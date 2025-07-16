@@ -6,13 +6,13 @@ use App\Models\Transaction;
 use App\Exceptions\PaymentException;
 use Illuminate\Support\Facades\Http;
 use App\Services\Payments\CredentialsService;
-use App\Services\Payments\TransactionUpdater;
+use App\Services\Payments\Gateways\PosteDz\PosteDzTransactionUpdater;
 
 class PosteDzInitiateService
 {
     public function __construct(
         private CredentialsService $credentials,
-        private TransactionUpdater $updater
+        private PosteDzTransactionUpdater $updater
     ) {}
 
     /**

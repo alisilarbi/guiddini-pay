@@ -5,13 +5,13 @@ namespace App\Services\Payments\Gateways\PosteDz;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Http;
 use App\Services\Payments\CredentialsService;
-use App\Services\Payments\TransactionUpdater;
+use App\Services\Payments\Gateways\PosteDz\PosteDzTransactionUpdater;
 
 class PosteDzConfirmService
 {
     public function __construct(
         private CredentialsService $credentials,
-        private TransactionUpdater $updater
+        private PosteDzTransactionUpdater $updater
     ) {}
 
     /**
@@ -33,20 +33,13 @@ class PosteDzConfirmService
 
         $response = Http::timeout(30)
             ->withOptions(['verify' => false])
-            ->get($this->baseUrl($transaction) . 'getOrderStatus.do', $params)
+            ->get($this->baseUrl($transaction) . 'getOrderStatusExtended.do', $params)
             ->throw()
             ->json();
-
 
         $this->updater->handleConfirmationResponse($transaction, $response);
 
         return $response;
-        // try {
-
-        // } catch (\Exception $e) {
-        //     $this->updater->handleRequestError($transaction, $e);
-        //     throw $e;
-        // }
     }
 
     /**

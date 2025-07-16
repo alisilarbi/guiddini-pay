@@ -3,18 +3,15 @@
 namespace App\Services\Payments\Gateways\Satim;
 
 use App\Models\Transaction;
-use App\Exceptions\PaymentException;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Client\RequestException;
 use App\Services\Payments\CredentialsService;
-use App\Services\Payments\TransactionUpdater;
-use Illuminate\Http\Client\ConnectionException;
+use App\Services\Payments\Gateways\Satim\SatimTransactionUpdater;
 
 class SatimConfirmService
 {
     public function __construct(
         private CredentialsService $credentials,
-        private TransactionUpdater $updater
+        private SatimTransactionUpdater $updater
     ) {}
 
     public function execute(Transaction $transaction): array
