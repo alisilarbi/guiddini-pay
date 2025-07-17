@@ -39,7 +39,7 @@ class SatimInitiateService
             ->throw()
             ->json();
 
-        dd($transaction, $response);
+        // dd($transaction, $response);
 
         $this->updater->handleInitiationResponse($transaction, $response);
         if ($this->isErrorResponse($response)) {
