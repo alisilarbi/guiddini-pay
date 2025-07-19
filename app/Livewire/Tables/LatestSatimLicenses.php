@@ -42,8 +42,8 @@ class LatestSatimLicenses extends Component implements HasForms, HasTable
 
             ])
             ->headerActions([
-                Tables\Actions\Action::make('manage')
-                    ->label('Gérer')
+                Tables\Actions\Action::make('view')
+                    ->label('Voir')
                     ->icon('heroicon-o-arrow-top-right-on-square')
                     ->iconPosition(\Filament\Support\Enums\IconPosition::After)
                     ->color('danger')

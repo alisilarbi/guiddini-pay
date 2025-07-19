@@ -36,6 +36,7 @@ class PartnerPanelProvider extends PanelProvider
             ->path('partner')
             ->login()
             ->passwordReset()
+            // ->topNavigation()
             ->profile()
             ->colors([
                 // 'primary' => Color::Amber,

@@ -30,10 +30,9 @@ class SatimLicenses extends Page implements HasForms, HasTable
     use InteractsWithForms;
 
     protected static string $view = 'filament.partner.pages.satim-licenses';
-    protected static ?string $navigationParentItem = 'Licenses';
-    protected static ?string $navigationGroup = 'Integrations';
-    protected static ?int $navigationSort = 5;
 
+    protected static ?string $navigationGroup = 'Certifications';
+    protected static ?int $navigationSort = 7;
 
     public static function getNavigationBadge(): ?string
     {

@@ -26,7 +26,7 @@ class LatestPosteDzLicenses extends Component implements HasForms, HasTable
     {
         return $table
             ->query(License::where('gateway_type', 'poste_dz')->where('partner_id', Auth::user()->id)->latest())
-            ->heading('Application récentes')
+            ->heading('Licenses récentes')
             ->columns([
                 TextColumn::make('name')
                     ->label('Nom license')
@@ -42,8 +42,8 @@ class LatestPosteDzLicenses extends Component implements HasForms, HasTable
 
             ])
             ->headerActions([
-                Tables\Actions\Action::make('manage')
-                    ->label('Gérer')
+                Tables\Actions\Action::make('view')
+                    ->label('Voir')
                     ->icon('heroicon-o-arrow-top-right-on-square')
                     ->iconPosition(IconPosition::After)
                     ->color('primary')

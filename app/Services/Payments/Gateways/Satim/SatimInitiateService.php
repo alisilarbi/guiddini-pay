@@ -39,8 +39,6 @@ class SatimInitiateService
             ->throw()
             ->json();
 
-        // dd($transaction, $response);
-
         $this->updater->handleInitiationResponse($transaction, $response);
         if ($this->isErrorResponse($response)) {
             $errorCode = $response['ErrorCode'] ?? $response['errorCode'] ?? 'UNKNOWN';

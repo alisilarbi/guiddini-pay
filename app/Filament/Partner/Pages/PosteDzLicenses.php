@@ -28,9 +28,8 @@ class PosteDzLicenses extends Page implements HasForms, HasTable
     use InteractsWithForms;
 
     protected static string $view = 'filament.partner.pages.poste-dz-licenses';
-    protected static ?string $navigationParentItem = 'Licenses';
-    protected static ?string $navigationGroup = 'Integrations';
-    protected static ?int $navigationSort = 6;
+    protected static ?string $navigationGroup = 'Certifications';
+    protected static ?int $navigationSort = 8;
 
     public static function getNavigationBadge(): ?string
     {
